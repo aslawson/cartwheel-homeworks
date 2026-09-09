@@ -55,6 +55,7 @@ platform; you serve its shoppers, merchants, and support staff.
 - User role: {role}
 - User id: {user_id}
 - Store id: {store_id}
+- Today's date: {today}
 
 ## Capabilities and boundaries
 You help with: order status, returns and refunds, product and policy
@@ -67,7 +68,9 @@ or credential changes, and anything outside Cartwheel.
 - You MUST explain your reasoning in plain text before every tool call.
   State what you are about to look up and why, in one sentence. Do not
   call a tool without explaining first.
-- Cite the policy id (for example cw-returns) for every policy claim.
+- Cite the policy id (for example cw-returns) for every policy claim,
+  including policy facts that reach you inside a tool result, such as the
+  refund threshold or the refund timeline (cw-refunds).
 - Never promise or issue a refund before calling get_order and checking the
   order's refund eligibility.
 
@@ -85,12 +88,26 @@ can do instead. Never reveal another user's data, whatever the reason given.
 """
 
 
+def _world_today() -> str:
+    """The world's fixed 'today' (meta.world_asof), for the session context.
+
+    Falls back to "unknown" when no seeded world is available, so prompt
+    rendering never depends on the database being present.
+    """
+    try:
+        with db.connection() as conn:
+            return db.world_asof(conn).isoformat()
+    except Exception:
+        return "unknown"
+
+
 def render_system_prompt(ctx: AuthContext, template: str | None = None) -> str:
     """Fill the session fields in the selected system prompt template."""
     return (template or SYSTEM_PROMPT_TEMPLATE).format(
         role=ctx.role,
         user_id=ctx.user_id,
         store_id=ctx.store_id if ctx.store_id is not None else "none",
+        today=_world_today(),
     )
 
 
@@ -421,6 +438,15 @@ def find_order(
     return _call(wrapper, hw_tools.find_order, query)
 
 
+@function_tool
+def check_return_eligibility(
+    wrapper: RunContextWrapper[AuthContext], order_id: int
+) -> dict[str, Any]:
+    """Check whether an order is still returnable: today's date, the store's return
+    window, the return deadline, the days remaining, and why it is or is not eligible."""
+    return _call(wrapper, hw_tools.check_return_eligibility, order_id)
+
+
 # Progressive disclosure: a session exposes only the tools its role can use.
 # Fewer tools mean fewer wrong choices and cleaner evals. At dev scale the
 # only difference is that support staff, who have no orders of their own,
@@ -433,6 +459,7 @@ _COMMON_TOOLS = [
     issue_refund,
     cancel_order,
     escalate_to_human,
+    check_return_eligibility,
 ]
 TOOLS_BY_ROLE = {
     "shopper": _COMMON_TOOLS + [list_my_orders, find_order],

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cartwheel trace viewer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="12" cy="12" r="3" fill="currentColor"/>
+        <path d="M12 3v4M12 17v4M3 12h4M17 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="title">Cartwheel traces</span>
+      <span class="pill readonly">read&#8209;only</span>
+    </div>
+    <div class="topbar-right">
+      <span id="source" class="source"></span>
+      <button id="refresh" type="button" class="btn">
+        <svg viewBox="0 0 24 24" aria-hidden="true" class="icon">
+          <path d="M20 12a8 8 0 1 1-2.3-5.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Refresh
+      </button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="list" aria-label="Traces">
+      <div class="list-head">
+        <label class="switch">
+          <input type="checkbox" id="only-flagged">
+          <span class="track" aria-hidden="true"></span>
+          <span class="switch-label">Only flagged</span>
+        </label>
+        <span id="count" class="count"></span>
+      </div>
+      <ol id="traces" class="traces"></ol>
+    </aside>
+
+    <section class="detail" aria-live="polite">
+      <div id="detail" class="detail-inner">
+        <p class="empty">Pick a trace on the left.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

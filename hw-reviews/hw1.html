@@ -1,0 +1,495 @@
+<meta charset="utf-8">
+<title>Cartwheel Build Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+  :root {
+    --ground: #F4F5FA;
+    --surface: #FFFFFF;
+    --ink: #1A1B2E;
+    --muted: #5E607A;
+    --line: #E0E2EF;
+
+    --violet: #5B4BD6;  --violet-soft: #EDEBFC;
+    --teal:   #0E9384;  --teal-soft:   #DFF5F1;
+    --coral:  #DB4A4A;  --coral-soft:  #FDEAEA;
+    --amber:  #C57C00;  --amber-soft:  #FBF0D9;
+    --blue:   #2D6FD6;  --blue-soft:   #E6EFFC;
+
+    --display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+    --body: "Figtree", "Helvetica Neue", Arial, sans-serif;
+    --data: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #12131F;
+      --surface: #1C1E2D;
+      --ink: #EAEBF6;
+      --muted: #9EA1BD;
+      --line: #2C2F44;
+
+      --violet: #A294FF;  --violet-soft: #252246;
+      --teal:   #45C9B6;  --teal-soft:   #123330;
+      --coral:  #FF8A8A;  --coral-soft:  #37191C;
+      --amber:  #F0B14A;  --amber-soft:  #352814;
+      --blue:   #7BADFF;  --blue-soft:   #16263F;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #12131F;
+    --surface: #1C1E2D;
+    --ink: #EAEBF6;
+    --muted: #9EA1BD;
+    --line: #2C2F44;
+
+    --violet: #A294FF;  --violet-soft: #252246;
+    --teal:   #45C9B6;  --teal-soft:   #123330;
+    --coral:  #FF8A8A;  --coral-soft:  #37191C;
+    --amber:  #F0B14A;  --amber-soft:  #352814;
+    --blue:   #7BADFF;  --blue-soft:   #16263F;
+  }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding-inline: 22px;
+    padding-block: 52px 88px;
+    display: flex;
+    flex-direction: column;
+    gap: 44px;
+  }
+
+  .eyebrow {
+    font-family: var(--data);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--violet);
+    margin: 0;
+  }
+
+  header h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(2.2rem, 6.4vw, 3.1rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+    margin: 12px 0 0;
+  }
+
+  header .standfirst {
+    font-size: 1.14rem;
+    color: var(--muted);
+    margin: 16px 0 0;
+    text-wrap: pretty;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(122px, 1fr));
+    gap: 10px;
+    margin-top: 26px;
+  }
+  .facts div {
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--violet-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .facts div:nth-child(2) { background: var(--teal-soft); }
+  .facts div:nth-child(3) { background: var(--amber-soft); }
+  .facts div:nth-child(4) { background: var(--coral-soft); }
+  .facts b {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 1.7rem;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .facts span { font-size: 0.82rem; color: var(--muted); }
+
+  .part-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 4px;
+  }
+  .part-head .tag {
+    font-family: var(--data);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--violet);
+    color: var(--surface);
+    white-space: nowrap;
+  }
+  .part-head .rule { flex: 1; height: 2px; background: var(--line); }
+
+  section { display: flex; flex-direction: column; gap: 20px; }
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(1.6rem, 4vw, 2rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.24rem;
+    line-height: 1.25;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  p { margin: 0; text-wrap: pretty; }
+
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+  .steps li { display: flex; gap: 14px; align-items: flex-start; }
+  .steps .n {
+    font-family: var(--data);
+    font-size: 0.78rem;
+    font-weight: 500;
+    flex: 0 0 30px;
+    height: 30px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    color: #FFFFFF;
+    background: var(--violet);
+  }
+  .steps li:nth-child(2) .n { background: var(--blue); }
+  .steps li:nth-child(3) .n { background: var(--teal); }
+  .steps li:nth-child(4) .n { background: var(--amber); }
+  .steps .what { font-size: 0.99rem; }
+  .steps .what b { font-weight: 700; }
+
+  .lesson {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 22px;
+    border-radius: 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+  .lesson .kicker {
+    font-family: var(--data);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+  .lesson.l-coral .kicker { color: var(--coral); }
+  .lesson.l-amber .kicker { color: var(--amber); }
+  .lesson.l-blue .kicker { color: var(--blue); }
+  .lesson.l-violet .kicker { color: var(--violet); }
+
+  .pull {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.22rem;
+    line-height: 1.32;
+    color: var(--violet);
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  .beforeafter { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .beforeafter > div { padding: 16px 18px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .beforeafter .b { background: var(--coral-soft); }
+  .beforeafter .a { background: var(--teal-soft); }
+  .beforeafter .label {
+    font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .beforeafter .b .label { color: var(--coral); }
+  .beforeafter .a .label { color: var(--teal); }
+  .beforeafter .said { font-size: 0.95rem; }
+
+  .tally { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .tally li { display: flex; gap: 12px; align-items: baseline; font-size: 0.97rem; }
+  .tally .mark {
+    font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase;
+    flex: 0 0 5.2rem; padding: 3px 0; border-radius: 6px; text-align: center;
+  }
+  .tally .pass { background: var(--teal-soft); color: var(--teal); }
+  .tally .fail { background: var(--coral-soft); color: var(--coral); }
+
+  figure { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  figure svg {
+    width: 100%;
+    height: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  figure svg text { font-family: var(--body); font-weight: 500; }
+  figcaption { font-size: 0.9rem; color: var(--muted); text-wrap: pretty; }
+
+  footer {
+    padding: 20px 22px;
+    border-radius: 14px;
+    background: var(--violet-soft);
+    font-size: 0.94rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .page > * { animation: rise 0.5s ease-out both; }
+    .page > *:nth-child(2) { animation-delay: 0.05s; }
+    .page > *:nth-child(3) { animation-delay: 0.1s; }
+    @keyframes rise { from { opacity: 0.5; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+
+<div class="page">
+
+  <header>
+    <p class="eyebrow">Evaluating and Improving AI Agents &middot; Homework One</p>
+    <h1>I built a support assistant, then tried to catch it out</h1>
+    <p class="standfirst">A customer-support assistant for a pretend shopping platform &mdash; refunds, returns, order lookups. Building it took an afternoon. Testing it taught me considerably more.</p>
+    <div class="facts">
+      <div><b>5</b><span>lookups written</span></div>
+      <div><b>1</b><span>added after watching it get stuck</span></div>
+      <div><b>15</b><span>conversations recorded</span></div>
+      <div><b>1</b><span>instruction changed, with evidence</span></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="part-head"><span class="tag">Part one</span><span class="rule"></span></div>
+    <h2>What I did</h2>
+
+    <ol class="steps">
+      <li>
+        <span class="n">1</span>
+        <span class="what"><b>Filled in the five missing lookups.</b> The assistant could already talk. What it couldn't do was fetch a policy document, search the catalogue, list someone's orders, cancel an order, or track down an order from a vague description like "the vase I bought last month".</span>
+      </li>
+      <li>
+        <span class="n">2</span>
+        <span class="what"><b>Held 15 real conversations and wrote down every one.</b> As a shopper, as a shop owner, and as support staff &mdash; including the awkward cases: a refund that's too old, a refund too big to approve automatically, someone asking after an order that isn't theirs.</span>
+      </li>
+      <li>
+        <span class="n">3</span>
+        <span class="what"><b>Built a sixth lookup because a conversation demanded it.</b> Asked "how many days do I have left to return this?", the assistant had to admit it didn't know today's date. So I gave it something that answers exactly that.</span>
+      </li>
+      <li>
+        <span class="n">4</span>
+        <span class="what"><b>Found one instruction worth changing &mdash; and three that weren't.</b> I had four suspicions about vague instructions. Testing showed three were already handled. I changed one sentence and re-ran the same conversation to prove it mattered.</span>
+      </li>
+    </ol>
+
+    <figure>
+      <svg viewBox="0 0 620 344" role="img" aria-label="A map of everything the assistant can reach: policy documents, the product catalogue, order lookups, and the three actions that change something. Six of the ten were written by me.">
+        <defs>
+          <marker id="m1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+
+        <rect x="12" y="130" width="148" height="80" rx="12" fill="var(--violet-soft)" stroke="var(--violet)" stroke-width="1.5"/>
+        <text x="86" y="164" text-anchor="middle" font-size="13.5" fill="var(--ink)">The assistant</text>
+        <text x="86" y="184" text-anchor="middle" font-size="11" fill="var(--muted)">picks what to look up</text>
+
+        <g stroke="currentColor" stroke-width="1.4" fill="none" opacity=".4" marker-end="url(#m1)">
+          <path d="M160,170 L194,170 L194,46 L234,46"/>
+          <path d="M160,170 L194,170 L194,122 L234,122"/>
+          <path d="M160,170 L194,170 L194,214 L234,214"/>
+          <path d="M160,170 L194,170 L194,302 L234,302"/>
+        </g>
+
+        <rect x="238" y="18" width="370" height="56" rx="10" fill="var(--amber-soft)" stroke="var(--amber)" stroke-width="1.5"/>
+        <text x="256" y="42" font-size="12.5" fill="var(--ink)">Policy documents</text>
+        <text x="256" y="61" font-size="11" fill="var(--muted)">fetch one by name* &middot; search the help centre</text>
+
+        <rect x="238" y="94" width="370" height="56" rx="10" fill="var(--blue-soft)" stroke="var(--blue)" stroke-width="1.5"/>
+        <text x="256" y="118" font-size="12.5" fill="var(--ink)">Product catalogue</text>
+        <text x="256" y="137" font-size="11" fill="var(--muted)">search 800 products by words and price*</text>
+
+        <rect x="238" y="170" width="370" height="92" rx="10" fill="var(--teal-soft)" stroke="var(--teal)" stroke-width="1.5"/>
+        <text x="256" y="194" font-size="12.5" fill="var(--ink)">Looking at orders</text>
+        <text x="256" y="213" font-size="11" fill="var(--muted)">one order by number &middot; my recent orders*</text>
+        <text x="256" y="231" font-size="11" fill="var(--muted)">find one from a description*</text>
+        <text x="256" y="251" font-size="11" fill="var(--teal)">can I still return it, and for how long? **</text>
+
+        <rect x="238" y="278" width="370" height="50" rx="10" fill="var(--coral-soft)" stroke="var(--coral)" stroke-width="1.5"/>
+        <text x="256" y="300" font-size="12.5" fill="var(--ink)">Changing something</text>
+        <text x="256" y="319" font-size="11" fill="var(--muted)">cancel* &middot; refund &middot; hand over to a person</text>
+
+        <text x="12" y="318" font-size="10.5" fill="var(--teal)">** the one I added myself</text>
+        <text x="12" y="334" font-size="10.5" fill="var(--muted)">* the five I wrote</text>
+      </svg>
+      <figcaption>The assistant has no internet, no files, no shell &mdash; only these ten doors, and every one checks who's asking before it opens. The red group is the only part that can change anything, which is why those three get the most scrutiny.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <div class="part-head"><span class="tag">Part two</span><span class="rule"></span></div>
+    <h2>What I learned</h2>
+
+    <div class="lesson l-violet">
+      <span class="kicker">The idea underneath everything</span>
+      <h3>Writing a rule down doesn't make it real</h3>
+      <p>There's a document describing how this assistant should behave. The assistant never reads it. Nothing written there has any effect until a person copies it into one of three places &mdash; and those three places offer completely different guarantees.</p>
+      <figure>
+        <svg viewBox="0 0 600 262" role="img" aria-label="The written specification is copied by hand into three places: the instructions the assistant reads, the code behind each lookup, and the facts file holding every number. The running program never opens the specification.">
+          <defs>
+            <marker id="m2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+            </marker>
+          </defs>
+
+          <rect x="12" y="98" width="152" height="66" rx="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="6 5" opacity=".5"/>
+          <text x="88" y="126" text-anchor="middle" font-size="12.5" fill="var(--ink)">The written spec</text>
+          <text x="88" y="145" text-anchor="middle" font-size="11" fill="var(--muted)">a document, nothing more</text>
+
+          <g stroke="currentColor" stroke-width="1.4" fill="none" opacity=".4" stroke-dasharray="6 5" marker-end="url(#m2)">
+            <path d="M164,131 L206,131 L206,46 L250,46"/>
+            <path d="M164,131 L250,131"/>
+            <path d="M164,131 L206,131 L206,214 L250,214"/>
+          </g>
+          <text x="208" y="18" text-anchor="middle" font-size="10.5" fill="var(--muted)">copied across by hand</text>
+
+          <rect x="254" y="20" width="334" height="52" rx="10" fill="var(--violet-soft)" stroke="var(--violet)" stroke-width="1.5"/>
+          <text x="272" y="42" font-size="12.5" fill="var(--ink)">Instructions the assistant reads</text>
+          <text x="272" y="61" font-size="11" fill="var(--muted)">it can ignore these &mdash; and sometimes does</text>
+
+          <rect x="254" y="105" width="334" height="52" rx="10" fill="var(--teal-soft)" stroke="var(--teal)" stroke-width="1.5"/>
+          <text x="272" y="127" font-size="12.5" fill="var(--ink)">Code behind each lookup</text>
+          <text x="272" y="146" font-size="11" fill="var(--muted)">it cannot get around these</text>
+
+          <rect x="254" y="188" width="334" height="52" rx="10" fill="var(--amber-soft)" stroke="var(--amber)" stroke-width="1.5"/>
+          <text x="272" y="210" font-size="12.5" fill="var(--ink)">The facts file</text>
+          <text x="272" y="229" font-size="11" fill="var(--muted)">$100 approval limit &middot; 30-day returns</text>
+        </svg>
+        <figcaption>Purple can be ignored, green cannot, amber is the only place a number is allowed to live. Picking the wrong one of the three is how a rule ends up looking enforced when it isn't.</figcaption>
+      </figure>
+    </div>
+
+    <div class="lesson l-coral">
+      <span class="kicker">On privacy</span>
+      <h3>Rules that matter can't be polite requests</h3>
+      <p>A shop owner asked to see an order belonging to a different shop, and was refused &mdash; but not because the assistant had been told to refuse. The refusal happened in code, before the assistant was consulted. It was never asked its opinion, so there was nothing to talk it out of.</p>
+      <figure>
+        <svg viewBox="0 0 620 236" role="img" aria-label="Two people ask for the very same order. One lookup checks who owns it before fetching anything: the shopper who owns it gets full details, the owner of a different shop is refused and told nothing at all.">
+          <defs>
+            <marker id="m3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--teal)"/>
+            </marker>
+            <marker id="m3r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--coral)"/>
+            </marker>
+          </defs>
+
+          <rect x="12" y="16" width="146" height="54" rx="10" fill="var(--teal-soft)" stroke="var(--teal)" stroke-width="1.5"/>
+          <text x="85" y="40" text-anchor="middle" font-size="12.5" fill="var(--ink)">Shopper 1</text>
+          <text x="85" y="59" text-anchor="middle" font-size="11" fill="var(--muted)">owns order 4127</text>
+
+          <rect x="12" y="152" width="146" height="54" rx="10" fill="var(--coral-soft)" stroke="var(--coral)" stroke-width="1.5"/>
+          <text x="85" y="176" text-anchor="middle" font-size="12.5" fill="var(--ink)">Shop 2's owner</text>
+          <text x="85" y="195" text-anchor="middle" font-size="11" fill="var(--muted)">a different shop entirely</text>
+
+          <rect x="234" y="70" width="170" height="92" rx="12" fill="var(--violet-soft)" stroke="var(--violet)" stroke-width="1.5"/>
+          <text x="319" y="100" text-anchor="middle" font-size="12.5" fill="var(--ink)">The order lookup</text>
+          <text x="319" y="121" text-anchor="middle" font-size="11" fill="var(--muted)">checks who owns it</text>
+          <text x="319" y="139" text-anchor="middle" font-size="11" fill="var(--muted)">before fetching anything</text>
+
+          <path d="M158,43 L196,43 L196,96 L228,96" fill="none" stroke="var(--teal)" stroke-width="1.6" marker-end="url(#m3)"/>
+          <path d="M158,179 L196,179 L196,136 L228,136" fill="none" stroke="var(--coral)" stroke-width="1.6" marker-end="url(#m3r)"/>
+          <path d="M404,96 L440,96 L440,43 L470,43" fill="none" stroke="var(--teal)" stroke-width="1.6" marker-end="url(#m3)"/>
+          <path d="M404,136 L440,136 L440,179 L470,179" fill="none" stroke="var(--coral)" stroke-width="1.6" marker-end="url(#m3r)"/>
+
+          <rect x="476" y="16" width="132" height="54" rx="10" fill="var(--teal-soft)" stroke="var(--teal)" stroke-width="1.5"/>
+          <text x="542" y="40" text-anchor="middle" font-size="12.5" fill="var(--ink)">Full details</text>
+          <text x="542" y="59" text-anchor="middle" font-size="11" fill="var(--muted)">$84.00, delivered</text>
+
+          <rect x="476" y="152" width="132" height="54" rx="10" fill="var(--coral-soft)" stroke="var(--coral)" stroke-width="1.5"/>
+          <text x="542" y="176" text-anchor="middle" font-size="12.5" fill="var(--coral)">Refused</text>
+          <text x="542" y="195" text-anchor="middle" font-size="11" fill="var(--muted)">not even the shop name</text>
+
+          <text x="196" y="230" text-anchor="middle" font-size="10.5" fill="var(--muted)">both ask for the identical order</text>
+        </svg>
+        <figcaption>The assistant is the same in both lanes, because it isn't the thing deciding. And the refusal is careful: it says the order isn't from <em>your</em> shop, never whose it is &mdash; naming the owner would give away the very thing the refusal protects.</figcaption>
+      </figure>
+    </div>
+
+    <div class="lesson l-blue">
+      <span class="kicker">On vagueness</span>
+      <h3>What you hand it decides what it can honestly say</h3>
+      <p>A shopper asked whether she could return an old order. The lookup came back with a bare yes-or-no: not eligible. No dates, no reason. So the assistant did the only thing left to it and guessed out loud.</p>
+      <div class="beforeafter">
+        <div class="b">
+          <span class="label">Before</span>
+          <p class="said">"This could be due to the return window having closed <em>or</em> a store-specific policy."</p>
+        </div>
+        <div class="a">
+          <span class="label">After</span>
+          <p class="said">"The 30-day window expired on June&nbsp;16 &mdash; it's been 45 days since delivery."</p>
+        </div>
+      </div>
+      <p>Nothing about the assistant changed between those two answers. I added a lookup that returns the <em>reason</em> alongside the verdict, and the waffle disappeared. When a system sounds evasive, the first honest question is whether it was given enough to be specific.</p>
+    </div>
+
+    <div class="lesson">
+      <span class="kicker">On changing things</span>
+      <h3>Only edit the instructions when you can point at the failure</h3>
+      <p>I had four theories about instructions that were missing or too vague. Three were wrong &mdash; the assistant already handled those situations well, and "fixing" them would have been editing on a hunch.</p>
+      <ul class="tally">
+        <li><span class="mark pass">held up</span><span>Nobody tells it today's date &mdash; it said so plainly rather than inventing one.</span></li>
+        <li><span class="mark pass">held up</span><span>Nothing says account changes need a person &mdash; it passed the request to one anyway.</span></li>
+        <li><span class="mark pass">held up</span><span>Handed a broken record with a missing delivery date, it named the gap instead of papering over it.</span></li>
+        <li><span class="mark fail">failed</span><span>It credited policy documents it read, but not policy facts that reached it another way.</span></li>
+      </ul>
+      <p>Only the last earned an edit: one sentence. Re-running the identical conversation afterwards, it started crediting the source properly &mdash; and went and fetched the document first, which I hadn't asked for.</p>
+    </div>
+
+    <div class="lesson l-amber">
+      <span class="kicker">On my own mistakes</span>
+      <h3>Two things I was confidently wrong about</h3>
+      <p><b>I was sure I'd caught a bug.</b> A shopper asked for a $240 refund and the assistant seemed to stall. It hadn't &mdash; it was asking why she wanted the refund, because it needs a reason to file one. A turn in the middle of a conversation isn't a verdict.</p>
+      <p><b>I was sure refunds needed approval above $50.</b> The real figure is $100, and it lives in exactly one file that every quoted number traces back to. Checking took ten seconds; not checking would have put a false failure in my notes.</p>
+    </div>
+
+    <div class="lesson l-coral">
+      <span class="kicker">The best thing I found</span>
+      <h3>A policy can be published everywhere and still not exist</h3>
+      <p>One shop charges up to 15% on opened items. It's on the shop's public policy page, it's in the platform's fee policy, and the database has a column recording that this shop opted in.</p>
+      <p class="pull">No code anywhere reads that column.</p>
+      <p>So the assistant told one shopper she'd get 85% back on an opened item &mdash; correct, and well-sourced. Then it refunded another shopper the full $56.75 on an opened item from the same shop. Same system, same afternoon.</p>
+      <p>I left it broken deliberately. The rule isn't defined well enough anywhere to implement without inventing it, and an improvised fix would have quietly broken the yardstick the later coursework measures against. Writing down a real gap beats patching an imagined one.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p><b>Where it ended up.</b> Five lookups written, a sixth added because a conversation demanded it, fifteen recorded conversations across three kinds of user, and one evidence-backed edit to the instructions.</p>
+    <p><b>Left open on purpose:</b> the restocking-fee gap &mdash; recorded, not patched.</p>
+  </footer>
+
+</div>

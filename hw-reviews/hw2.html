@@ -1,0 +1,471 @@
+<meta charset="utf-8">
+<title>Cartwheel Trace Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+  :root {
+    --ground: #F4F5FA;
+    --surface: #FFFFFF;
+    --ink: #1A1B2E;
+    --muted: #5E607A;
+    --line: #E0E2EF;
+
+    --violet: #5B4BD6;  --violet-soft: #EDEBFC;
+    --teal:   #0E9384;  --teal-soft:   #DFF5F1;
+    --coral:  #DB4A4A;  --coral-soft:  #FDEAEA;
+    --amber:  #C57C00;  --amber-soft:  #FBF0D9;
+    --blue:   #2D6FD6;  --blue-soft:   #E6EFFC;
+
+    --display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+    --body: "Figtree", "Helvetica Neue", Arial, sans-serif;
+    --data: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #12131F;
+      --surface: #1C1E2D;
+      --ink: #EAEBF6;
+      --muted: #9EA1BD;
+      --line: #2C2F44;
+
+      --violet: #A294FF;  --violet-soft: #252246;
+      --teal:   #45C9B6;  --teal-soft:   #123330;
+      --coral:  #FF8A8A;  --coral-soft:  #37191C;
+      --amber:  #F0B14A;  --amber-soft:  #352814;
+      --blue:   #7BADFF;  --blue-soft:   #16263F;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #12131F;
+    --surface: #1C1E2D;
+    --ink: #EAEBF6;
+    --muted: #9EA1BD;
+    --line: #2C2F44;
+
+    --violet: #A294FF;  --violet-soft: #252246;
+    --teal:   #45C9B6;  --teal-soft:   #123330;
+    --coral:  #FF8A8A;  --coral-soft:  #37191C;
+    --amber:  #F0B14A;  --amber-soft:  #352814;
+    --blue:   #7BADFF;  --blue-soft:   #16263F;
+  }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding-inline: 22px;
+    padding-block: 52px 88px;
+    display: flex;
+    flex-direction: column;
+    gap: 44px;
+  }
+
+  .eyebrow {
+    font-family: var(--data);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--violet);
+    margin: 0;
+  }
+
+  header h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(2.2rem, 6.4vw, 3.1rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+    margin: 12px 0 0;
+  }
+
+  header .standfirst {
+    font-size: 1.14rem;
+    color: var(--muted);
+    margin: 16px 0 0;
+    text-wrap: pretty;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(122px, 1fr));
+    gap: 10px;
+    margin-top: 26px;
+  }
+  .facts div {
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--violet-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .facts div:nth-child(2) { background: var(--teal-soft); }
+  .facts div:nth-child(3) { background: var(--amber-soft); }
+  .facts div:nth-child(4) { background: var(--coral-soft); }
+  .facts b {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 1.7rem;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .facts span { font-size: 0.82rem; color: var(--muted); }
+
+  .part-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 4px;
+  }
+  .part-head .tag {
+    font-family: var(--data);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--violet);
+    color: var(--surface);
+    white-space: nowrap;
+  }
+  .part-head .rule { flex: 1; height: 2px; background: var(--line); }
+
+  section { display: flex; flex-direction: column; gap: 20px; }
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(1.6rem, 4vw, 2rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.24rem;
+    line-height: 1.25;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  p { margin: 0; text-wrap: pretty; }
+
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+  .steps li { display: flex; gap: 14px; align-items: flex-start; }
+  .steps .n {
+    font-family: var(--data);
+    font-size: 0.78rem;
+    font-weight: 500;
+    flex: 0 0 30px;
+    height: 30px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    color: #FFFFFF;
+    background: var(--violet);
+  }
+  .steps li:nth-child(2) .n { background: var(--blue); }
+  .steps li:nth-child(3) .n { background: var(--teal); }
+  .steps li:nth-child(4) .n { background: var(--amber); }
+  .steps .what { font-size: 0.99rem; }
+  .steps .what b { font-weight: 700; }
+
+  .lesson {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 22px;
+    border-radius: 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+  .lesson .kicker {
+    font-family: var(--data);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+  .lesson.l-coral .kicker { color: var(--coral); }
+  .lesson.l-amber .kicker { color: var(--amber); }
+  .lesson.l-blue .kicker { color: var(--blue); }
+  .lesson.l-violet .kicker { color: var(--violet); }
+
+  .pull {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.22rem;
+    line-height: 1.32;
+    color: var(--violet);
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  .beforeafter { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .beforeafter > div { padding: 16px 18px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .beforeafter .b { background: var(--coral-soft); }
+  .beforeafter .a { background: var(--teal-soft); }
+  .beforeafter .label {
+    font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .beforeafter .b .label { color: var(--coral); }
+  .beforeafter .a .label { color: var(--teal); }
+  .beforeafter .said { font-size: 0.95rem; }
+
+  .tally { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .tally li { display: flex; gap: 12px; align-items: baseline; font-size: 0.97rem; }
+  .tally .mark {
+    font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase;
+    flex: 0 0 5.2rem; padding: 3px 0; border-radius: 6px; text-align: center;
+  }
+  .tally .pass { background: var(--teal-soft); color: var(--teal); }
+  .tally .fail { background: var(--coral-soft); color: var(--coral); }
+
+  figure { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  figure svg {
+    width: 100%;
+    height: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  figure svg text { font-family: var(--body); font-weight: 500; }
+  figcaption { font-size: 0.9rem; color: var(--muted); text-wrap: pretty; }
+
+  footer {
+    padding: 20px 22px;
+    border-radius: 14px;
+    background: var(--violet-soft);
+    font-size: 0.94rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .page > * { animation: rise 0.5s ease-out both; }
+    .page > *:nth-child(2) { animation-delay: 0.05s; }
+    .page > *:nth-child(3) { animation-delay: 0.1s; }
+    @keyframes rise { from { opacity: 0.5; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+
+<div class="page">
+
+  <header>
+    <p class="eyebrow">Evaluating and Improving AI Agents &middot; Homework Two</p>
+    <h1>Giving the assistant a front door and a memory</h1>
+    <p class="standfirst">The assistant already worked. This time I put it behind a proper entrance that checks who you are, and made every conversation leave a permanent record &mdash; so that later I can study thousands of them instead of reading one at a time.</p>
+    <div class="facts">
+      <div><b>7</b><span>conversations recorded</span></div>
+      <div><b>3</b><span>kinds of user</span></div>
+      <div><b>8</b><span>security tests written</span></div>
+      <div><b>2</b><span>versions of the instructions compared</span></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="part-head"><span class="tag">Part one</span><span class="rule"></span></div>
+    <h2>What I did</h2>
+
+    <ol class="steps">
+      <li>
+        <span class="n">1</span>
+        <span class="what"><b>Built the front door.</b> You say who you are, it checks that claim against the user records, and hands back a pass that can't be edited. Your role and your shop are taken from the records &mdash; never from what you typed.</span>
+      </li>
+      <li>
+        <span class="n">2</span>
+        <span class="what"><b>Made every message run inside a recording.</b> Each conversation now leaves behind a labelled trail: who asked, which version of the instructions was in force, the question, and the answer.</span>
+      </li>
+      <li>
+        <span class="n">3</span>
+        <span class="what"><b>Tagged every lookup with who triggered it</b> &mdash; and whether it was allowed or refused. That turns "someone got refused somewhere" into something countable.</span>
+      </li>
+      <li>
+        <span class="n">4</span>
+        <span class="what"><b>Tested it, ran it, and read the results.</b> Eight tests on the parts that are genuinely enforced, seven real conversations through the new entrance, then the same question twice under two different versions of the instructions to prove the labels work.</span>
+      </li>
+    </ol>
+
+    <figure>
+      <svg viewBox="0 0 660 330" role="img" aria-label="Two separate calls. First you ask the front door for a pass, and it verifies your claim against the user records. Then every message carries that pass, the server reads who you are from it, the assistant runs, and a recording is written.">
+        <defs>
+          <marker id="n1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+          <marker id="n1v" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--violet)"/>
+          </marker>
+        </defs>
+
+        <rect x="12" y="16" width="106" height="52" rx="10" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"/>
+        <text x="65" y="47" text-anchor="middle" font-size="12.5" fill="var(--ink)">You</text>
+
+        <rect x="180" y="16" width="176" height="52" rx="10" fill="var(--amber-soft)" stroke="var(--amber)" stroke-width="1.5"/>
+        <text x="198" y="39" font-size="12.5" fill="var(--ink)">The front door</text>
+        <text x="198" y="58" font-size="11" fill="var(--muted)">asks for no password</text>
+
+        <rect x="180" y="106" width="176" height="48" rx="10" fill="var(--blue-soft)" stroke="var(--blue)" stroke-width="1.5"/>
+        <text x="268" y="127" text-anchor="middle" font-size="12" fill="var(--ink)">The user records</text>
+        <text x="268" y="144" text-anchor="middle" font-size="11" fill="var(--muted)">role and shop come from here</text>
+
+        <rect x="418" y="16" width="146" height="52" rx="10" fill="var(--violet-soft)" stroke="var(--violet)" stroke-width="1.5"/>
+        <text x="491" y="39" text-anchor="middle" font-size="12.5" fill="var(--violet)">A signed pass</text>
+        <text x="491" y="58" text-anchor="middle" font-size="11" fill="var(--muted)">editing it breaks it</text>
+
+        <g stroke="currentColor" stroke-width="1.5" fill="none" opacity=".5" marker-end="url(#n1)">
+          <path d="M118,42 L174,42"/>
+          <path d="M268,68 L268,100"/>
+          <path d="M118,226 L174,226"/>
+          <path d="M356,226 L412,226"/>
+        </g>
+        <path d="M356,42 L412,42" fill="none" stroke="var(--violet)" stroke-width="1.6" marker-end="url(#n1v)"/>
+        <text x="146" y="32" text-anchor="middle" font-size="10.5" fill="var(--muted)">"I'm customer 1"</text>
+        <text x="280" y="92" font-size="10.5" fill="var(--muted)">checked against</text>
+        <text x="384" y="32" text-anchor="middle" font-size="10.5" fill="var(--violet)">issues</text>
+
+        <line x1="12" y1="176" x2="648" y2="176" stroke="currentColor" stroke-width="1" stroke-dasharray="3 6" opacity=".3"/>
+        <text x="12" y="192" font-size="10.5" fill="var(--muted)">once, at the start</text>
+        <text x="648" y="192" text-anchor="end" font-size="10.5" fill="var(--muted)">every message after that</text>
+
+        <rect x="12" y="200" width="106" height="52" rx="10" fill="none" stroke="var(--violet)" stroke-width="1.5"/>
+        <text x="65" y="224" text-anchor="middle" font-size="12.5" fill="var(--ink)">You</text>
+        <text x="65" y="242" text-anchor="middle" font-size="10.5" fill="var(--muted)">holding the pass</text>
+
+        <rect x="180" y="200" width="176" height="52" rx="10" fill="var(--teal-soft)" stroke="var(--teal)" stroke-width="1.5"/>
+        <text x="198" y="223" font-size="12.5" fill="var(--ink)">The server</text>
+        <text x="198" y="242" font-size="11" fill="var(--muted)">reads who you are from the pass</text>
+
+        <rect x="418" y="200" width="146" height="52" rx="10" fill="var(--violet-soft)" stroke="var(--violet)" stroke-width="1.5"/>
+        <text x="491" y="231" text-anchor="middle" font-size="12.5" fill="var(--ink)">The assistant runs</text>
+
+        <path d="M491,252 L491,278" fill="none" stroke="var(--blue)" stroke-width="1.6" marker-end="url(#n1)"/>
+        <rect x="418" y="282" width="146" height="40" rx="10" fill="var(--blue-soft)" stroke="var(--blue)" stroke-width="1.5"/>
+        <text x="491" y="307" text-anchor="middle" font-size="12.5" fill="var(--blue)">The recording</text>
+        <text x="576" y="272" font-size="10.5" fill="var(--muted)">written as it goes</text>
+
+        <text x="146" y="216" text-anchor="middle" font-size="10.5" fill="var(--muted)">message + pass</text>
+      </svg>
+      <figcaption>The claim on the top line is never verified &mdash; there is no password &mdash; but everything below the dotted line comes from the records rather than from anything anyone says. That's why nothing said inside a conversation can change who you are.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <div class="part-head"><span class="tag">Part two</span><span class="rule"></span></div>
+    <h2>What I learned</h2>
+
+    <div class="lesson l-violet">
+      <span class="kicker">The idea underneath everything</span>
+      <h3>You can't study what you didn't write down</h3>
+      <p>All of this exists so that in a month I can ask "how often does it refuse someone who should have been allowed?" and get an answer from records rather than from memory. The catch is that recording isn't automatic and isn't free &mdash; something has to decide what's kept, at what level of detail, and labelled with what. Those decisions are the actual work.</p>
+    </div>
+
+    <div class="lesson l-amber">
+      <span class="kicker">The moment it clicked</span>
+      <h3>The front door takes my word for who I am</h3>
+      <p>I asked whether the code really checks identity, and the honest answer is that it doesn't. You say "I'm customer number 1" and it issues you a pass for customer number 1. There's no password anywhere.</p>
+      <p>Two questions I'd been treating as one thing, and they aren't:</p>
+      <div class="beforeafter">
+        <div class="b">
+          <span class="label">Never checked</span>
+          <p class="said"><b>Are you who you say you are?</b> Nothing verifies it. In a real product this would sit behind a login.</p>
+        </div>
+        <div class="a">
+          <span class="label">Strictly enforced</span>
+          <p class="said"><b>Given who you are, what may you do?</b> Role and shop come from the records, never from the conversation.</p>
+        </div>
+      </div>
+      <p>Separating them also explained a rule I'd been told and only half understood: the pass is issued once, at the door, and nothing said inside the conversation can change it. Otherwise a customer could simply announce a promotion mid-sentence. I wrote tests for the half that's real &mdash; including one that edits a pass to claim a different identity and confirms it gets rejected.</p>
+    </div>
+
+    <div class="lesson l-blue">
+      <span class="kicker">On what to record</span>
+      <h3>Record at the level you'll actually want to read</h3>
+      <p>A lot of recording comes free. The problem is that free recording captures what the <em>software</em> thinks matters &mdash; every round of thinking, with the full history and every lookup result attached, nested several layers deep. I went looking for the assistant's final answer in one and couldn't find it: buried under three collapsed layers, split into pieces.</p>
+      <p class="pull">The question asked and the answer given had to be recorded deliberately, as their own thing.</p>
+      <figure>
+        <svg viewBox="0 0 580 262" role="img" aria-label="The recording of one request. The inner steps are captured automatically. The outer wrapper holding the question and the answer, and the identity and allowed-or-refused note on the lookup, are the parts I added.">
+          <rect x="12" y="14" width="556" height="216" rx="12" fill="var(--violet-soft)" stroke="var(--violet)" stroke-width="1.5"/>
+          <text x="30" y="44" font-size="12.5" fill="var(--violet)">The whole request &mdash; the question asked, the answer given</text>
+
+          <rect x="30" y="62" width="520" height="42" rx="8" fill="var(--surface)" stroke="currentColor" stroke-width="1.3" opacity=".55"/>
+          <text x="48" y="88" font-size="12" fill="var(--ink)">the assistant decides what to do</text>
+          <text x="534" y="88" text-anchor="end" font-size="10.5" fill="var(--muted)">2.4s</text>
+
+          <rect x="30" y="114" width="520" height="48" rx="8" fill="var(--surface)" stroke="currentColor" stroke-width="1.3" opacity=".55"/>
+          <text x="48" y="144" font-size="12" fill="var(--ink)">it looks up the order</text>
+          <rect x="286" y="124" width="252" height="30" rx="7" fill="var(--teal-soft)" stroke="var(--teal)" stroke-width="1.4"/>
+          <text x="412" y="144" text-anchor="middle" font-size="10.5" fill="var(--teal)">who asked &middot; allowed or refused</text>
+
+          <rect x="30" y="172" width="520" height="42" rx="8" fill="var(--surface)" stroke="currentColor" stroke-width="1.3" opacity=".55"/>
+          <text x="48" y="198" font-size="12" fill="var(--ink)">the assistant writes the answer</text>
+          <text x="534" y="198" text-anchor="end" font-size="10.5" fill="var(--muted)">3.8s</text>
+
+          <text x="12" y="252" font-size="10.5" fill="var(--muted)">grey: captured automatically</text>
+          <text x="568" y="252" text-anchor="end" font-size="10.5" fill="var(--violet)">purple and green: the parts I added</text>
+        </svg>
+        <figcaption>The grey rows come free but record what the software thinks is important. The coloured pieces are what make a pile of recordings answerable later: one readable question-and-answer per request, and who was refused on which lookup. Note the timings &mdash; the database lookup was instant; nearly all the waiting is the assistant thinking.</figcaption>
+      </figure>
+      <p>Which was the other surprise: the recording also keeps the assistant's private reasoning, the part the customer never sees. Useful for understanding a decision, and a real privacy question, because it can contain more than the reply does. There's a switch to turn content capture off, and now I know what it's for.</p>
+    </div>
+
+    <div class="lesson">
+      <span class="kicker">On comparing anything</span>
+      <h3>Stamp every recording with a version of the instructions</h3>
+      <p>The assistant's behaviour depends on the wording it was given, and that wording changes. So every recording carries a short code identifying the exact version in force at the time. I tested it properly: same question, same customer, same data, only the instructions different.</p>
+      <div class="beforeafter">
+        <div class="b">
+          <span class="label">Original wording &middot; d919fdad59ca</span>
+          <p class="said">"You're still within the 30-day return window per Cartwheel's return policy."</p>
+        </div>
+        <div class="a">
+          <span class="label">After my edit &middot; 7554069158a9</span>
+          <p class="said">"You're still within the 30-day return window (per policy cw-returns)."</p>
+        </div>
+      </div>
+      <p>Without those codes, a month of recordings is one undifferentiated pile and every comparison inside it is meaningless.</p>
+    </div>
+
+    <div class="lesson l-coral">
+      <span class="kicker">The thing I nearly overclaimed</span>
+      <h3>Proving the plumbing works isn't proving the change helped</h3>
+      <p>Those two answers are, for practical purposes, identical. It would be easy to write that up as "the edit made no difference" &mdash; and that would be wrong in the other direction.</p>
+      <p>Two reasons it proves nothing either way. The question I used doesn't exercise what the edit was about. And it's one run against one run: the assistant words things differently every time, so a difference this small is indistinguishable from it simply having a different morning.</p>
+      <p>What this did establish is narrower and worth having: <b>the labelling works.</b> Measuring whether a change is an improvement takes many runs and a comparison of rates &mdash; which is, conveniently, what comes next in the course.</p>
+    </div>
+
+    <div class="lesson l-blue">
+      <span class="kicker">Small things, learned the hard way</span>
+      <h3>Four practical truths</h3>
+      <p><b>Restart after editing instructions.</b> The wording is read once when the program starts. Edit the file on a running program and it carries on with the old version, cheerfully, with no error to warn you.</p>
+      <p><b>Two things called "session" aren't the same thing.</b> Who you are lives in memory and vanishes on restart. What was said lives on disk and survives. Once I saw that, a confusing error message became obvious.</p>
+      <p><b>Expect port collisions.</b> The recording tools wanted two ports my work setup already had. One line each to move &mdash; but only after working out which number was mine to change and which belonged to the software.</p>
+      <p><b>A "not found" in a log isn't a fault.</b> Mine was a browser poking at the server looking for something that was never there.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p><b>Where it ended up.</b> A front door with identity checks, a recording of every request, eight tests covering the parts that are genuinely enforced, seven conversations across all three kinds of user, and a controlled comparison of two versions of the instructions.</p>
+    <p><b>Still open:</b> choosing the two recordings to write up, and the walkthrough video.</p>
+  </footer>
+
+</div>

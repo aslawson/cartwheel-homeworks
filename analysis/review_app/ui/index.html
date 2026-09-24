@@ -1,0 +1,705 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Cartwheel review</title>
+<style>
+  :root {
+    --ground:#f6f7fb; --surface:#fff; --ink:#1a1b2e; --muted:#5e607a; --line:#e0e2ef;
+    --user:#2d6fd6; --assistant:#5b4bd6; --tool:#0e9384; --result:#0b7285;
+    --flag:#db4a4a; --flag-soft:#fdeaea; --note:#c57c00; --note-soft:#fbf0d9;
+    --sugg:#7a5af5; --ok:#0e9384;
+    --body:"Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --data:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:#12131f; --surface:#1c1e2d; --ink:#eaebf6; --muted:#9ea1bd; --line:#2c2f44;
+      --user:#7badff; --assistant:#a294ff; --tool:#45c9b6; --result:#4fd1c5;
+      --flag:#ff8a8a; --flag-soft:#37191c; --note:#f0b14a; --note-soft:#352814; --sugg:#b9a5ff;
+    }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--ground); color:var(--ink); font-family:var(--body); font-size:15px; line-height:1.55; }
+  button { font:inherit; cursor:pointer; }
+
+  /* ---------- top bar ---------- */
+  .top { position:sticky; top:0; z-index:20; background:var(--surface); border-bottom:1px solid var(--line);
+         display:flex; gap:14px; align-items:center; padding:9px 16px; flex-wrap:wrap; }
+  .top h1 { font-size:0.95rem; margin:0 10px 0 0; font-weight:700; letter-spacing:-0.01em; }
+  .views button { border:1px solid var(--line); background:transparent; color:var(--muted);
+                  padding:5px 12px; border-radius:99px; margin-right:6px; }
+  .views button.active { background:var(--ink); color:var(--ground); border-color:var(--ink); }
+  .counter { font-family:var(--data); font-size:0.78rem; color:var(--muted); margin-left:auto; }
+  .nav { display:flex; gap:6px; align-items:center; }
+  .nav button { border:1px solid var(--line); background:transparent; color:var(--ink); border-radius:8px; padding:4px 10px; }
+
+  /* ---------- filters ---------- */
+  .filters { display:flex; gap:8px; align-items:center; flex-wrap:wrap; padding:8px 16px;
+             border-bottom:1px solid var(--line); background:var(--surface); font-size:0.82rem; }
+  .filters select, .filters input { font:inherit; font-size:0.82rem; padding:3px 6px; border:1px solid var(--line);
+             border-radius:7px; background:var(--ground); color:var(--ink); }
+  .filters .clear { border:none; background:none; color:var(--muted); text-decoration:underline; }
+
+  .wrap { max-width:1180px; margin:0 auto; padding:18px 16px 80px; }
+  .view { display:none; } .view.active { display:block; }
+
+  /* ---------- conversation header ---------- */
+  .chead { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin-bottom:16px; }
+  .chead .idline { display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; }
+  .chead h2 { font-size:1.05rem; margin:0; font-family:var(--data); }
+  .chead a { color:var(--muted); font-size:0.78rem; }
+  .chips { display:flex; gap:6px; flex-wrap:wrap; margin-top:9px; }
+  .chip { font-size:0.74rem; font-family:var(--data); padding:2px 8px; border-radius:99px;
+          border:1px solid var(--line); color:var(--muted); background:var(--ground); cursor:pointer; }
+  .chip:hover { border-color:var(--ink); color:var(--ink); }
+  .chip.k { color:var(--ink); }
+  .chip.flag { color:var(--flag); border-color:var(--flag); background:var(--flag-soft); cursor:default; }
+  .chip.dq { color:var(--note); border-color:var(--note); background:var(--note-soft); }
+  .expected { margin-top:11px; border-top:1px dashed var(--line); padding-top:9px; }
+  .expected summary { cursor:pointer; font-size:0.8rem; color:var(--muted); }
+  .expected .body { font-size:0.86rem; margin-top:7px; }
+  .expected code { font-family:var(--data); font-size:0.82rem; }
+
+  /* ---------- conversation body + margin ---------- */
+  .cols { display:flex; gap:18px; align-items:flex-start; }
+  .body { flex:1; min-width:0; max-width:760px; display:flex; flex-direction:column; gap:22px; }
+  .margin { position:relative; width:250px; flex:0 0 250px; }
+
+  .turn { display:flex; flex-direction:column; gap:9px; }
+  .turnsep { font-family:var(--data); font-size:0.7rem; color:var(--muted); letter-spacing:0.08em;
+             text-transform:uppercase; border-top:1px solid var(--line); padding-top:14px; }
+  .msg { border-radius:10px; padding:10px 13px; background:var(--surface); border:1px solid var(--line);
+         border-left:3px solid var(--line); }
+  .msg .role { font-family:var(--data); font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase;
+               color:var(--muted); margin-bottom:5px; }
+  .msg.user { border-left-color:var(--user); } .msg.user .role { color:var(--user); }
+  .msg.reply { border-left-color:var(--assistant); border-width:1px 1px 1px 3px; }
+  .msg.reply .role { color:var(--assistant); }
+  .msg.reply .text { font-size:1rem; }
+  .msg.narration { border-left-color:var(--assistant); background:transparent; border-style:dashed; }
+  .msg.narration .text { font-style:italic; color:var(--muted); }
+  .msg .text { white-space:pre-wrap; }
+  .thinking { font-family:var(--data); font-size:0.72rem; color:var(--muted); opacity:0.6; padding-left:13px; }
+
+  .step { border:1px solid var(--line); border-left:3px solid var(--tool); border-radius:10px; background:var(--surface); }
+  .step .callline { display:flex; gap:8px; align-items:baseline; padding:9px 13px 4px; }
+  .step .fn { font-family:var(--data); font-weight:600; color:var(--tool); }
+  .step .args { font-family:var(--data); font-size:0.8rem; color:var(--muted); overflow-wrap:anywhere; }
+  .step .res { margin:4px 13px 11px; border-top:1px dashed var(--line); padding-top:7px; }
+  .step .res .label { font-family:var(--data); font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--result); }
+  .step pre { font-family:var(--data); font-size:0.79rem; margin:4px 0 0; white-space:pre-wrap; overflow-wrap:anywhere; }
+  .step.bad { border-left-color:var(--flag); } .step.bad .fn { color:var(--flag); }
+  details.long > summary { cursor:pointer; font-size:0.79rem; color:var(--muted); font-family:var(--data); }
+
+  .annotatable ::selection, .annotatable::selection { background:var(--note-soft); }
+  .hl { background:var(--note-soft); border-bottom:2px solid var(--note); border-radius:2px; }
+  .hl.sugg { background:transparent; border-bottom:2px dashed var(--sugg); }
+  .hl.active { outline:2px solid var(--note); outline-offset:1px; }
+  .pending-highlight { background:var(--note-soft); outline:2px solid var(--note); border-radius:2px; }
+
+  .note { position:absolute; width:250px; background:var(--surface); border:1px solid var(--line);
+          border-left:3px solid var(--note); border-radius:9px; padding:8px 10px; font-size:0.83rem; }
+  .note.sugg { border-left-color:var(--sugg); }
+  .note.active { border-color:var(--note); box-shadow:0 0 0 2px var(--note-soft); }
+  .note .quote { font-size:0.75rem; color:var(--muted); font-style:italic; margin-bottom:4px;
+                 display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .note .tag { font-family:var(--data); font-size:0.64rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--sugg); }
+  .note .acts { display:flex; gap:6px; margin-top:6px; }
+  .note .acts button { border:1px solid var(--line); background:var(--ground); color:var(--muted);
+                       border-radius:6px; padding:2px 8px; font-size:0.75rem; }
+  .note:hover .acts button, .note.sugg .acts button { color:var(--ink); }
+  .note .acts .accept { color:var(--ok); border-color:var(--ok); }
+
+  #popover { position:absolute; display:none; z-index:40; background:var(--surface); border:1px solid var(--note);
+             border-radius:10px; padding:8px; width:330px; box-shadow:0 8px 24px rgba(0,0,0,.18); }
+  #popover input { width:100%; font:inherit; font-size:0.86rem; padding:6px 8px; border:1px solid var(--line);
+                   border-radius:7px; background:var(--ground); color:var(--ink); }
+  #popover .hint { font-size:0.72rem; color:var(--muted); margin-top:5px; }
+
+  /* ---------- other views ---------- */
+  table { width:100%; border-collapse:collapse; font-size:0.86rem; }
+  th, td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); }
+  th { font-family:var(--data); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted); }
+  td.id { font-family:var(--data); font-size:0.8rem; }
+  .lab { display:inline-flex; gap:4px; }
+  .lab button { border:1px solid var(--line); background:var(--ground); color:var(--muted); border-radius:6px; padding:1px 8px; font-size:0.78rem; }
+  .lab button.on-fail { background:var(--flag-soft); color:var(--flag); border-color:var(--flag); }
+  .lab button.on-pass { background:var(--ground); color:var(--ok); border-color:var(--ok); }
+  button.restpass { border:1px solid var(--line); background:var(--ground); color:var(--muted);
+                    border-radius:6px; padding:1px 8px; font-size:0.78rem; white-space:nowrap; }
+  button.restpass:hover { color:var(--ink); border-color:var(--ink); }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin-bottom:14px; }
+  .card h3 { margin:0 0 6px; font-size:1rem; }
+  .bar { height:10px; border-radius:6px; background:var(--note); }
+  .muted { color:var(--muted); }
+  .mono { font-family:var(--data); font-size:0.82rem; }
+  #map { width:100%; height:560px; }
+  #toast { position:fixed; right:16px; bottom:16px; background:var(--ink); color:var(--ground);
+           padding:8px 14px; border-radius:9px; font-size:0.84rem; display:none; z-index:50; }
+</style>
+
+<div class="top">
+  <h1>Cartwheel review</h1>
+  <span class="views">
+    <button data-view="review" class="active">Conversation</button>
+    <button data-view="map">Map</button>
+    <button data-view="progress">Progress</button>
+    <button data-view="label">Labeling</button>
+  </span>
+  <span class="nav">
+    <button id="prev">&larr;</button>
+    <span id="pos" class="mono"></span>
+    <button id="next">&rarr;</button>
+    <button id="nextgroup" title="next conversation matching the current filters">next in group</button>
+  </span>
+  <span class="counter" id="counter"></span>
+</div>
+
+<div class="filters" id="filters">
+  <label>show <select id="f-scope"><option value="sample">sample</option><option value="all">all</option><option value="annotated">annotated</option><option value="unannotated">unannotated (in sample)</option></select></label>
+  <label>role <select id="f-role"></select></label>
+  <label>intent <select id="f-intent"></select></label>
+  <label>difficulty <select id="f-difficulty"></select></label>
+  <label>group <select id="f-group"></select></label>
+  <label>flags <select id="f-flag"><option value="">any</option><option value="yes">flagged</option><option value="no">unflagged</option></select></label>
+  <label><input type="checkbox" id="f-expected"> show expected result</label>
+  <input id="f-goto" placeholder="go to id, e.g. support-0017" size="22" list="convo-ids">
+  <datalist id="convo-ids"></datalist>
+  <button class="clear" id="f-clear">clear</button>
+  <span class="muted" id="f-count"></span>
+</div>
+
+<div class="wrap">
+  <div id="view-review" class="view active">
+    <div class="chead" id="chead"></div>
+    <div class="cols">
+      <div class="body annotatable" id="cbody"></div>
+      <div class="margin" id="cmargin"></div>
+    </div>
+  </div>
+
+  <div id="view-map" class="view">
+    <div class="card"><h3>Trace map</h3>
+      <p class="muted">Clusters from the structural features. Larger nodes are in the current sample; orange nodes have annotations. Click a node to open it.</p>
+      <canvas id="map"></canvas>
+    </div>
+  </div>
+
+  <div id="view-progress" class="view">
+    <div class="card" id="progress-summary"></div>
+    <div class="card"><h3>Taxonomy so far</h3><div id="patterns"></div></div>
+    <div class="card"><h3>Agent suggestions awaiting your decision</h3><div id="suggqueue"></div></div>
+  </div>
+
+  <div id="view-label" class="view">
+    <div class="card" id="label-summary"></div>
+    <div class="card" style="overflow:auto"><div id="labeltable"></div></div>
+  </div>
+</div>
+
+<div id="popover"><input id="note-input" placeholder="what went wrong? (Enter to save, Esc to cancel)"><div class="hint">first failure only, in your own words &mdash; no categories yet</div></div>
+<div id="toast"></div>
+
+<script>
+/* ------------------------------------------------------------------ state */
+const api = {
+  get: (p) => fetch(p).then(r => r.json()),
+  post: (p, b) => fetch(p, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(b)}).then(r => r.json()),
+};
+const S = {
+  convos: [], byId: {}, samples: [], annotations: [], suggestions: [], patterns: {}, labels: {}, graph: {nodes:[]},
+  filtered: [], cur: 0, view: 'review', pending: null, showExpected: false,
+};
+const el = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const j = (v) => typeof v === 'string' ? v : JSON.stringify(v, null, 1);
+
+function toast(msg) { const t = el('toast'); t.textContent = msg; t.style.display='block'; clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none', 2600); }
+
+/* ------------------------------------------------------------ load + save */
+async function loadAll() {
+  const [convos, samples, annotations, suggestions, patterns, labels, graph] = await Promise.all([
+    api.get('/api/conversations'), api.get('/api/samples'), api.get('/api/annotations'),
+    api.get('/api/suggestions'), api.get('/api/patterns'), api.get('/api/labels'), api.get('/api/graph'),
+  ]);
+  S.convos = convos; S.byId = Object.fromEntries(convos.map(c => [c.id, c]));
+  // The committed state files wrap their lists ({"annotations": [...]},
+  // {"modes": [...]}); accept either that or a plain list.
+  const list = (v, key) => Array.isArray(v) ? v : (Array.isArray(v?.[key]) ? v[key] : []);
+  S.samples = list(samples, 'samples');
+  S.annotations = list(annotations, 'annotations');
+  S.suggestions = list(suggestions, 'suggestions');
+  S.patterns = Object.fromEntries(list(patterns, 'modes').map(m => [m.name, m]));
+  S.labels = labels || {}; S.graph = graph || {nodes:[]};
+  el('convo-ids').innerHTML = S.convos.map(c => `<option value="${c.id}">`).join('');
+  buildFilterOptions(); applyFilters(); renderAll();
+  if (location.hash.length > 1) gotoId(location.hash.slice(1));
+}
+async function saveAnnotations() {
+  try { localStorage.setItem('cartwheel-annotations', JSON.stringify(S.annotations)); } catch (e) {}
+  await api.post('/api/annotations', S.annotations);
+}
+
+/* --------------------------------------------------------------- filtering */
+function sampleIds() { return new Set(S.samples.map(s => s.trace_id || s.id)); }
+function annotatedIds() { return new Set(S.annotations.map(a => a.trace_id)); }
+
+function buildFilterOptions() {
+  const opts = (key, get) => {
+    const sel = el('f-' + key); const seen = [...new Set(S.convos.map(get).filter(Boolean))].sort();
+    sel.innerHTML = '<option value="">any</option>' + seen.map(v => `<option>${esc(v)}</option>`).join('');
+  };
+  opts('role', c => c.meta.role); opts('intent', c => c.case.intent);
+  opts('difficulty', c => c.case.difficulty); opts('group', c => c.case.group);
+}
+
+function applyFilters() {
+  const scope = el('f-scope').value, role = el('f-role').value, intent = el('f-intent').value;
+  const diff = el('f-difficulty').value, group = el('f-group').value, flag = el('f-flag').value;
+  const inSample = sampleIds(), annotated = annotatedIds();
+  S.filtered = S.convos.filter(c => {
+    if (scope === 'sample' && inSample.size && !inSample.has(c.id)) return false;
+    if (scope === 'annotated' && !annotated.has(c.id)) return false;
+    if (scope === 'unannotated' && (annotated.has(c.id) || (inSample.size && !inSample.has(c.id)))) return false;
+    if (role && c.meta.role !== role) return false;
+    if (intent && c.case.intent !== intent) return false;
+    if (diff && c.case.difficulty !== diff) return false;
+    if (group && c.case.group !== group) return false;
+    if (flag === 'yes' && !c.flags.length) return false;
+    if (flag === 'no' && c.flags.length) return false;
+    return true;
+  });
+  if (!S.filtered.length) S.filtered = S.convos.slice();
+  if (S.cur >= S.filtered.length) S.cur = 0;
+  el('f-count').textContent = `${S.filtered.length} conversations match`;
+}
+
+function current() { return S.filtered[S.cur]; }
+
+/* Jump straight to one conversation by id. If it is outside the current
+   filters, widen the scope rather than silently doing nothing. */
+function gotoId(raw) {
+  const id = String(raw || '').trim();
+  if (!id) return false;
+  const match = S.byId[id] ? id : Object.keys(S.byId).find(k => k.endsWith(id) || k.includes(id));
+  if (!match) { toast(`no conversation matching "${id}"`); return false; }
+  let i = S.filtered.findIndex(c => c.id === match);
+  if (i < 0) {
+    el('f-scope').value = 'all'; applyFilters();
+    i = S.filtered.findIndex(c => c.id === match);
+  }
+  if (i < 0) { toast(`${match} is not in the current view`); return false; }
+  S.cur = i; switchView('review'); renderAll();
+  history.replaceState(null, '', '#' + match);
+  window.scrollTo(0, 0);
+  return true;
+}
+
+/* ------------------------------------------------------------ render trace */
+function renderAll() { renderHeader(); renderBody(); renderProgress(); renderLabeling(); renderMap(); renderCounter(); }
+
+function renderCounter() {
+  const annotated = annotatedIds();
+  const reviewed = S.convos.filter(c => annotated.has(c.id)).length;
+  el('counter').textContent = `${reviewed} reviewed · ${S.annotations.length} notes · ${Object.keys(S.patterns).length} modes`;
+  el('pos').textContent = S.filtered.length ? `${S.cur + 1}/${S.filtered.length}` : '0/0';
+}
+
+function chip(label, value, key) {
+  if (!value) return '';
+  return `<span class="chip ${key ? 'k' : ''}" data-filter="${esc(key||'')}" data-value="${esc(value)}">${esc(label)}: ${esc(value)}</span>`;
+}
+
+function renderHeader() {
+  const c = current(); const h = el('chead');
+  if (!c) { h.innerHTML = '<p class="muted">No conversations loaded. Run analysis/review_app/load.py.</p>'; return; }
+  const f = c.features;
+  let html = `<div class="idline"><h2>${esc(c.id)}</h2>`;
+  if (c.permalink) html += `<a href="${esc(c.permalink)}" target="_blank">open in Langfuse &nearr;</a>`;
+  html += `<span class="muted mono" style="margin-left:auto">${f.turn_count} turn(s) · ${f.tool_call_count} tool calls</span></div>`;
+  html += '<div class="chips">'
+    + chip('role', c.meta.role, 'role') + chip('intent', c.case.intent, 'intent')
+    + chip('difficulty', c.case.difficulty, 'difficulty') + chip('group', c.case.group, 'group')
+    + chip('policy', c.case.policy) + chip('record', c.case.record_state) + chip('style', c.case.style)
+    + (c.case.data_quality_case ? `<span class="chip dq">damaged record: ${esc(c.case.data_quality_case)}</span>` : '')
+    + c.flags.map(fl => `<span class="chip flag">${esc(fl)}</span>`).join('')
+    + '</div>';
+  if (c.expected) {
+    const e = c.expected;
+    const text = e.evaluation === 'objective'
+      ? `<b>${esc(e.outcome)}</b><br>${esc(e.reason)}`
+      : `<b>judged</b><br>${esc(e.criterion)}`;
+    html += `<details class="expected" ${S.showExpected ? 'open' : ''}><summary>expected result (from the HW3 answer key)</summary>`
+      + `<div class="body">${text}<div class="muted mono" style="margin-top:5px">source: ${esc(e.source?.type)} · ${esc(e.source?.reference)}</div></div></details>`;
+  }
+  h.innerHTML = html;
+  h.querySelectorAll('.chip[data-filter]').forEach(node => node.addEventListener('click', () => {
+    const key = node.dataset.filter; if (!key) return;
+    el('f-' + key).value = node.dataset.value; applyFilters(); S.cur = 0; renderAll();
+  }));
+}
+
+function renderStep(step, idx) {
+  if (step.kind === 'thinking') return `<div class="thinking">[thinking block — not readable in the trace]</div>`;
+  if (step.kind === 'narration')
+    return `<div class="msg narration"><div class="role">agent, before a tool call</div>`
+      + `<div class="text annot" data-idx="${idx}">${esc(step.text)}</div></div>`;
+  const res = step.result;
+  const bad = res && typeof res === 'object' && (res.ok === false || res.error);
+  const resText = j(res);
+  const long = resText.length > 420;
+  return `<div class="step ${bad ? 'bad' : ''}">
+    <div class="callline"><span class="fn">${esc(step.name || 'tool')}()</span>
+      <span class="args">${esc(j(step.arguments))}</span></div>
+    <div class="res"><div class="label">result${bad ? ' · not ok' : ''}</div>
+      ${long
+        ? `<details class="long"><summary>${resText.length} chars</summary><pre class="annot" data-idx="${idx}">${esc(resText)}</pre></details>`
+        : `<pre class="annot" data-idx="${idx}">${esc(resText)}</pre>`}
+    </div></div>`;
+}
+
+function renderBody() {
+  const c = current(); const body = el('cbody');
+  if (!c) { body.innerHTML = ''; el('cmargin').innerHTML = ''; return; }
+  let idx = 0; const html = [];
+  c.turns.forEach((t, i) => {
+    const parts = [];
+    if (c.turns.length > 1) parts.push(`<div class="turnsep">turn ${i + 1} of ${c.turns.length}</div>`);
+    parts.push(`<div class="msg user"><div class="role">user</div><div class="text annot" data-idx="${idx++}">${esc(t.user)}</div></div>`);
+    t.steps.forEach(s => { parts.push(renderStep(s, idx)); if (s.kind !== 'thinking') idx++; });
+    parts.push(`<div class="msg reply"><div class="role">agent reply to the user</div><div class="text annot" data-idx="${idx++}">${esc(t.reply)}</div></div>`);
+    html.push(`<div class="turn">${parts.join('')}</div>`);
+  });
+  body.innerHTML = html.join('');
+  applyHighlights(); layoutNotes();
+}
+
+/* ------------------------------------------------- annotation highlighting */
+function itemsForCurrent() {
+  const c = current(); if (!c) return [];
+  return [
+    ...S.annotations.filter(a => a.trace_id === c.id).map(a => ({...a, kind:'human'})),
+    ...S.suggestions.filter(s => s.trace_id === c.id).map(s => ({...s, kind:'sugg'})),
+  ];
+}
+
+function applyHighlights() {
+  itemsForCurrent().forEach(item => {
+    const block = document.querySelector(`.annot[data-idx="${item.idx}"]`);
+    if (!block) return;
+    const text = block.textContent;
+    const at = typeof item.start === 'number' && text.slice(item.start, item.end) === item.quote
+      ? item.start : text.indexOf(item.quote || '');
+    if (at < 0 || !item.quote) return;
+    const before = text.slice(0, at), mid = text.slice(at, at + item.quote.length), after = text.slice(at + item.quote.length);
+    if (block.dataset.wrapped === '1') return;  // one highlight per block keeps offsets honest
+    block.dataset.wrapped = '1';
+    block.innerHTML = `${esc(before)}<span class="hl ${item.kind === 'sugg' ? 'sugg' : ''}" data-item="${esc(item.id)}">${esc(mid)}</span>${esc(after)}`;
+  });
+}
+
+function layoutNotes() {
+  const margin = el('cmargin'); const items = itemsForCurrent();
+  margin.innerHTML = '';
+  const mrect = margin.getBoundingClientRect();
+  let lastBottom = 0;
+  items.forEach(item => {
+    const mark = document.querySelector(`.hl[data-item="${CSS.escape(String(item.id))}"]`)
+      || document.querySelector(`.annot[data-idx="${item.idx}"]`);
+    const node = document.createElement('div');
+    node.className = 'note' + (item.kind === 'sugg' ? ' sugg' : '');
+    node.dataset.item = item.id;
+    node.innerHTML = (item.kind === 'sugg' ? `<div class="tag">agent suggestion${item.mode ? ' · ' + esc(item.mode) : ''}</div>` : '')
+      + (item.quote ? `<div class="quote">&ldquo;${esc(item.quote)}&rdquo;</div>` : '')
+      + `<div>${esc(item.note || item.reason || '')}</div>`
+      + `<div class="acts">${item.kind === 'sugg'
+          ? `<button class="accept" data-accept="${esc(item.id)}">accept</button><button data-dismiss="${esc(item.id)}">dismiss</button>`
+          : `<button data-del="${esc(item.id)}">delete</button>`}</div>`;
+    margin.appendChild(node);
+    const top = mark ? Math.max(mark.getBoundingClientRect().top - mrect.top, lastBottom) : lastBottom;
+    node.style.top = top + 'px';
+    lastBottom = top + node.offsetHeight + 8;
+    node.addEventListener('mouseenter', () => { node.classList.add('active'); mark?.classList?.add('active'); });
+    node.addEventListener('mouseleave', () => { node.classList.remove('active'); mark?.classList?.remove('active'); });
+  });
+  margin.style.height = Math.max(lastBottom, 10) + 'px';
+  margin.querySelectorAll('[data-del]').forEach(b => b.onclick = () => deleteAnnotation(b.dataset.del));
+  margin.querySelectorAll('[data-accept]').forEach(b => b.onclick = () => acceptSuggestion(b.dataset.accept));
+  margin.querySelectorAll('[data-dismiss]').forEach(b => b.onclick = () => dismissSuggestion(b.dataset.dismiss));
+  document.querySelectorAll('.hl').forEach(h => {
+    h.addEventListener('mouseenter', () => { h.classList.add('active'); margin.querySelector(`.note[data-item="${CSS.escape(h.dataset.item)}"]`)?.classList.add('active'); });
+    h.addEventListener('mouseleave', () => { h.classList.remove('active'); margin.querySelector(`.note[data-item="${CSS.escape(h.dataset.item)}"]`)?.classList.remove('active'); });
+  });
+}
+
+/* --------------------------------------------------------- annotating text */
+el('cbody').addEventListener('mouseup', () => {
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed) return;
+  const block = sel.anchorNode?.parentElement?.closest('.annot');
+  if (!block) return;
+  const quote = sel.toString().trim();
+  if (!quote) return;
+  const start = block.textContent.indexOf(quote);
+  // Focusing the input clears the native selection, so mark the span first.
+  const range = sel.getRangeAt(0);
+  const mark = document.createElement('span');
+  mark.className = 'pending-highlight';
+  try { range.surroundContents(mark); } catch (e) { /* selection spans elements */ }
+  S.pending = { idx: +block.dataset.idx, quote, start, end: start + quote.length, mark };
+  const rect = (mark.getBoundingClientRect?.() || range.getBoundingClientRect());
+  const pop = el('popover');
+  pop.style.display = 'block';
+  pop.style.top = (window.scrollY + rect.bottom + 8) + 'px';
+  pop.style.left = (window.scrollX + rect.left) + 'px';
+  el('note-input').value = ''; el('note-input').focus();
+});
+
+function clearPending() {
+  el('popover').style.display = 'none';
+  const mark = S.pending?.mark;
+  if (mark && mark.parentNode) { mark.replaceWith(...mark.childNodes); }
+  S.pending = null;
+}
+
+el('note-input').addEventListener('keydown', async (e) => {
+  if (e.key === 'Escape') { clearPending(); renderBody(); return; }
+  if (e.key !== 'Enter') return;
+  const note = el('note-input').value.trim();
+  if (!note || !S.pending) return;
+  const c = current();
+  S.annotations.push({
+    id: 'a' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    trace_id: c.id, session_id: c.session_id, idx: S.pending.idx,
+    quote: S.pending.quote, start: S.pending.start, end: S.pending.end,
+    note, ts: new Date().toISOString(),
+  });
+  clearPending(); await saveAnnotations(); renderBody(); renderCounter(); renderLabeling();
+});
+
+async function deleteAnnotation(id) {
+  S.annotations = S.annotations.filter(a => a.id !== id);
+  await saveAnnotations(); renderBody(); renderCounter();
+}
+/* Both decisions KEEP the suggestion, with its outcome. The handout requires the
+   saved state to contain at least one rejected suggestion, and an accepted one
+   has to stay traceable back to the search that proposed it. */
+async function decideSuggestion(id, decision) {
+  const s = S.suggestions.find(x => String(x.id) === String(id));
+  if (!s) return;
+  s.status = decision;                      // 'accepted' | 'rejected'
+  s.decided_ts = new Date().toISOString();
+  s.decided_by = 'human';
+  if (decision === 'accepted') {
+    const note = prompt('Your note for this trace (it becomes your annotation):',
+                        s.note || s.reason || '');
+    if (note === null) { s.status = 'pending'; return; }   // cancelled
+    const annotation = {
+      id: 'a' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5),
+      trace_id: s.trace_id, idx: s.idx, quote: s.quote, start: s.start, end: s.end,
+      note, source: 'accepted_suggestion', suggestion_id: s.id, mode: s.mode,
+      ts: new Date().toISOString(),
+    };
+    S.annotations.push(annotation);
+    s.annotation_id = annotation.id;
+    await saveAnnotations();
+  }
+  await api.post('/api/suggestions', S.suggestions);
+  renderBody(); renderProgress(); renderCounter(); renderLabeling();
+  toast(decision === 'accepted' ? 'accepted and saved as your annotation'
+                                : 'rejected (kept in the record)');
+}
+const acceptSuggestion = (id) => decideSuggestion(id, 'accepted');
+const dismissSuggestion = (id) => decideSuggestion(id, 'rejected');
+
+/* -------------------------------------------------------------- other views */
+function renderProgress() {
+  const annotated = annotatedIds();
+  const inSample = sampleIds();
+  const reviewed = S.convos.filter(c => annotated.has(c.id));
+  const pending = S.convos.filter(c => inSample.has(c.id) && !annotated.has(c.id));
+  const noFailure = S.annotations.filter(a => /no failure/i.test(a.note || '')).length;
+  el('progress-summary').innerHTML = `<h3>Progress</h3>
+    <p><b>${reviewed.length}</b> conversations reviewed (the handout asks for at least 100) ·
+       <b>${S.annotations.length}</b> notes · <b>${noFailure}</b> marked &ldquo;no failure observed&rdquo; ·
+       <b>${pending.length}</b> left in the current sample.</p>
+    <p class="muted mono">by role: ${['shopper','merchant','support'].map(r =>
+        `${r} ${reviewed.filter(c => c.meta.role === r).length}`).join(' · ')}
+       &nbsp;|&nbsp; by group: ${['coverage','challenge'].map(g =>
+        `${g} ${reviewed.filter(c => c.case.group === g).length}`).join(' · ')}</p>`;
+
+  const modes = Object.entries(S.patterns);
+  el('patterns').innerHTML = modes.length ? modes.map(([name, m]) => {
+    const notes = (m.created_from || []).length;
+    const pos = (m.positive_traces || []).length, neg = (m.close_negatives || []).length;
+    return `<div style="margin-bottom:12px">
+      <div><b class="mono">${esc(name)}</b> <span class="muted">· ${notes} note(s) · ${pos} positive · ${neg} close negative</span></div>
+      <div>${esc(m.definition || '')}</div>
+      <div class="bar" style="width:${Math.min(100, notes * 8)}%"></div></div>`;
+  }).join('') : '<p class="muted">No modes yet. Grouping starts once you have notes.</p>';
+
+  const openSuggestions = S.suggestions.filter(s => (s.status || 'pending') === 'pending');
+  const decided = S.suggestions.filter(s => (s.status || 'pending') !== 'pending');
+  el('suggqueue').innerHTML = (openSuggestions.length ? openSuggestions.map(s => `<div style="margin-bottom:11px">
+      <a href="#${esc(s.trace_id)}" class="mono">${esc(s.trace_id)}</a>
+      <span class="muted">· ${esc(s.mode || '')}</span>
+      <div>${esc(s.note || s.reason || '')}</div>
+      ${s.quote ? `<div class="muted" style="font-style:italic">&ldquo;${esc(String(s.quote).slice(0,160))}&rdquo;</div>` : ''}
+      <div class="acts" style="margin-top:5px"><button class="accept" onclick="acceptSuggestion('${esc(s.id)}')">accept</button>
+      <button onclick="dismissSuggestion('${esc(s.id)}')">reject</button></div></div>`).join('')
+    : '<p class="muted">No pending suggestions.</p>')
+    + (decided.length ? '<div class="section-title" style="margin-top:14px">decided</div>' + decided.map(s =>
+        `<div class="muted mono" style="font-size:0.8rem">${esc(s.status)} · ${esc(s.trace_id)} · ${esc(s.mode || '')}</div>`).join('') : '');
+}
+
+function renderLabeling() {
+  const modes = Object.keys(S.patterns);
+  const annotated = annotatedIds();
+  const rows = S.convos.filter(c => annotated.has(c.id));
+  const labelFor = (mode, id) => (S.labels[mode] || []).find(l => l.trace_id === id);
+  const missing = rows.length * modes.length - modes.reduce((n, m) => n + rows.filter(c => labelFor(m, c.id)).length, 0);
+  el('label-summary').innerHTML = `<h3>Structured labeling</h3>
+    <p>${rows.length} reviewed conversations &times; ${modes.length} final mode(s).
+    <b>${missing}</b> decision(s) still missing. Each click writes a Langfuse score and a line in
+    <span class="mono">analysis/state/labels/&lt;mode&gt;.jsonl</span>.</p>`;
+  if (!modes.length || !rows.length) { el('labeltable').innerHTML = '<p class="muted">Labeling opens once the taxonomy has modes and traces are reviewed.</p>'; return; }
+  el('labeltable').innerHTML = `<table><thead><tr><th>conversation</th><th>case</th>${modes.map(m => `<th>${esc(m)}</th>`).join('')}<th>rest</th></tr></thead><tbody>`
+    + rows.map(c => `<tr><td class="id"><a href="#" data-open="${esc(c.id)}">${esc(c.id)}</a></td>
+        <td class="muted">${esc(c.meta.role || '')} · ${esc(c.case.intent || '')}</td>`
+      + modes.map(m => {
+          const l = labelFor(m, c.id);
+          return `<td><span class="lab">
+            <button class="${l && l.label === 1 ? 'on-fail' : ''}" data-mode="${esc(m)}" data-id="${esc(c.id)}" data-v="1">fail</button>
+            <button class="${l && l.label === 0 ? 'on-pass' : ''}" data-mode="${esc(m)}" data-id="${esc(c.id)}" data-v="0">pass</button>
+          </span></td>`;
+        }).join('')
+      + `<td><button class="restpass" data-rest="${esc(c.id)}" title="mark every mode still undecided on this row as pass">rest &rarr; pass</button></td>`
+      + '</tr>').join('')
+    + '</tbody></table>';
+  el('labeltable').querySelectorAll('button[data-mode]').forEach(b => b.onclick = () => saveLabel(b.dataset.id, b.dataset.mode, +b.dataset.v));
+  el('labeltable').querySelectorAll('button[data-rest]').forEach(b => b.onclick = () => restToPass(b.dataset.rest));
+  el('labeltable').querySelectorAll('a[data-open]').forEach(a => a.onclick = (e) => {
+    e.preventDefault(); const i = S.filtered.findIndex(c => c.id === a.dataset.open);
+    if (i >= 0) { S.cur = i; switchView('review'); renderAll(); }
+  });
+}
+
+async function saveLabel(id, mode, value) {
+  const c = S.byId[id];
+  const res = await api.post('/api/labels', {
+    trace_id: id, langfuse_trace_id: c?.trace_ids?.[0], mode, label: value, source: 'human',
+  });
+  S.labels = await api.get('/api/labels');
+  renderLabeling();
+  const saved = res.saved?.[0];
+  toast(saved?.langfuse === 'written' ? 'saved locally and to Langfuse'
+      : `saved locally (Langfuse: ${saved?.langfuse || 'unknown'})`);
+}
+
+/* After reading a conversation, record the modes you did NOT see as absent.
+   Every mode already decided on this row is left untouched. */
+async function restToPass(id) {
+  const modes = Object.keys(S.patterns);
+  const todo = modes.filter(m => !(S.labels[m] || []).some(l => l.trace_id === id));
+  if (!todo.length) { toast('nothing left undecided on that row'); return; }
+  const c = S.byId[id];
+  await api.post('/api/labels', todo.map(m => ({
+    trace_id: id, langfuse_trace_id: c?.trace_ids?.[0], mode: m, label: 0,
+    source: 'human_rest_to_pass', evidence: 'reviewed; this mode was not observed in the conversation',
+  })));
+  S.labels = await api.get('/api/labels');
+  renderLabeling();
+  toast(`${todo.length} mode(s) marked pass on ${id}`);
+}
+
+function renderMap() {
+  const canvas = el('map'); const nodes = S.graph.nodes || [];
+  const dpr = window.devicePixelRatio || 1, w = canvas.clientWidth || 900, h = 560;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  const ctx = canvas.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
+  const style = getComputedStyle(document.body);
+  if (!nodes.length) {
+    ctx.fillStyle = style.getPropertyValue('--muted'); ctx.font = '13px sans-serif';
+    ctx.fillText('No projection yet — run the sampling step to write analysis/state/graph.json.', 18, 28);
+    return;
+  }
+  const xs = nodes.map(n => n.x), ys = nodes.map(n => n.y);
+  const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys);
+  const px = v => 40 + ((v - minX) / (maxX - minX || 1)) * (w - 80);
+  const py = v => 30 + ((v - minY) / (maxY - minY || 1)) * (h - 70);
+  const inSample = sampleIds(), annotated = annotatedIds();
+  const hues = ['#2d6fd6','#0e9384','#c57c00','#7a5af5','#db4a4a','#0b7285','#5b4bd6','#8a6d00'];
+  canvas._pts = [];
+  nodes.forEach(n => {
+    const x = px(n.x), y = py(n.y);
+    const sampled = inSample.has(n.id), done = annotated.has(n.id);
+    ctx.beginPath(); ctx.arc(x, y, sampled ? 6 : 3.4, 0, Math.PI * 2);
+    ctx.fillStyle = done ? '#e8703a' : hues[(n.cluster ?? 0) % hues.length];
+    ctx.globalAlpha = sampled || done ? 1 : 0.45; ctx.fill(); ctx.globalAlpha = 1;
+    if (sampled) { ctx.lineWidth = 1.4; ctx.strokeStyle = style.getPropertyValue('--ink'); ctx.stroke(); }
+    canvas._pts.push({x, y, id: n.id});
+  });
+}
+el('map').addEventListener('click', (e) => {
+  const r = el('map').getBoundingClientRect(); const mx = e.clientX - r.left, my = e.clientY - r.top;
+  const hit = (el('map')._pts || []).find(p => Math.hypot(p.x - mx, p.y - my) < 9);
+  if (!hit) return;
+  const i = S.filtered.findIndex(c => c.id === hit.id);
+  if (i >= 0) { S.cur = i; } else { el('f-scope').value = 'all'; applyFilters(); S.cur = Math.max(0, S.filtered.findIndex(c => c.id === hit.id)); }
+  switchView('review'); renderAll();
+});
+
+/* ----------------------------------------------------------------- wiring */
+function switchView(name) {
+  S.view = name;
+  document.querySelectorAll('.views button').forEach(b => b.classList.toggle('active', b.dataset.view === name));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
+  el('filters').style.display = name === 'review' ? 'flex' : 'none';
+  if (name === 'map') renderMap();
+  if (name === 'review') layoutNotes();
+}
+document.querySelectorAll('.views button').forEach(b => b.onclick = () => switchView(b.dataset.view));
+el('prev').onclick = () => { S.cur = (S.cur - 1 + S.filtered.length) % S.filtered.length; renderAll(); window.scrollTo(0, 0); };
+el('next').onclick = () => { S.cur = (S.cur + 1) % S.filtered.length; renderAll(); window.scrollTo(0, 0); };
+el('nextgroup').onclick = () => {
+  const c = current(); if (!c) return;
+  el('f-intent').value = c.case.intent || ''; el('f-role').value = c.meta.role || '';
+  applyFilters(); S.cur = (S.cur + 1) % S.filtered.length; renderAll(); window.scrollTo(0, 0);
+};
+['f-scope','f-role','f-intent','f-difficulty','f-group','f-flag'].forEach(id =>
+  el(id).addEventListener('change', () => { applyFilters(); S.cur = 0; renderAll(); }));
+el('f-expected').addEventListener('change', (e) => { S.showExpected = e.target.checked; renderHeader(); });
+el('f-goto').addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  if (gotoId(e.target.value)) e.target.value = '';
+});
+window.addEventListener('hashchange', () => gotoId(location.hash.slice(1)));
+el('f-clear').onclick = () => {
+  ['f-role','f-intent','f-difficulty','f-group','f-flag'].forEach(id => el(id).value = '');
+  el('f-scope').value = 'sample'; applyFilters(); S.cur = 0; renderAll();
+};
+document.addEventListener('keydown', (e) => {
+  if (['INPUT','TEXTAREA'].includes(e.target.tagName)) return;
+  if (e.key === 'j') el('next').click();
+  if (e.key === 'k') el('prev').click();
+  if (e.key === 'e') { el('f-expected').checked = !el('f-expected').checked; S.showExpected = el('f-expected').checked; renderHeader(); }
+});
+window.addEventListener('resize', () => { layoutNotes(); if (S.view === 'map') renderMap(); });
+
+/* poll for new samples and suggestions pushed by the agent between batches */
+setInterval(async () => {
+  const [samples, suggestions, patterns] = await Promise.all([
+    api.get('/api/samples'), api.get('/api/suggestions'), api.get('/api/patterns')]);
+  const list = (v, key) => Array.isArray(v) ? v : (Array.isArray(v?.[key]) ? v[key] : []);
+  const nextSamples = list(samples, 'samples'), nextSugg = list(suggestions, 'suggestions');
+  const nextModes = Object.fromEntries(list(patterns, 'modes').map(m => [m.name, m]));
+  const grewSamples = nextSamples.length !== S.samples.length;
+  const grewSugg = nextSugg.length !== S.suggestions.length;
+  const newModes = Object.keys(nextModes).length !== Object.keys(S.patterns).length;
+  S.samples = nextSamples; S.suggestions = nextSugg; S.patterns = nextModes;
+  if (grewSamples) { applyFilters(); toast(`sample updated: ${S.samples.length} conversations`); }
+  if (grewSugg) toast('new agent suggestions to review');
+  if (grewSamples || grewSugg || newModes) renderAll();
+}, 5000);
+
+loadAll();
+</script>

@@ -1,0 +1,422 @@
+[
+ {
+  "trace_id": "support-0001",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 6,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0002",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 7,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0003",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 7,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0004",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 1,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0005",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 1,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0006",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 7,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0007",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 7,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0009",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 4,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0010",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 0,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0011",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 2,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0013",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 7,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0014",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 7,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0015",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 7,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0017",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 6,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0018",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 0,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0019",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 5,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0020",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 7,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0028",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 5,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0030",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 7,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0037",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 7,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0039",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 7,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0043",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 7,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0044",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 5,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0046",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 7,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0047",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 0,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0048",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 7,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0049",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 7,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0058",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 5,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0062",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 7,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0065",
+  "reason": "read in id order during the reviewer's first pass",
+  "batch": "first_pass",
+  "cluster": 6,
+  "reviewed": true
+ },
+ {
+  "trace_id": "support-0146",
+  "reason": "uniform random",
+  "batch": "uniform",
+  "cluster": 6,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0174",
+  "reason": "uniform random",
+  "batch": "uniform",
+  "cluster": 7,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0250",
+  "reason": "uniform random",
+  "batch": "uniform",
+  "cluster": 7,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0230",
+  "reason": "uniform random",
+  "batch": "uniform",
+  "cluster": 1,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0150",
+  "reason": "uniform random",
+  "batch": "uniform",
+  "cluster": 7,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0161",
+  "reason": "uniform random",
+  "batch": "uniform",
+  "cluster": 7,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0249",
+  "reason": "uniform random",
+  "batch": "uniform",
+  "cluster": 6,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0181",
+  "reason": "uniform random",
+  "batch": "uniform",
+  "cluster": 5,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0079",
+  "reason": "uniform random",
+  "batch": "uniform",
+  "cluster": 6,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0078",
+  "reason": "uniform random",
+  "batch": "uniform",
+  "cluster": 7,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0236",
+  "reason": "uniform random",
+  "batch": "uniform",
+  "cluster": 7,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0162",
+  "reason": "uniform random",
+  "batch": "uniform",
+  "cluster": 5,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0152",
+  "reason": "uniform random",
+  "batch": "uniform",
+  "cluster": 7,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0192",
+  "reason": "uniform random",
+  "batch": "uniform",
+  "cluster": 7,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0188",
+  "reason": "uniform random",
+  "batch": "uniform",
+  "cluster": 7,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0088",
+  "reason": "representative of cluster 0",
+  "batch": "cluster",
+  "cluster": 0,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0029",
+  "reason": "representative of cluster 1",
+  "batch": "cluster",
+  "cluster": 1,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0245",
+  "reason": "representative of cluster 2",
+  "batch": "cluster",
+  "cluster": 2,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0223",
+  "reason": "representative of cluster 3",
+  "batch": "cluster",
+  "cluster": 3,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0052",
+  "reason": "representative of cluster 4",
+  "batch": "cluster",
+  "cluster": 4,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0130",
+  "reason": "representative of cluster 5",
+  "batch": "cluster",
+  "cluster": 5,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0153",
+  "reason": "representative of cluster 6",
+  "batch": "cluster",
+  "cluster": 6,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0202",
+  "reason": "representative of cluster 7",
+  "batch": "cluster",
+  "cluster": 7,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0176",
+  "reason": "representative of cluster 0",
+  "batch": "cluster",
+  "cluster": 0,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0211",
+  "reason": "representative of cluster 1",
+  "batch": "cluster",
+  "cluster": 1,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0246",
+  "reason": "representative of cluster 2",
+  "batch": "cluster",
+  "cluster": 2,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0168",
+  "reason": "representative of cluster 3",
+  "batch": "cluster",
+  "cluster": 3,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0157",
+  "reason": "representative of cluster 4",
+  "batch": "cluster",
+  "cluster": 4,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0224",
+  "reason": "representative of cluster 5",
+  "batch": "cluster",
+  "cluster": 5,
+  "reviewed": false
+ },
+ {
+  "trace_id": "support-0210",
+  "reason": "representative of cluster 6",
+  "batch": "cluster",
+  "cluster": 6,
+  "reviewed": false
+ }
+]

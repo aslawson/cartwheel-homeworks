@@ -26,6 +26,7 @@ import binascii
 import hashlib
 import hmac
 import json
+import logging
 import os
 import time
 import uuid
@@ -46,14 +47,50 @@ from observability.instrument import load_env, setup_tracing
 MAX_TURNS = 12  # cap runaway loops; keeps conversations bounded
 SESSIONS_DB = REPO_ROOT / ".sessions.db"
 
+log = logging.getLogger("cartwheel.server")
 _tracer = trace.get_tracer("cartwheel.server")
+
+
+def _start_workshop_tracing() -> Any:
+    """Mirror agent runs into a local Raindrop Workshop (Homework 4, Part C).
+
+    Opt-in: nothing happens unless CARTWHEEL_WORKSHOP is set. The Raindrop
+    processor registers with the Agents SDK trace registry and mirrors
+    additively, so the OpenTelemetry provider that feeds Langfuse is untouched.
+
+    Ordering matters: agent.build_agent calls configure_model_tracing, which
+    clears the Agents SDK processors when no course tracing destination is
+    active. setup_tracing() runs first above, so that clear is skipped; if
+    Langfuse is not configured, this warns instead of silently recording
+    nothing.
+    """
+    if not os.environ.get("CARTWHEEL_WORKSHOP", "").strip():
+        return None
+    try:
+        from raindrop_openai_agents import create_raindrop_openai_agents
+    except ImportError:
+        log.warning("CARTWHEEL_WORKSHOP is set but raindrop-openai-agents is not "
+                    "installed; run: uv sync --extra workshop")
+        return None
+    wrapper = create_raindrop_openai_agents(
+        api_key=os.environ.get("RAINDROP_WRITE_KEY") or "local-workshop",
+        project_id=os.environ.get("RAINDROP_PROJECT") or "cartwheel",
+    )
+    log.warning("Raindrop Workshop tracing enabled (local mirror)")
+    return wrapper
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     load_env()
     setup_tracing()  # no-op with a warning if LANGFUSE_PUBLIC_KEY is unset
-    yield
+    workshop = _start_workshop_tracing()
+    try:
+        yield
+    finally:
+        if workshop is not None:  # short-lived process: flush before exit
+            workshop.flush()
+            workshop.shutdown()
 
 
 app = FastAPI(title="Cartwheel support agent", lifespan=lifespan)

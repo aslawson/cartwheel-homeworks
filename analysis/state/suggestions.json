@@ -1,1 +1,42 @@
-[]
+[
+ {
+  "id": "sg-commits_befo-0052",
+  "trace_id": "support-0052",
+  "mode": "commits_before_verification",
+  "idx": 3,
+  "quote": "It hasn't shipped yet, so I can cancel it now.",
+  "note": "possible commits_before_verification: a claim about the outcome appears before the tool result that decides it",
+  "source": "agent_depth_search",
+  "status": "rejected",
+  "ts": "2026-09-24T03:37:57+00:00",
+  "decided_ts": "2026-09-24T03:43:39.686Z",
+  "decided_by": "human"
+ },
+ {
+  "id": "sg-commits_befo-0086",
+  "trace_id": "support-0086",
+  "mode": "commits_before_verification",
+  "idx": 3,
+  "quote": "\ud83d\ude1f\n\nThe good news is that this order **is eligible for a refund**.",
+  "note": "possible commits_before_verification: a claim about the outcome appears before the tool result that decides it",
+  "source": "agent_depth_search",
+  "status": "accepted",
+  "ts": "2026-09-24T03:37:57+00:00",
+  "decided_ts": "2026-09-24T03:44:16.233Z",
+  "decided_by": "human",
+  "annotation_id": "amuezmtb2lj0"
+ },
+ {
+  "id": "sg-commits_befo-0115",
+  "trace_id": "support-0115",
+  "mode": "commits_before_verification",
+  "idx": 1,
+  "quote": "Before I can process anything, I need to pull up the order details and check whether it's eligible for a return and refund.",
+  "note": "possible commits_before_verification: a claim about the outcome appears before the tool result that decides it",
+  "source": "agent_depth_search",
+  "status": "rejected",
+  "ts": "2026-09-24T03:37:57+00:00",
+  "decided_ts": "2026-09-24T03:44:53.261Z",
+  "decided_by": "human"
+ }
+]

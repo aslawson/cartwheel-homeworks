@@ -1,1 +1,409 @@
-{"modes": []}
+{
+ "modes": [
+  {
+   "name": "unrequested_narration_and_padding",
+   "definition": "The reply contains content the user did not ask for: a running commentary on what the agent is about to look up, a restated summary of facts already given, or extra policy detail beyond the question.",
+   "boundary": "Not commits_before_verification: this is about volume and commentary, not about asserting an outcome too early. A concise reply that states one fact the user asked for is a pass even if it also cites a policy id.",
+   "evaluator": "llm_judge",
+   "requirement": "SPEC gap: the system prompt currently REQUIRES narration before every tool call ('You MUST explain your reasoning in plain text before every tool call'), so the agent is complying. Fix the specification and prompt rather than evaluating against it. Related: RESP-5.",
+   "spec_status": "specification_gap",
+   "status": "confirmed",
+   "created_from": [
+    "amud1wha4jcn0",
+    "amud1zch2bspo",
+    "amud7lixx81pp",
+    "amud7mvci1yjj",
+    "amud7pni9xtjs",
+    "amud7tbw2vii4",
+    "amud7uof78uf9",
+    "amud7vjyjb721",
+    "amud8yxjcgcwf",
+    "amud8z8p45zct",
+    "amud90fbyo0ws",
+    "amud91d8vfqw2",
+    "amud91lqabh3b",
+    "amud92y3k3zj7",
+    "amud96icpwenk",
+    "amud97x462dq0",
+    "amud9cg97luqd"
+   ],
+   "positive_traces": [
+    "support-0002",
+    "support-0004",
+    "support-0010",
+    "support-0011",
+    "support-0013",
+    "support-0014",
+    "support-0015",
+    "support-0037",
+    "support-0039",
+    "support-0043",
+    "support-0047",
+    "support-0048",
+    "support-0062"
+   ],
+   "close_negatives": [
+    {
+     "trace_id": "support-0017",
+     "reason": "narrates three times, but the reply is 400 chars and stops once the question is answered"
+    },
+    {
+     "trace_id": "support-0052",
+     "reason": "201-char confirmation of a cancellation with no summary table and no extra offers"
+    },
+    {
+     "trace_id": "support-0057",
+     "reason": "239 chars: answers the shipping question and nothing else"
+    }
+   ],
+   "note_count": 17,
+   "confirmed_by": "reviewer, 2026-09-23",
+   "close_negatives_provenance": "Proposed by the agent from structural signals; evidence (user message, tool sequence, reply) shown to the reviewer, who spot-checked support-0143 and rejected it as an outward pointer. Accepted 2026-09-23 without opening each one individually."
+  },
+  {
+   "name": "scope_handling_overreach",
+   "definition": "On a request Cartwheel cannot serve, the reply points outside Cartwheel (another service, site, marketplace or professional) or invents a procedure with no policy behind it.",
+   "boundary": "Naming its own capabilities, pointing at Cartwheel account settings, or escalating where the specification requires it (ESC-2) is NOT this failure. The line is an outward pointer. Refined 2026-09-23 after support-0143 ('check that marketplace's own seller support') was rejected as a close negative; it is a positive.",
+   "evaluator": "llm_judge",
+   "requirement": "SCOPE-2, RESP-3, ESC-3",
+   "spec_status": "requires_spec_revision",
+   "status": "confirmed",
+   "created_from": [
+    "amud1rv0mqnke",
+    "amud1tvdo217c",
+    "amud1uif91441",
+    "amud1xywhywcd",
+    "amud7w6wvecsb",
+    "amud8rczbzuum",
+    "amud8vbwbwtfd",
+    "amud97hvuq914",
+    "amud98xuqqfm7",
+    "amud9e34fbtpt"
+   ],
+   "positive_traces": [
+    "support-0001",
+    "support-0003",
+    "support-0015",
+    "support-0028",
+    "support-0030",
+    "support-0048",
+    "support-0049",
+    "support-0065"
+   ],
+   "close_negatives": [
+    {
+     "trace_id": "support-0170",
+     "reason": "declines tech-buying advice and names only its own scope; no outside service"
+    },
+    {
+     "trace_id": "support-0228",
+     "reason": "declines to draft a personal email and lists only Cartwheel capabilities"
+    },
+    {
+     "trace_id": "support-0147",
+     "reason": "declines a card change, points at Cartwheel's own payment settings (cw-account-security) and offers escalation, which ESC-2 requires"
+    }
+   ],
+   "note_count": 10,
+   "confirmed_by": "reviewer, 2026-09-23",
+   "close_negatives_provenance": "Proposed by the agent from structural signals; evidence (user message, tool sequence, reply) shown to the reviewer, who spot-checked support-0143 and rejected it as an outward pointer. Accepted 2026-09-23 without opening each one individually."
+  },
+  {
+   "name": "commits_before_verification",
+   "definition": "The reply states an outcome (refund approved, order cancellable, return allowed) before the tool result or policy lookup that determines it has come back.",
+   "boundary": "Not unrequested_narration_and_padding: saying 'let me check' is padding; saying 'you are eligible' before the check is this mode. Verification test, set by the reviewer's depth-search decisions (2026-09-23): reading a record's own state (order status) from any lookup counts as verification, so support-0052 ('it hasn't shipped yet, so I can cancel it now' after find_order) is a pass; asserting refund or return eligibility requires check_return_eligibility, because eligibility depends on the store's window and the stored refund_eligible flag can be stale (it disagrees with the eligibility function on damaged order 8001), so support-0086 is a fail.",
+   "evaluator": "llm_judge",
+   "requirement": "RESP-2",
+   "spec_status": "existing_requirement",
+   "status": "confirmed",
+   "created_from": [
+    "amud1zro59d97",
+    "amud7aufclt0d",
+    "amud8mtftmd1f",
+    "amud8p5ngj5mm"
+   ],
+   "positive_traces": [
+    "support-0004",
+    "support-0005",
+    "support-0018",
+    "support-0020",
+    "support-0086"
+   ],
+   "close_negatives": [
+    {
+     "trace_id": "support-0007",
+     "reason": "same confident 'great news' shape, but check_return_eligibility returns before any claim"
+    },
+    {
+     "trace_id": "support-0010",
+     "reason": "long refund conversation where every eligibility statement follows its check"
+    },
+    {
+     "trace_id": "support-0011",
+     "reason": "states the window has passed only after get_order and check_return_eligibility return"
+    },
+    {
+     "trace_id": "support-0052",
+     "reason": "claims it can cancel after find_order returned status; reading a record's own state counts as verification (rejected suggestion, 2026-09-23)"
+    }
+   ],
+   "note_count": 5,
+   "confirmed_by": "reviewer, 2026-09-23",
+   "close_negatives_provenance": "Proposed by the agent from structural signals; evidence (user message, tool sequence, reply) shown to the reviewer, who spot-checked support-0143 and rejected it as an outward pointer. Accepted 2026-09-23 without opening each one individually."
+  },
+  {
+   "name": "ambiguity_resolved_by_guess",
+   "definition": "When more than one record matches what the user described, or the described quantity or item does not match the record found, the agent picks one and proceeds instead of asking which one.",
+   "boundary": "Not acts_without_authorization_check: the caller may see the records; the fault is choosing among them silently.",
+   "evaluator": "llm_judge",
+   "requirement": "RESP-3",
+   "spec_status": "existing_requirement",
+   "status": "confirmed",
+   "created_from": [
+    "amud7kqmr0miv",
+    "amud8kizgwg2i",
+    "amud8m7apsib2",
+    "amud8u3w4qd4l"
+   ],
+   "positive_traces": [
+    "support-0009",
+    "support-0018",
+    "support-0028"
+   ],
+   "close_negatives": [
+    {
+     "trace_id": "support-0024",
+     "reason": "three beanies come back and the reply asks which one the customer means"
+    },
+    {
+     "trace_id": "support-0050",
+     "reason": "several recent orders listed, and the reply asks which is meant instead of picking"
+    },
+    {
+     "trace_id": "support-0123",
+     "reason": "multiple product matches presented with ids rather than one silently chosen"
+    }
+   ],
+   "note_count": 4,
+   "confirmed_by": "reviewer, 2026-09-23",
+   "close_negatives_provenance": "Proposed by the agent from structural signals; evidence (user message, tool sequence, reply) shown to the reviewer, who spot-checked support-0143 and rejected it as an outward pointer. Accepted 2026-09-23 without opening each one individually."
+  },
+  {
+   "name": "exposes_internal_data_defect",
+   "definition": "The reply shows the user a broken or internal value (a negative price, contradictory dates, a bare store id) instead of reporting that the record is inconsistent and escalating.",
+   "boundary": "Not ambiguity_resolved_by_guess: the record is defective rather than ambiguous. Naming the defect and escalating without quoting the broken value is a pass.",
+   "evaluator": "llm_judge",
+   "requirement": "RESP-3, RESP-4, ESC-3",
+   "spec_status": "requires_spec_revision",
+   "status": "confirmed",
+   "created_from": [
+    "amud8nw6u4cer",
+    "amud93fxm94ne",
+    "amud94rye6nut",
+    "amud9570je1b0"
+   ],
+   "positive_traces": [
+    "support-0019",
+    "support-0044",
+    "support-0046"
+   ],
+   "close_negatives": [
+    {
+     "trace_id": "support-0026",
+     "reason": "dq-order-missing-delivery-date: says the record needs checking and escalates without quoting the broken field"
+    },
+    {
+     "trace_id": "support-0034",
+     "reason": "same damaged order from the merchant side; escalates without showing the defect"
+    },
+    {
+     "trace_id": "support-0059",
+     "reason": "dq-order-store-mismatch: reports an inconsistency and escalates without exposing internal ids"
+    }
+   ],
+   "note_count": 4,
+   "confirmed_by": "reviewer, 2026-09-23",
+   "close_negatives_provenance": "Proposed by the agent from structural signals; evidence (user message, tool sequence, reply) shown to the reviewer, who spot-checked support-0143 and rejected it as an outward pointer. Accepted 2026-09-23 without opening each one individually."
+  },
+  {
+   "name": "repeats_work_across_turns",
+   "definition": "On a later turn the agent redoes lookups or restates conclusions already established earlier in the same conversation, or ignores a correction the user made in an earlier turn.",
+   "boundary": "Not unrequested_narration_and_padding: the fault is repeating work or losing earlier context, not the wording of one reply.",
+   "evaluator": "llm_judge",
+   "requirement": "RESP-3; no explicit requirement covers conversation state \u2014 candidate SPEC revision",
+   "spec_status": "requires_spec_revision",
+   "status": "confirmed",
+   "created_from": [
+    "amud1v642z1jo",
+    "amud7m9xpfrpl",
+    "amud7snho8wky",
+    "amud7xe497ywk",
+    "amud9ek6j2wi0"
+   ],
+   "positive_traces": [
+    "support-0001",
+    "support-0010",
+    "support-0011",
+    "support-0017",
+    "support-0065"
+   ],
+   "close_negatives": [
+    {
+     "trace_id": "support-0120",
+     "reason": "second turn answers from the first turn's context with no tool calls"
+    },
+    {
+     "trace_id": "support-0195",
+     "reason": "later turn makes no tool calls and does not restate earlier conclusions"
+    },
+    {
+     "trace_id": "support-0234",
+     "reason": "later turn holds the earlier answer without redoing lookups"
+    },
+    {
+     "trace_id": "workshop-03",
+     "reason": "turn 2 of the pressing cancellation: no tool calls, answers from context (Workshop finding 5)"
+    }
+   ],
+   "note_count": 5,
+   "confirmed_by": "reviewer, 2026-09-23",
+   "close_negatives_provenance": "Proposed by the agent from structural signals; evidence (user message, tool sequence, reply) shown to the reviewer, who spot-checked support-0143 and rejected it as an outward pointer. Accepted 2026-09-23 without opening each one individually."
+  },
+  {
+   "name": "wrong_policy_scope",
+   "definition": "The reply answers with the platform-wide policy when the store's own policy governs that order, or the reverse.",
+   "boundary": "Not commits_before_verification: the agent did check a policy; it cited the wrong one for this store.",
+   "evaluator": "llm_judge",
+   "requirement": "RESP-1",
+   "spec_status": "existing_requirement",
+   "status": "confirmed",
+   "created_from": [
+    "amud7ff73td4b",
+    "amud9czp8kqiv"
+   ],
+   "positive_traces": [
+    "support-0007",
+    "support-0062"
+   ],
+   "close_negatives": [
+    {
+     "trace_id": "support-0012",
+     "reason": "store-override question answered with the store's own policy id"
+    },
+    {
+     "trace_id": "support-0017",
+     "reason": "Saltbox Pantry's 7-day window cited from store-saltbox-pantry-policy, not just cw-returns"
+    },
+    {
+     "trace_id": "support-0025",
+     "reason": "return-eligibility answer cites the governing store policy for that order"
+    }
+   ],
+   "note_count": 2,
+   "confirmed_by": "reviewer, 2026-09-23",
+   "close_negatives_provenance": "Proposed by the agent from structural signals; evidence (user message, tool sequence, reply) shown to the reviewer, who spot-checked support-0143 and rejected it as an outward pointer. Accepted 2026-09-23 without opening each one individually."
+  }
+ ],
+ "rejected_groups": [
+  {
+   "name": "tool_argument_misuse",
+   "definition": "search_products is called with a store id in the store-name field, returns not_found, and the agent retries with a name.",
+   "created_from": [
+    "amud8t9f1b17a"
+   ],
+   "positive_traces": [
+    "support-0028"
+   ],
+   "decision": "held out of the taxonomy",
+   "reason": "Only one annotation supports it, and it is a tool-contract bug with a deterministic check rather than a judged failure. Recorded here so the observation is not lost; revisit as a code check in HW5."
+  }
+ ],
+ "notes": "Proposed by the agent from the reviewer's 52 annotations; every mode traces to human notes. Close negatives pending confirmation by reading.",
+ "workshop_decisions": {
+  "1_scope_filter_dropped_on_retry": "rejected as a mode; kept as evidence for the held-out tool_argument_misuse group",
+  "2_find_order_wrong_item": "accepted as evidence for ambiguity_resolved_by_guess",
+  "3_unnecessary_policy_lookup": "rejected; weak and in tension with commits_before_verification",
+  "4_span_status_always_ok": "accepted as an observation, not a mode",
+  "5_turn_with_no_tool_calls": "accepted as a close negative for repeats_work_across_turns"
+ },
+ "retired_modes": [
+  {
+   "name": "acts_without_authorization_check",
+   "definition": "The agent promises to open, or shows the content of, an order or store record before a tool result has confirmed the caller is authorized to see it.",
+   "boundary": "Not a permission_denied trace: the tool layer refusing is correct behaviour. This mode is about what the reply asserts before that confirmation exists.",
+   "evaluator": "llm_judge",
+   "requirement": "AUTH-1, RESP-4",
+   "spec_status": "existing_requirement",
+   "status": "retired",
+   "created_from": [
+    "amud7cdex1dpu",
+    "amud7djzh9mpp",
+    "amud7inpcphao",
+    "amud7oy2iz7ie",
+    "amud9bwlnwmad"
+   ],
+   "positive_traces": [
+    "support-0006",
+    "support-0009",
+    "support-0011",
+    "support-0058"
+   ],
+   "close_negatives": [],
+   "note_count": 5,
+   "confirmed_by": "reviewer, 2026-09-23",
+   "retired_on": "2026-09-23",
+   "retired_by": "reviewer",
+   "retired_reason": "Authorization is enforced in the tool layer, not by the reply. agent/agent.py get_order_logic calls can_view_order(ctx, ...) and returns permission_denied when the caller is not entitled to the record (agent/auth.py:48); find_order derives its scope from the auth context (shopper -> own orders, merchant -> own store, all orders only for support). A successful tool result is therefore evidence that access was authorized, so a reply that reports it cannot be an authorization failure. The originating notes assumed the check was missing because it was not visible in the conversation. Two of them also misread their traces: support-0009's find_order results were already scoped to that shopper, and in support-0006 the merchant does own order 8003 (its *product* belongs to another store, which is the dq-order-store-mismatch defect)."
+  }
+ ],
+ "taxonomy_revisions": [
+  {
+   "date": "2026-09-23",
+   "change": "retired acts_without_authorization_check (8 modes -> 7)",
+   "trigger": "Reviewer questioned whether the agent could ever show an unauthorized record.",
+   "evidence": "agent/auth.py can_view_order; agent/agent.py get_order_logic; agent/tools.py find_order scoping.",
+   "effect": "5 annotations withdrawn from the taxonomy; they remain in annotations.json with the retired mode."
+  },
+  {
+   "date": "2026-09-23",
+   "change": "scope_handling_overreach narrowed to 'outward pointer or invented procedure'",
+   "trigger": "Reviewer rejected support-0143 as a close negative because it suggested other places to look.",
+   "effect": "Naming own capabilities or escalating per ESC-2 no longer counts; softens the original note on support-0048."
+  },
+  {
+   "date": "2026-09-23",
+   "change": "commits_before_verification gained a verification test and one positive (support-0086)",
+   "trigger": "Depth search returned three candidates; the reviewer rejected two and accepted one, which forced the question of whether find_order's fields count as verification.",
+   "effect": "Order status counts as verified; refund/return eligibility must come from check_return_eligibility."
+  }
+ ],
+ "depth_search": {
+  "mode": "commits_before_verification",
+  "method": "analysis/review_app/depth_search.py: a claim about the outcome appearing before any deciding tool result, anchored to the sentence that triggered it",
+  "candidates_offered": 3,
+  "accepted": 1,
+  "rejected": 2,
+  "rejected_traces": {
+   "support-0052": "status from find_order is verification",
+   "support-0115": "'before I can process anything, I need to pull up the order details' is an announcement, not a claim"
+  },
+  "finding": "After the reviewer's verification test is applied, the search returns no further instances beyond the 5 known positives in 250 conversations. A phrase-matching search is a weak signal for this mode because the failure is semantic; this is the case for an LLM judge in HW5."
+ },
+ "agentdebug_comparison": {
+  "source": "AgentErrorTaxonomy, arXiv:2509.25370 (AgentDebug)",
+  "their_organisation": "by module: memory, reflection, planning, action, system-level operations",
+  "ours": "by what the customer sees go wrong in the reply",
+  "mapping": {
+   "repeats_work_across_turns": "memory (strong match)",
+   "commits_before_verification": "reflection - asserting without checking the evidence",
+   "ambiguity_resolved_by_guess": "planning - choosing among options instead of clarifying",
+   "wrong_policy_scope": "action - right tool, wrong source",
+   "scope_handling_overreach": "planning, loosely",
+   "unrequested_narration_and_padding": "no equivalent; a communication-quality failure, not a task failure",
+   "exposes_internal_data_defect": "no equivalent; the record is defective rather than the agent"
+  },
+  "gap_identified": "system-level operations, where a tool-contract error belongs: search_products called with a store id in the store-name field (support-0028, and again in Workshop run 27da6cc2 on a merchant asking about their own listings).",
+  "decision": "Not added. One human annotation supports it, and the handout requires a mode to rest on the reviewer's own traces and notes. It stays in rejected_groups as a code-check candidate for HW5.",
+  "observation": "Two of our modes have no equivalent in the published taxonomy at all. AgentErrorTaxonomy classifies causes of task failure; this taxonomy also covers replies that complete the task but are wrong for a customer, which is the product requirement Cartwheel is judged on."
+ }
+}

@@ -1,0 +1,2031 @@
+{
+ "nodes": [
+  {
+   "id": "support-0001",
+   "x": -0.4227,
+   "y": 1.1756,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "out_of_scope"
+  },
+  {
+   "id": "support-0002",
+   "x": -1.0877,
+   "y": 0.4217,
+   "cluster": 7,
+   "role": "support",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0003",
+   "x": -2.1312,
+   "y": 0.3134,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "out_of_scope"
+  },
+  {
+   "id": "support-0004",
+   "x": 3.8286,
+   "y": -2.6243,
+   "cluster": 1,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0005",
+   "x": 1.9315,
+   "y": -2.7435,
+   "cluster": 1,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0006",
+   "x": -1.3196,
+   "y": -0.822,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0007",
+   "x": -0.9898,
+   "y": -0.0846,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0008",
+   "x": -2.1355,
+   "y": 0.603,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0009",
+   "x": -0.7974,
+   "y": -0.449,
+   "cluster": 4,
+   "role": "shopper",
+   "intent": "cancellation"
+  },
+  {
+   "id": "support-0010",
+   "x": 3.9646,
+   "y": -0.2779,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0011",
+   "x": 6.302,
+   "y": 2.0392,
+   "cluster": 2,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0012",
+   "x": -0.9102,
+   "y": 0.3803,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0013",
+   "x": -1.329,
+   "y": -0.4729,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0014",
+   "x": 0.2535,
+   "y": 1.6887,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0015",
+   "x": -1.3214,
+   "y": -0.7565,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0016",
+   "x": -2.1358,
+   "y": 0.6125,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0017",
+   "x": -0.3999,
+   "y": 0.3285,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0018",
+   "x": 2.1045,
+   "y": 0.9397,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0019",
+   "x": -2.1321,
+   "y": 0.4767,
+   "cluster": 5,
+   "role": "support",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0020",
+   "x": -1.3166,
+   "y": -0.9328,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "cancellation"
+  },
+  {
+   "id": "support-0021",
+   "x": -0.1829,
+   "y": -1.046,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0022",
+   "x": -0.3179,
+   "y": -2.6144,
+   "cluster": 4,
+   "role": "shopper",
+   "intent": "cancellation"
+  },
+  {
+   "id": "support-0023",
+   "x": 4.9853,
+   "y": 2.5372,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "dispute"
+  },
+  {
+   "id": "support-0024",
+   "x": -2.1304,
+   "y": 0.4135,
+   "cluster": 5,
+   "role": "support",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0025",
+   "x": 0.0385,
+   "y": 0.5401,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0026",
+   "x": 1.2703,
+   "y": 0.0326,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0027",
+   "x": -0.9136,
+   "y": 0.5054,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0028",
+   "x": -1.1043,
+   "y": 0.8734,
+   "cluster": 5,
+   "role": "merchant",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0029",
+   "x": 1.932,
+   "y": -2.7614,
+   "cluster": 1,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0030",
+   "x": -2.1294,
+   "y": 0.2466,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "out_of_scope"
+  },
+  {
+   "id": "support-0031",
+   "x": -2.0942,
+   "y": 1.7865,
+   "cluster": 3,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0032",
+   "x": 1.5737,
+   "y": -0.1651,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "cancellation"
+  },
+  {
+   "id": "support-0033",
+   "x": -1.3174,
+   "y": -0.9042,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "cancellation"
+  },
+  {
+   "id": "support-0034",
+   "x": -0.1879,
+   "y": -0.8589,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0035",
+   "x": -2.1375,
+   "y": 0.678,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0036",
+   "x": 7.3645,
+   "y": 1.3939,
+   "cluster": 2,
+   "role": "shopper",
+   "intent": "dispute"
+  },
+  {
+   "id": "support-0037",
+   "x": 0.424,
+   "y": 1.9059,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0038",
+   "x": 0.0375,
+   "y": 0.5758,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0039",
+   "x": 0.2549,
+   "y": 1.6363,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0040",
+   "x": -1.3162,
+   "y": -0.9483,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0041",
+   "x": 0.04,
+   "y": 0.4865,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0042",
+   "x": -1.3187,
+   "y": -0.8577,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0043",
+   "x": -1.0939,
+   "y": 0.6516,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0044",
+   "x": -2.1318,
+   "y": 0.4672,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0045",
+   "x": 6.022,
+   "y": 2.5936,
+   "cluster": 2,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0046",
+   "x": -1.1184,
+   "y": 1.5135,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0047",
+   "x": 2.4207,
+   "y": 1.2798,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0048",
+   "x": -2.1356,
+   "y": 0.4766,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0049",
+   "x": 1.2822,
+   "y": 2.2967,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "dispute"
+  },
+  {
+   "id": "support-0050",
+   "x": -2.0787,
+   "y": 1.2099,
+   "cluster": 3,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0051",
+   "x": -0.9888,
+   "y": -0.1215,
+   "cluster": 7,
+   "role": "support",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0052",
+   "x": -0.7919,
+   "y": -0.6528,
+   "cluster": 4,
+   "role": "shopper",
+   "intent": "cancellation"
+  },
+  {
+   "id": "support-0053",
+   "x": 7.1665,
+   "y": 2.1953,
+   "cluster": 2,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0054",
+   "x": 2.7773,
+   "y": 1.4456,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0055",
+   "x": 1.0742,
+   "y": 0.9379,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0056",
+   "x": 1.9315,
+   "y": -2.7435,
+   "cluster": 1,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0057",
+   "x": -2.0633,
+   "y": 0.6392,
+   "cluster": 3,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0058",
+   "x": -1.1059,
+   "y": 0.9342,
+   "cluster": 5,
+   "role": "merchant",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0059",
+   "x": -0.1819,
+   "y": -1.0829,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0060",
+   "x": -2.1353,
+   "y": 0.5958,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0061",
+   "x": -0.0712,
+   "y": 1.4836,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "dispute"
+  },
+  {
+   "id": "support-0062",
+   "x": -1.0914,
+   "y": 0.5563,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0063",
+   "x": 0.8878,
+   "y": -2.8399,
+   "cluster": 1,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0064",
+   "x": 4.0035,
+   "y": -2.5655,
+   "cluster": 1,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0065",
+   "x": 0.3993,
+   "y": -0.6399,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0066",
+   "x": 3.9571,
+   "y": 2.1523,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "dispute"
+  },
+  {
+   "id": "support-0067",
+   "x": -1.0106,
+   "y": -2.3401,
+   "cluster": 4,
+   "role": "shopper",
+   "intent": "cancellation"
+  },
+  {
+   "id": "support-0068",
+   "x": 2.6014,
+   "y": 1.4238,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0069",
+   "x": -1.2688,
+   "y": 0.4172,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0070",
+   "x": 0.8387,
+   "y": -0.1735,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "dispute"
+  },
+  {
+   "id": "support-0071",
+   "x": -1.317,
+   "y": -0.9197,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0072",
+   "x": 1.9297,
+   "y": -2.6756,
+   "cluster": 1,
+   "role": "support",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0073",
+   "x": 6.3667,
+   "y": 2.8934,
+   "cluster": 2,
+   "role": "shopper",
+   "intent": "dispute"
+  },
+  {
+   "id": "support-0074",
+   "x": -0.6341,
+   "y": -0.8294,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0075",
+   "x": -1.3164,
+   "y": -0.9423,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0076",
+   "x": 0.0374,
+   "y": 0.5806,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0077",
+   "x": 3.042,
+   "y": 1.462,
+   "cluster": 2,
+   "role": "support",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0078",
+   "x": -1.1042,
+   "y": 1.034,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "account_change"
+  },
+  {
+   "id": "support-0079",
+   "x": -0.6344,
+   "y": -0.8175,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0080",
+   "x": 0.042,
+   "y": 0.409,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0081",
+   "x": -0.6374,
+   "y": -0.7091,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0082",
+   "x": -0.1856,
+   "y": -0.9435,
+   "cluster": 7,
+   "role": "support",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0083",
+   "x": -1.3175,
+   "y": -0.9006,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0084",
+   "x": -0.3198,
+   "y": -2.5441,
+   "cluster": 4,
+   "role": "shopper",
+   "intent": "cancellation"
+  },
+  {
+   "id": "support-0085",
+   "x": -1.3317,
+   "y": -0.374,
+   "cluster": 7,
+   "role": "support",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0086",
+   "x": -1.104,
+   "y": 0.9762,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0087",
+   "x": -0.9176,
+   "y": 0.6567,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0088",
+   "x": 2.1094,
+   "y": 0.7574,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0089",
+   "x": -2.1407,
+   "y": 0.796,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0090",
+   "x": -2.135,
+   "y": 0.5851,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0091",
+   "x": 1.9318,
+   "y": -2.7543,
+   "cluster": 1,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0092",
+   "x": -0.193,
+   "y": -0.6707,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0093",
+   "x": -0.1807,
+   "y": -1.1282,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0094",
+   "x": 1.9203,
+   "y": -2.3737,
+   "cluster": 1,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0095",
+   "x": -2.1584,
+   "y": 1.4536,
+   "cluster": 5,
+   "role": "merchant",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0096",
+   "x": -1.0917,
+   "y": 0.5694,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0097",
+   "x": -2.1258,
+   "y": 0.2444,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0098",
+   "x": -1.3209,
+   "y": -0.7755,
+   "cluster": 7,
+   "role": "support",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0099",
+   "x": -1.7881,
+   "y": 0.8051,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0100",
+   "x": -1.3062,
+   "y": -1.3212,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "cancellation"
+  },
+  {
+   "id": "support-0101",
+   "x": 0.2655,
+   "y": 1.2408,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0102",
+   "x": -1.3215,
+   "y": -0.7517,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "cancellation"
+  },
+  {
+   "id": "support-0103",
+   "x": -0.396,
+   "y": 0.1843,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0104",
+   "x": -2.1443,
+   "y": 0.7994,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "out_of_scope"
+  },
+  {
+   "id": "support-0105",
+   "x": 0.4247,
+   "y": 1.8833,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0106",
+   "x": 4.4883,
+   "y": 2.3437,
+   "cluster": 2,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0107",
+   "x": -1.0116,
+   "y": -2.3032,
+   "cluster": 4,
+   "role": "merchant",
+   "intent": "cancellation"
+  },
+  {
+   "id": "support-0108",
+   "x": 1.9305,
+   "y": -2.7054,
+   "cluster": 1,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0109",
+   "x": 4.256,
+   "y": 0.6937,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0110",
+   "x": 1.937,
+   "y": -2.9473,
+   "cluster": 1,
+   "role": "support",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0111",
+   "x": -2.1258,
+   "y": 0.1132,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "out_of_scope"
+  },
+  {
+   "id": "support-0112",
+   "x": 0.0435,
+   "y": 0.3554,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0113",
+   "x": 2.1018,
+   "y": 1.0386,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0114",
+   "x": -1.9776,
+   "y": 1.2908,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0115",
+   "x": 0.8862,
+   "y": -2.7804,
+   "cluster": 1,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0116",
+   "x": 2.7665,
+   "y": -1.1472,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0117",
+   "x": 0.0367,
+   "y": 0.6068,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0118",
+   "x": -0.1801,
+   "y": -1.1473,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0119",
+   "x": -1.0098,
+   "y": -2.3675,
+   "cluster": 4,
+   "role": "shopper",
+   "intent": "cancellation"
+  },
+  {
+   "id": "support-0120",
+   "x": -1.6175,
+   "y": 0.1352,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "account_change"
+  },
+  {
+   "id": "support-0121",
+   "x": -0.4017,
+   "y": 0.3952,
+   "cluster": 6,
+   "role": "merchant",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0122",
+   "x": 0.0333,
+   "y": 0.7343,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0123",
+   "x": -2.1371,
+   "y": 0.6637,
+   "cluster": 5,
+   "role": "support",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0124",
+   "x": 1.9247,
+   "y": -2.4886,
+   "cluster": 1,
+   "role": "support",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0125",
+   "x": -0.1769,
+   "y": -1.2664,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0126",
+   "x": -1.0879,
+   "y": 0.43,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0127",
+   "x": 0.0385,
+   "y": 0.5389,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0128",
+   "x": -2.1258,
+   "y": 0.2432,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0129",
+   "x": -0.1758,
+   "y": -1.3081,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0130",
+   "x": -2.1338,
+   "y": 0.5386,
+   "cluster": 5,
+   "role": "support",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0131",
+   "x": -1.3251,
+   "y": -0.6195,
+   "cluster": 7,
+   "role": "support",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0132",
+   "x": 0.2095,
+   "y": 0.7406,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0133",
+   "x": -2.1302,
+   "y": 0.4064,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0134",
+   "x": -2.1279,
+   "y": 0.1895,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "out_of_scope"
+  },
+  {
+   "id": "support-0135",
+   "x": -2.0921,
+   "y": 1.7079,
+   "cluster": 3,
+   "role": "merchant",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0136",
+   "x": 4.1248,
+   "y": -1.4071,
+   "cluster": 2,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0137",
+   "x": -2.1317,
+   "y": 0.4612,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0138",
+   "x": -2.1392,
+   "y": 0.74,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0139",
+   "x": 0.0307,
+   "y": 0.8308,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0140",
+   "x": -2.0727,
+   "y": 0.9907,
+   "cluster": 3,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0141",
+   "x": -1.3222,
+   "y": -0.7255,
+   "cluster": 7,
+   "role": "support",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0142",
+   "x": -2.1348,
+   "y": 0.5768,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0143",
+   "x": -1.0951,
+   "y": 0.6957,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "out_of_scope"
+  },
+  {
+   "id": "support-0144",
+   "x": 4.2109,
+   "y": -1.1864,
+   "cluster": 2,
+   "role": "merchant",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0145",
+   "x": 1.9251,
+   "y": -2.5053,
+   "cluster": 1,
+   "role": "support",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0146",
+   "x": 0.3994,
+   "y": -0.6447,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0147",
+   "x": -2.1307,
+   "y": 0.2967,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "account_change"
+  },
+  {
+   "id": "support-0148",
+   "x": 1.5736,
+   "y": -0.1627,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "cancellation"
+  },
+  {
+   "id": "support-0149",
+   "x": -2.0818,
+   "y": 1.3278,
+   "cluster": 3,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0150",
+   "x": 0.2532,
+   "y": 1.6983,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0151",
+   "x": 0.0408,
+   "y": 0.4567,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0152",
+   "x": -1.3068,
+   "y": -1.2974,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "cancellation"
+  },
+  {
+   "id": "support-0153",
+   "x": -0.6415,
+   "y": -0.5554,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0154",
+   "x": -1.086,
+   "y": 0.3561,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0155",
+   "x": -1.0896,
+   "y": 0.4908,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0156",
+   "x": 1.9644,
+   "y": 1.9057,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "account_change"
+  },
+  {
+   "id": "support-0157",
+   "x": -1.0083,
+   "y": -2.4259,
+   "cluster": 4,
+   "role": "merchant",
+   "intent": "cancellation"
+  },
+  {
+   "id": "support-0158",
+   "x": -1.2713,
+   "y": 0.5264,
+   "cluster": 5,
+   "role": "merchant",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0159",
+   "x": 3.7334,
+   "y": 0.652,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0160",
+   "x": 0.8908,
+   "y": -2.9531,
+   "cluster": 1,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0161",
+   "x": 0.0443,
+   "y": 0.3245,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0162",
+   "x": -1.9715,
+   "y": 1.0644,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0163",
+   "x": -1.0869,
+   "y": 0.3907,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0164",
+   "x": -1.0793,
+   "y": 0.1083,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0165",
+   "x": -1.0072,
+   "y": -2.4664,
+   "cluster": 4,
+   "role": "support",
+   "intent": "cancellation"
+  },
+  {
+   "id": "support-0166",
+   "x": -2.1315,
+   "y": 0.4552,
+   "cluster": 5,
+   "role": "merchant",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0167",
+   "x": -1.3063,
+   "y": -1.3152,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "cancellation"
+  },
+  {
+   "id": "support-0168",
+   "x": -2.1072,
+   "y": 2.2702,
+   "cluster": 3,
+   "role": "merchant",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0169",
+   "x": 4.9819,
+   "y": 2.6623,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0170",
+   "x": -2.1317,
+   "y": 0.3312,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "out_of_scope"
+  },
+  {
+   "id": "support-0171",
+   "x": -2.0614,
+   "y": 0.5701,
+   "cluster": 3,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0172",
+   "x": -2.1312,
+   "y": 0.3134,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "out_of_scope"
+  },
+  {
+   "id": "support-0173",
+   "x": -2.1434,
+   "y": 0.8949,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0174",
+   "x": -1.3173,
+   "y": -0.9066,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0175",
+   "x": -1.0771,
+   "y": 0.0261,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0176",
+   "x": 3.9515,
+   "y": 2.3596,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "dispute"
+  },
+  {
+   "id": "support-0177",
+   "x": 2.454,
+   "y": 1.0608,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0178",
+   "x": 0.684,
+   "y": -1.2377,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0179",
+   "x": -0.9927,
+   "y": 0.0238,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0180",
+   "x": -2.1359,
+   "y": 0.4873,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "out_of_scope"
+  },
+  {
+   "id": "support-0181",
+   "x": -2.1281,
+   "y": 0.329,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0182",
+   "x": -2.126,
+   "y": 0.2491,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0183",
+   "x": -0.1889,
+   "y": -0.8208,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0184",
+   "x": 1.8919,
+   "y": -0.425,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0185",
+   "x": -0.9958,
+   "y": 0.1406,
+   "cluster": 7,
+   "role": "support",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0186",
+   "x": -2.14,
+   "y": 0.771,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0187",
+   "x": 1.9312,
+   "y": -2.7304,
+   "cluster": 1,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0188",
+   "x": -1.1085,
+   "y": 1.1453,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0189",
+   "x": 1.9298,
+   "y": -2.6792,
+   "cluster": 1,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0190",
+   "x": 2.448,
+   "y": 0.6855,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0191",
+   "x": 0.0387,
+   "y": 0.5318,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0192",
+   "x": -1.3155,
+   "y": -0.9769,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0193",
+   "x": -0.4044,
+   "y": 0.4941,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0194",
+   "x": 4.177,
+   "y": -2.4591,
+   "cluster": 1,
+   "role": "merchant",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0195",
+   "x": -1.6377,
+   "y": 0.8846,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "out_of_scope"
+  },
+  {
+   "id": "support-0196",
+   "x": 0.033,
+   "y": 0.745,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0197",
+   "x": 0.0317,
+   "y": 0.7927,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0198",
+   "x": -1.3356,
+   "y": -0.2299,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0199",
+   "x": 2.1054,
+   "y": 0.9052,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0200",
+   "x": -2.1358,
+   "y": 0.6125,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0201",
+   "x": -2.1323,
+   "y": 0.3563,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "account_change"
+  },
+  {
+   "id": "support-0202",
+   "x": -0.9111,
+   "y": 0.4137,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "account_change"
+  },
+  {
+   "id": "support-0203",
+   "x": -0.9817,
+   "y": -0.3824,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0204",
+   "x": 1.9341,
+   "y": -2.8365,
+   "cluster": 1,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0205",
+   "x": 2.7709,
+   "y": -2.2036,
+   "cluster": 1,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0206",
+   "x": -0.1797,
+   "y": -1.1627,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0207",
+   "x": 0.2008,
+   "y": 1.0659,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0208",
+   "x": 2.24,
+   "y": -1.9815,
+   "cluster": 1,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0209",
+   "x": -2.1439,
+   "y": 0.9127,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0210",
+   "x": -0.6415,
+   "y": -0.5566,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0211",
+   "x": 2.7822,
+   "y": -2.6218,
+   "cluster": 1,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0212",
+   "x": 0.6807,
+   "y": -1.115,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0213",
+   "x": -2.0634,
+   "y": 0.6451,
+   "cluster": 3,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0214",
+   "x": -1.1014,
+   "y": 0.9292,
+   "cluster": 7,
+   "role": "support",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0215",
+   "x": -1.0868,
+   "y": 0.3883,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0216",
+   "x": -1.322,
+   "y": -0.735,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "cancellation"
+  },
+  {
+   "id": "support-0217",
+   "x": -1.1126,
+   "y": 1.182,
+   "cluster": 5,
+   "role": "merchant",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0218",
+   "x": -1.0091,
+   "y": -2.3937,
+   "cluster": 4,
+   "role": "shopper",
+   "intent": "cancellation"
+  },
+  {
+   "id": "support-0219",
+   "x": -1.0105,
+   "y": -2.3437,
+   "cluster": 4,
+   "role": "shopper",
+   "intent": "cancellation"
+  },
+  {
+   "id": "support-0220",
+   "x": 0.2647,
+   "y": 1.5382,
+   "cluster": 3,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0221",
+   "x": 1.3456,
+   "y": -0.6054,
+   "cluster": 0,
+   "role": "support",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0222",
+   "x": 0.8958,
+   "y": -3.1366,
+   "cluster": 1,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0223",
+   "x": -2.0663,
+   "y": 0.75,
+   "cluster": 3,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0224",
+   "x": -2.1406,
+   "y": 0.7936,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0225",
+   "x": 0.2576,
+   "y": 1.535,
+   "cluster": 7,
+   "role": "merchant",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0226",
+   "x": -1.0791,
+   "y": 0.1024,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0227",
+   "x": -2.1377,
+   "y": 0.684,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0228",
+   "x": -2.127,
+   "y": 0.1597,
+   "cluster": 7,
+   "role": "support",
+   "intent": "out_of_scope"
+  },
+  {
+   "id": "support-0229",
+   "x": 1.9302,
+   "y": -2.6935,
+   "cluster": 1,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0230",
+   "x": 1.9315,
+   "y": -2.7435,
+   "cluster": 1,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0231",
+   "x": 0.9447,
+   "y": 1.4704,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "policy_question"
+  },
+  {
+   "id": "support-0232",
+   "x": 5.6643,
+   "y": 0.3584,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "dispute"
+  },
+  {
+   "id": "support-0233",
+   "x": 3.9572,
+   "y": 2.1487,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "dispute"
+  },
+  {
+   "id": "support-0234",
+   "x": -1.6222,
+   "y": 0.3092,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "out_of_scope"
+  },
+  {
+   "id": "support-0235",
+   "x": 3.9303,
+   "y": 0.441,
+   "cluster": 0,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0236",
+   "x": -2.1299,
+   "y": 0.2669,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "account_change"
+  },
+  {
+   "id": "support-0237",
+   "x": -1.3065,
+   "y": -1.3081,
+   "cluster": 7,
+   "role": "support",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0238",
+   "x": 0.0468,
+   "y": 0.2315,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0239",
+   "x": -2.0719,
+   "y": 0.9609,
+   "cluster": 3,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0240",
+   "x": -2.0993,
+   "y": 1.9771,
+   "cluster": 3,
+   "role": "merchant",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0241",
+   "x": -2.1359,
+   "y": 0.6173,
+   "cluster": 5,
+   "role": "support",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0242",
+   "x": -0.1772,
+   "y": -1.2569,
+   "cluster": 7,
+   "role": "support",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0243",
+   "x": -1.6161,
+   "y": 0.084,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "account_change"
+  },
+  {
+   "id": "support-0244",
+   "x": -1.2773,
+   "y": 0.733,
+   "cluster": 5,
+   "role": "shopper",
+   "intent": "product_search"
+  },
+  {
+   "id": "support-0245",
+   "x": 5.1749,
+   "y": -1.5454,
+   "cluster": 2,
+   "role": "merchant",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0246",
+   "x": 6.0163,
+   "y": 2.8045,
+   "cluster": 2,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0247",
+   "x": 0.0378,
+   "y": 0.5651,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  },
+  {
+   "id": "support-0248",
+   "x": 7.5195,
+   "y": 2.1913,
+   "cluster": 2,
+   "role": "shopper",
+   "intent": "refund"
+  },
+  {
+   "id": "support-0249",
+   "x": 0.4032,
+   "y": -0.7841,
+   "cluster": 6,
+   "role": "shopper",
+   "intent": "order_status"
+  },
+  {
+   "id": "support-0250",
+   "x": 0.0288,
+   "y": 0.8999,
+   "cluster": 7,
+   "role": "shopper",
+   "intent": "return_eligibility"
+  }
+ ],
+ "clusters": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7
+ ],
+ "features": [
+  "turn_count",
+  "tool_call_count",
+  "distinct_tools",
+  "flags",
+  "reply_chars",
+  "get_order",
+  "check_return_eligibility",
+  "search_help_center",
+  "find_order",
+  "search_products",
+  "get_policy",
+  "issue_refund",
+  "escalate_to_human",
+  "list_my_orders",
+  "cancel_order"
+ ]
+}

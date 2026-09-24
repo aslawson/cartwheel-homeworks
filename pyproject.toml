@@ -28,6 +28,11 @@ dev = [
 optimization = [
     "gepa>=0.1.4,<0.2",
 ]
+# HW4 Part C only: Raindrop Workshop tracing. Kept optional so the default
+# environment (and every earlier assignment) is unaffected.
+workshop = [
+    "raindrop-openai-agents>=0.0.11",
+]
 
 [build-system]
 requires = ["hatchling"]

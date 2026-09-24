@@ -1,0 +1,432 @@
+<meta charset="utf-8">
+<title>Cartwheel Error Analysis Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+  :root {
+    --ground: #F4F5FA;
+    --surface: #FFFFFF;
+    --ink: #1A1B2E;
+    --muted: #5E607A;
+    --line: #E0E2EF;
+
+    --violet: #5B4BD6;  --violet-soft: #EDEBFC;
+    --teal:   #0E9384;  --teal-soft:   #DFF5F1;
+    --coral:  #DB4A4A;  --coral-soft:  #FDEAEA;
+    --amber:  #C57C00;  --amber-soft:  #FBF0D9;
+    --blue:   #2D6FD6;  --blue-soft:   #E6EFFC;
+
+    --display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+    --body: "Figtree", "Helvetica Neue", Arial, sans-serif;
+    --data: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #12131F;
+      --surface: #1C1E2D;
+      --ink: #EAEBF6;
+      --muted: #9EA1BD;
+      --line: #2C2F44;
+
+      --violet: #A294FF;  --violet-soft: #252246;
+      --teal:   #45C9B6;  --teal-soft:   #123330;
+      --coral:  #FF8A8A;  --coral-soft:  #37191C;
+      --amber:  #F0B14A;  --amber-soft:  #352814;
+      --blue:   #7BADFF;  --blue-soft:   #16263F;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #12131F;
+    --surface: #1C1E2D;
+    --ink: #EAEBF6;
+    --muted: #9EA1BD;
+    --line: #2C2F44;
+
+    --violet: #A294FF;  --violet-soft: #252246;
+    --teal:   #45C9B6;  --teal-soft:   #123330;
+    --coral:  #FF8A8A;  --coral-soft:  #37191C;
+    --amber:  #F0B14A;  --amber-soft:  #352814;
+    --blue:   #7BADFF;  --blue-soft:   #16263F;
+  }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding-inline: 22px;
+    padding-block: 52px 88px;
+    display: flex;
+    flex-direction: column;
+    gap: 44px;
+  }
+
+  .eyebrow {
+    font-family: var(--data);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--violet);
+    margin: 0;
+  }
+
+  header h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(2.2rem, 6.4vw, 3.1rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+    margin: 12px 0 0;
+  }
+
+  header .standfirst {
+    font-size: 1.14rem;
+    color: var(--muted);
+    margin: 16px 0 0;
+    text-wrap: pretty;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(122px, 1fr));
+    gap: 10px;
+    margin-top: 26px;
+  }
+  .facts div {
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--violet-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .facts div:nth-child(2) { background: var(--teal-soft); }
+  .facts div:nth-child(3) { background: var(--amber-soft); }
+  .facts div:nth-child(4) { background: var(--coral-soft); }
+  .facts b {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 1.7rem;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .facts span { font-size: 0.82rem; color: var(--muted); }
+
+  .part-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 4px;
+  }
+  .part-head .tag {
+    font-family: var(--data);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--violet);
+    color: var(--surface);
+    white-space: nowrap;
+  }
+  .part-head .rule { flex: 1; height: 2px; background: var(--line); }
+
+  section { display: flex; flex-direction: column; gap: 20px; }
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(1.6rem, 4vw, 2rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.24rem;
+    line-height: 1.25;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  p { margin: 0; text-wrap: pretty; }
+
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+  .steps li { display: flex; gap: 14px; align-items: flex-start; }
+  .steps .n {
+    font-family: var(--data);
+    font-size: 0.78rem;
+    font-weight: 500;
+    flex: 0 0 30px;
+    height: 30px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    color: #FFFFFF;
+    background: var(--violet);
+  }
+  .steps li:nth-child(2) .n { background: var(--blue); }
+  .steps li:nth-child(3) .n { background: var(--teal); }
+  .steps li:nth-child(4) .n { background: var(--amber); }
+  .steps .what { font-size: 0.99rem; }
+  .steps .what b { font-weight: 700; }
+
+  .lesson {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 22px;
+    border-radius: 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+  .lesson .kicker {
+    font-family: var(--data);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+  .lesson.l-coral .kicker { color: var(--coral); }
+  .lesson.l-amber .kicker { color: var(--amber); }
+  .lesson.l-blue .kicker { color: var(--blue); }
+  .lesson.l-violet .kicker { color: var(--violet); }
+
+  .pull {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.22rem;
+    line-height: 1.32;
+    color: var(--violet);
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  .beforeafter { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .beforeafter > div { padding: 16px 18px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .beforeafter .b { background: var(--coral-soft); }
+  .beforeafter .a { background: var(--teal-soft); }
+  .beforeafter .label {
+    font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .beforeafter .b .label { color: var(--coral); }
+  .beforeafter .a .label { color: var(--teal); }
+  .beforeafter .said { font-size: 0.95rem; }
+
+  .tally { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .tally li { display: flex; gap: 12px; align-items: baseline; font-size: 0.97rem; }
+  .tally .mark {
+    font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase;
+    flex: 0 0 5.2rem; padding: 3px 0; border-radius: 6px; text-align: center;
+  }
+  .tally .pass { background: var(--teal-soft); color: var(--teal); }
+  .tally .fail { background: var(--coral-soft); color: var(--coral); }
+
+  figure { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  figure svg {
+    width: 100%;
+    height: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  figure svg text { font-family: var(--body); font-weight: 500; }
+  figcaption { font-size: 0.9rem; color: var(--muted); text-wrap: pretty; }
+
+  footer {
+    padding: 20px 22px;
+    border-radius: 14px;
+    background: var(--violet-soft);
+    font-size: 0.94rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .page > * { animation: rise 0.5s ease-out both; }
+    .page > *:nth-child(2) { animation-delay: 0.05s; }
+    .page > *:nth-child(3) { animation-delay: 0.1s; }
+    @keyframes rise { from { opacity: 0.5; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+
+
+<div class="page">
+
+  <header>
+    <p class="eyebrow">Evaluating and Improving AI Agents &middot; Homework Four</p>
+    <h1>Reading the machine's homework</h1>
+    <p class="standfirst">I had 250 recorded conversations and no idea what was actually wrong with them. This was the week of reading them myself, writing down what bothered me, and turning those notes into seven named faults a stranger could apply.</p>
+    <div class="facts">
+      <div><b>31</b><span>conversations read closely</span></div>
+      <div><b>53</b><span>notes in my own words</span></div>
+      <div><b>7</b><span>named faults</span></div>
+      <div><b>1</b><span>fault retired after reading the code</span></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="part-head"><span class="tag">Part one</span><span class="rule"></span></div>
+    <h2>What I did</h2>
+
+    <ol class="steps">
+      <li>
+        <span class="n">1</span>
+        <span class="what"><b>Tried the standard tool first, and wrote down what annoyed me.</b> Every step had to be clicked open one at a time. I couldn't tell the assistant's muttering-to-itself from what the customer actually read. Nothing said what kind of case I was looking at, and there was no way to line up similar cases.</span>
+      </li>
+      <li>
+        <span class="n">2</span>
+        <span class="what"><b>Had a reading room built to fix exactly those four things.</b> Whole conversations instead of single turns, every step laid out at once, the assistant's narration visibly separated from its reply, a row of labels saying what kind of case this is, and one click to jump to the next case of the same kind.</span>
+      </li>
+      <li>
+        <span class="n">3</span>
+        <span class="what"><b>Read conversations and wrote what bothered me</b> &mdash; in plain words, no categories. "Don't need this intermediary output." "Should check the refund policy before responding." "Don't expose data quality issues." Fifty-three of those.</span>
+      </li>
+      <li>
+        <span class="n">4</span>
+        <span class="what"><b>Grouped my own notes into seven faults</b>, each with a one-line test another person could apply, the notes it came from, examples that have it, and near misses that don't.</span>
+      </li>
+      <li>
+        <span class="n">5</span>
+        <span class="what"><b>Searched the other 219 conversations for more of one fault</b> &mdash; and mostly proved the search doesn't work, which turns out to be the useful finding.</span>
+      </li>
+    </ol>
+
+    <figure>
+      <svg viewBox="0 0 660 250" role="img" aria-label="Notes in my own words feed into named faults, which are then applied back to every conversation I read as a present-or-absent judgement. A search over the whole store proposes more candidates, which I accept or reject.">
+        <defs>
+          <marker id="h4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+          <marker id="h4v" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--violet)"/>
+          </marker>
+        </defs>
+
+        <rect x="10" y="96" width="132" height="58" rx="10" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"/>
+        <text x="76" y="120" text-anchor="middle" font-size="12.5" fill="var(--ink)">I read one</text>
+        <text x="76" y="139" text-anchor="middle" font-size="11" fill="var(--muted)">and write what bothers me</text>
+
+        <rect x="196" y="96" width="140" height="58" rx="10" fill="var(--amber-soft)" stroke="var(--amber)" stroke-width="1.5"/>
+        <text x="266" y="120" text-anchor="middle" font-size="12.5" fill="var(--ink)">53 notes</text>
+        <text x="266" y="139" text-anchor="middle" font-size="11" fill="var(--muted)">my words, no categories</text>
+
+        <rect x="392" y="96" width="140" height="58" rx="10" fill="var(--violet-soft)" stroke="var(--violet)" stroke-width="1.5"/>
+        <text x="462" y="120" text-anchor="middle" font-size="12.5" fill="var(--violet)">7 named faults</text>
+        <text x="462" y="139" text-anchor="middle" font-size="11" fill="var(--muted)">each with a yes/no test</text>
+
+        <rect x="392" y="14" width="140" height="52" rx="10" fill="var(--teal-soft)" stroke="var(--teal)" stroke-width="1.5"/>
+        <text x="462" y="36" text-anchor="middle" font-size="12" fill="var(--teal)">217 judgements</text>
+        <text x="462" y="54" text-anchor="middle" font-size="11" fill="var(--muted)">every fault &times; every trace</text>
+
+        <rect x="196" y="186" width="140" height="52" rx="10" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".6"/>
+        <text x="266" y="208" text-anchor="middle" font-size="12" fill="var(--ink)">search the other 219</text>
+        <text x="266" y="226" text-anchor="middle" font-size="11" fill="var(--muted)">proposes candidates</text>
+
+        <g stroke="currentColor" stroke-width="1.5" fill="none" opacity=".5" marker-end="url(#h4)">
+          <path d="M142,125 L192,125"/>
+          <path d="M336,125 L388,125"/>
+          <path d="M462,96 L462,70"/>
+        </g>
+        <path d="M336,200 C 380,200 462,190 462,160" fill="none" stroke="var(--violet)" stroke-width="1.5" marker-end="url(#h4v)"/>
+        <path d="M400,125 C 360,150 320,170 300,182" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 5" opacity=".45"/>
+        <text x="352" y="176" font-size="10.5" fill="var(--muted)">one fault, searched</text>
+        <text x="350" y="214" font-size="10.5" fill="var(--violet)">I accept or reject each</text>
+      </svg>
+      <figcaption>Nothing enters the middle box that I didn't write, and nothing enters the right-hand box that doesn't come from the middle. The search at the bottom can only propose; two of its three proposals were rejected.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <div class="part-head"><span class="tag">Part two</span><span class="rule"></span></div>
+    <h2>What I learned</h2>
+
+    <div class="lesson l-violet">
+      <span class="kicker">The thing that makes this work at all</span>
+      <h3>Categories have to come last</h3>
+      <p>The temptation is to decide the list of faults first and then tick boxes. Doing it that way, you only ever find the faults you already imagined. So the rule is: read, write what bothers you in your own words, and only afterwards look at your own notes and ask which ones would be fixed by the same change.</p>
+      <p class="pull">Seventeen separate complaints about the assistant talking too much turned out to be one fault. Two complaints about quoting the wrong shop's returns policy turned out to be another.</p>
+      <p>The test for whether two complaints are one fault isn't whether they sound alike. It's whether one change would fix both.</p>
+    </div>
+
+    <div class="lesson l-amber">
+      <span class="kicker">The moment it clicked</span>
+      <h3>My biggest complaint was an instruction, not a mistake</h3>
+      <p>A third of my notes said some version of "stop narrating, just answer." Then I looked at the instructions the assistant is given, and there it was, in capitals: it <b>must</b> explain its reasoning in plain text before every single lookup.</p>
+      <p>It wasn't failing. It was obeying.</p>
+      <p>That changes what to do about it completely. Building a detector for this would be measuring obedience to an instruction we don't actually want. The fix is upstream, in what we asked for &mdash; which is a different kind of work, and cheaper.</p>
+    </div>
+
+    <div class="lesson l-coral">
+      <span class="kicker">The one I got wrong</span>
+      <h3>I flagged a fault that the system makes impossible</h3>
+      <p>Five of my notes said the assistant showed order details without checking whether the person was allowed to see them. It reads that way: nothing in the conversation says "permission granted."</p>
+      <p>But the check isn't in the conversation, it's in the plumbing. The lookup itself refuses and returns a refusal when the caller isn't entitled. A successful lookup <em>is</em> the permission check. I'd been treating "I can't see it happening" as "it isn't happening."</p>
+      <div class="beforeafter">
+        <div class="b">
+          <span class="label">What I wrote</span>
+          <p class="said">"Should confirm they are authorized for that order before showing details."</p>
+        </div>
+        <div class="a">
+          <span class="label">What the code does</span>
+          <p class="said">Refuses the lookup outright when the caller isn't entitled. The assistant never receives the record.</p>
+        </div>
+      </div>
+      <p>So that fault is retired, and two of the five notes behind it were misreadings of their own traces. Eight faults became seven. Checking the machinery before naming a fault is the lesson.</p>
+    </div>
+
+    <div class="lesson l-blue">
+      <span class="kicker">What the boundaries are for</span>
+      <h3>A fault isn't defined until you can name what it isn't</h3>
+      <p>For each fault I picked three conversations that look like it but aren't. One fault says the assistant claims an outcome before checking. A near miss is the same cheerful confident reply &mdash; same tools, same tone &mdash; where the checks simply came first. Without that, someone applying my definition would flag every confident answer.</p>
+      <p>Arguing about near misses is what actually sharpens the rule. I rejected one because it declines politely and <em>then</em> points at another company's help centre &mdash; which is the very thing the fault is about. That single rejection rewrote the definition: the line isn't tone or length, it's whether the reply points outside our own shop.</p>
+    </div>
+
+    <div class="lesson l-amber">
+      <span class="kicker">Where the automated help earned its keep, and where it didn't</span>
+      <h3>The search mostly proved the search doesn't work</h3>
+      <p>I had the other 219 conversations searched for more of one fault. Matching phrases produced 27 hits, nearly all of them the assistant <em>announcing</em> a check rather than claiming a result. Tightened up, it produced three. I rejected two of them.</p>
+      <p>That sounds like a wasted afternoon and isn't. The fault is "a claim standing ahead of its evidence," which is a matter of meaning, not wording &mdash; so no amount of clever pattern matching will find it. That's precisely the argument for the next assignment, which is about building a judge that reads for meaning and proving it agrees with me.</p>
+      <p>The one I accepted forced a real decision: the assistant said an order was refundable based on a flag it got from a search, without running the check that computes the deadline. Does that flag count as checking? I said no &mdash; it's stale on at least one known-broken order &mdash; and that answer is now part of the written rule.</p>
+    </div>
+
+    <div class="lesson l-blue">
+      <span class="kicker">The honest accounting</span>
+      <h3>Thirty-one is not a hundred</h3>
+      <p>The assignment asks for a hundred conversations, read in four deliberately different batches. I read thirty-one, in order, starting from the first. So three claims I can't make: that I stopped finding new faults, that I covered the deliberately hard cases (eight of seventy-five), and that my percentages mean anything about how often this happens.</p>
+      <p>They're percentages of thirty-one conversations I chose by scrolling. That's written at the top of the summary rather than buried, because the next assignment needs thirty examples of each fault to build a detector, and the smallest fault here has two.</p>
+    </div>
+
+    <div class="lesson l-coral">
+      <span class="kicker">Two tools, one job each</span>
+      <h3>The debugger was for building, not for finding</h3>
+      <p>Part of this week used a local debugger that watches an agent think. It showed one genuinely useful thing: a failed lookup and its retry sitting next to each other, where the retry quietly dropped the filter that limited results to one shop &mdash; and the assistant then said "your three listings" about a search across every shop.</p>
+      <p>Otherwise it found nothing my own reading hadn't, and it renders a reply as a wall of raw data. It turns out the error-detection half of that product is the paid cloud service; the local half is for watching your agent while you build it. Reasonable tool, wrong week.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p><b>Where it ended up.</b> A reading room built for these conversations, 53 notes in my own words, seven faults with tests and near misses, one fault retired for good reasons, two search suggestions rejected, and a present-or-absent judgement on every fault for every conversation I read.</p>
+    <p><b>Still open:</b> sixty-nine more conversations, a specification that still asks for the behaviour I keep complaining about, and the video.</p>
+  </footer>
+
+</div>

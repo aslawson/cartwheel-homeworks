@@ -1,0 +1,591 @@
+<meta charset="utf-8">
+<title>Evaluating AI Agents: Modules One and Two</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+  :root {
+    --ground: #F4F5FA;
+    --surface: #FFFFFF;
+    --ink: #1A1B2E;
+    --muted: #5E607A;
+    --line: #E0E2EF;
+
+    --violet: #5B4BD6;  --violet-soft: #EDEBFC;
+    --teal:   #0E9384;  --teal-soft:   #DFF5F1;
+    --coral:  #DB4A4A;  --coral-soft:  #FDEAEA;
+    --amber:  #C57C00;  --amber-soft:  #FBF0D9;
+    --blue:   #2D6FD6;  --blue-soft:   #E6EFFC;
+
+    --display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+    --body: "Figtree", "Helvetica Neue", Arial, sans-serif;
+    --data: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #12131F;
+      --surface: #1C1E2D;
+      --ink: #EAEBF6;
+      --muted: #9EA1BD;
+      --line: #2C2F44;
+
+      --violet: #A294FF;  --violet-soft: #252246;
+      --teal:   #45C9B6;  --teal-soft:   #123330;
+      --coral:  #FF8A8A;  --coral-soft:  #37191C;
+      --amber:  #F0B14A;  --amber-soft:  #352814;
+      --blue:   #7BADFF;  --blue-soft:   #16263F;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #12131F;
+    --surface: #1C1E2D;
+    --ink: #EAEBF6;
+    --muted: #9EA1BD;
+    --line: #2C2F44;
+
+    --violet: #A294FF;  --violet-soft: #252246;
+    --teal:   #45C9B6;  --teal-soft:   #123330;
+    --coral:  #FF8A8A;  --coral-soft:  #37191C;
+    --amber:  #F0B14A;  --amber-soft:  #352814;
+    --blue:   #7BADFF;  --blue-soft:   #16263F;
+  }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding-inline: 22px;
+    padding-block: 52px 88px;
+    display: flex;
+    flex-direction: column;
+    gap: 44px;
+  }
+
+  .eyebrow {
+    font-family: var(--data);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--violet);
+    margin: 0;
+  }
+
+  header h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(2.2rem, 6.4vw, 3.1rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+    margin: 12px 0 0;
+  }
+
+  header .standfirst {
+    font-size: 1.14rem;
+    color: var(--muted);
+    margin: 16px 0 0;
+    text-wrap: pretty;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(122px, 1fr));
+    gap: 10px;
+    margin-top: 26px;
+  }
+  .facts div {
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--violet-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .facts div:nth-child(2) { background: var(--teal-soft); }
+  .facts div:nth-child(3) { background: var(--amber-soft); }
+  .facts div:nth-child(4) { background: var(--coral-soft); }
+  .facts b {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 1.7rem;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .facts span { font-size: 0.82rem; color: var(--muted); }
+
+  .part-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 4px;
+  }
+  .part-head .tag {
+    font-family: var(--data);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--violet);
+    color: var(--surface);
+    white-space: nowrap;
+  }
+  .part-head .rule { flex: 1; height: 2px; background: var(--line); }
+
+  section { display: flex; flex-direction: column; gap: 20px; }
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(1.6rem, 4vw, 2rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.24rem;
+    line-height: 1.25;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  p { margin: 0; text-wrap: pretty; }
+
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+  .steps li { display: flex; gap: 14px; align-items: flex-start; }
+  .steps .n {
+    font-family: var(--data);
+    font-size: 0.78rem;
+    font-weight: 500;
+    flex: 0 0 30px;
+    height: 30px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    color: #FFFFFF;
+    background: var(--violet);
+  }
+  .steps li:nth-child(2) .n { background: var(--blue); }
+  .steps li:nth-child(3) .n { background: var(--teal); }
+  .steps li:nth-child(4) .n { background: var(--amber); }
+  .steps .what { font-size: 0.99rem; }
+  .steps .what b { font-weight: 700; }
+
+  .lesson {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 22px;
+    border-radius: 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+  .lesson .kicker {
+    font-family: var(--data);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+  .lesson.l-coral .kicker { color: var(--coral); }
+  .lesson.l-amber .kicker { color: var(--amber); }
+  .lesson.l-blue .kicker { color: var(--blue); }
+  .lesson.l-violet .kicker { color: var(--violet); }
+
+  .pull {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.22rem;
+    line-height: 1.32;
+    color: var(--violet);
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  .beforeafter { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .beforeafter > div { padding: 16px 18px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .beforeafter .b { background: var(--coral-soft); }
+  .beforeafter .a { background: var(--teal-soft); }
+  .beforeafter .label {
+    font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .beforeafter .b .label { color: var(--coral); }
+  .beforeafter .a .label { color: var(--teal); }
+  .beforeafter .said { font-size: 0.95rem; }
+
+  .tally { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .tally li { display: flex; gap: 12px; align-items: baseline; font-size: 0.97rem; }
+  .tally .mark {
+    font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase;
+    flex: 0 0 5.2rem; padding: 3px 0; border-radius: 6px; text-align: center;
+  }
+  .tally .pass { background: var(--teal-soft); color: var(--teal); }
+  .tally .fail { background: var(--coral-soft); color: var(--coral); }
+
+  figure { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  figure svg {
+    width: 100%;
+    height: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  figure svg text { font-family: var(--body); font-weight: 500; }
+  figcaption { font-size: 0.9rem; color: var(--muted); text-wrap: pretty; }
+
+  footer {
+    padding: 20px 22px;
+    border-radius: 14px;
+    background: var(--violet-soft);
+    font-size: 0.94rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .page > * { animation: rise 0.5s ease-out both; }
+    .page > *:nth-child(2) { animation-delay: 0.05s; }
+    .page > *:nth-child(3) { animation-delay: 0.1s; }
+    @keyframes rise { from { opacity: 0.5; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+<style>
+  /* additions for the overview page */
+  .hwhead { display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; margin-bottom:2px; }
+  .hwtag { font-family:var(--data); font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase;
+           padding:2px 9px; border-radius:99px; border:1px solid var(--line); color:var(--muted); }
+  .hwtag.one { color:var(--teal); border-color:var(--teal); background:var(--teal-soft); }
+  .hwtag.two { color:var(--blue); border-color:var(--blue); background:var(--blue-soft); }
+  .hwtag.three { color:var(--amber); border-color:var(--amber); background:var(--amber-soft); }
+  .hwtag.four { color:var(--violet); border-color:var(--violet); background:var(--violet-soft); }
+  .concepts { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:12px; margin-top:4px; }
+  .concept { border:1px solid var(--line); border-radius:11px; padding:11px 13px; background:var(--surface); }
+  .concept b { font-family:var(--display); font-weight:600; }
+  .concept p { font-size:0.92rem; color:var(--muted); margin-top:3px; }
+  .why { border-left:3px solid var(--violet); padding-left:13px; margin:2px 0; }
+  .why b { color:var(--violet); }
+  .stepline { font-family:var(--data); font-size:0.78rem; color:var(--muted); }
+</style>
+
+
+
+<div class="page">
+
+  <header>
+    <p class="eyebrow">Evaluating and Improving AI Agents &middot; Modules One and Two</p>
+    <h1>How you find out what your agent gets wrong</h1>
+    <p class="standfirst">Four assignments, one argument: you cannot improve an agent you cannot measure, you cannot measure it without recorded evidence, and you cannot interpret the evidence until a person has read some of it and said, in their own words, what bothers them.</p>
+    <div class="facts">
+      <div><b>1</b><span>build the thing</span></div>
+      <div><b>2</b><span>record what it does</span></div>
+      <div><b>3</b><span>manufacture the evidence</span></div>
+      <div><b>4</b><span>read it and name the faults</span></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="part-head"><span class="tag">The arc</span><span class="rule"></span></div>
+    <h2>Why this order</h2>
+    <p>Each assignment exists because the next one is impossible without it. You can't record what doesn't run. You can't analyse conversations you never had. You can't name a failure pattern from one example.</p>
+    <figure>
+      <svg viewBox="0 0 660 150" role="img" aria-label="Four stages: build the agent, instrument it so every run leaves a record, generate a planned set of conversations with expected results, then read the recordings and name the failures. The last stage feeds back into changing the agent.">
+        <defs>
+          <marker id="ov" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+        <rect x="8" y="40" width="140" height="54" rx="11" fill="var(--teal-soft)" stroke="var(--teal)" stroke-width="1.5"/>
+        <text x="78" y="63" text-anchor="middle" font-size="12.5" fill="var(--teal)">1 &middot; Build</text>
+        <text x="78" y="81" text-anchor="middle" font-size="11" fill="var(--muted)">tools, permissions, rules</text>
+
+        <rect x="174" y="40" width="140" height="54" rx="11" fill="var(--blue-soft)" stroke="var(--blue)" stroke-width="1.5"/>
+        <text x="244" y="63" text-anchor="middle" font-size="12.5" fill="var(--blue)">2 &middot; Record</text>
+        <text x="244" y="81" text-anchor="middle" font-size="11" fill="var(--muted)">every run leaves a trace</text>
+
+        <rect x="340" y="40" width="140" height="54" rx="11" fill="var(--amber-soft)" stroke="var(--amber)" stroke-width="1.5"/>
+        <text x="410" y="63" text-anchor="middle" font-size="12.5" fill="var(--amber)">3 &middot; Generate</text>
+        <text x="410" y="81" text-anchor="middle" font-size="11" fill="var(--muted)">planned conversations</text>
+
+        <rect x="506" y="40" width="146" height="54" rx="11" fill="var(--violet-soft)" stroke="var(--violet)" stroke-width="1.5"/>
+        <text x="579" y="63" text-anchor="middle" font-size="12.5" fill="var(--violet)">4 &middot; Analyse</text>
+        <text x="579" y="81" text-anchor="middle" font-size="11" fill="var(--muted)">read, then name faults</text>
+
+        <g stroke="currentColor" stroke-width="1.5" fill="none" opacity=".5" marker-end="url(#ov)">
+          <path d="M148,67 L170,67"/><path d="M314,67 L336,67"/><path d="M480,67 L502,67"/>
+        </g>
+        <path d="M579,94 C 579,126 300,132 78,120 L78,100" fill="none" stroke="currentColor" stroke-width="1.3"
+              stroke-dasharray="4 5" opacity=".45" marker-end="url(#ov)"/>
+        <text x="330" y="140" text-anchor="middle" font-size="10.5" fill="var(--muted)">what you learn changes the agent, and the loop runs again</text>
+      </svg>
+      <figcaption>Modules three onwards turn stage four into numbers you can trust, and then into changes you can prove helped.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <div class="part-head"><span class="tag">Homework one</span><span class="rule"></span></div>
+    <div class="hwhead"><span class="hwtag one">Build</span><h2 style="margin:0">Get the agent working, and learn what it's made of</h2></div>
+    <p>A support assistant for a marketplace: it looks up orders, quotes policy, issues refunds, cancels orders, escalates. The work is filling in the tools and then having enough conversations with it to know how it behaves.</p>
+    <div class="why">
+      <p><b>The idea worth keeping:</b> permissions and money live in code, not in the instructions. A prompt saying "never refund more than $100" is a wish. A tool that checks the amount and queues anything larger for a human is a rule. The model chooses <em>which</em> tool to call; the tool decides what is allowed.</p>
+    </div>
+    <p>That separation is what makes later analysis possible: when something goes wrong you can ask whether the model chose badly or the rule was wrong, and they need different fixes.</p>
+  </section>
+
+  <section>
+    <div class="part-head"><span class="tag">Homework two</span><span class="rule"></span></div>
+    <div class="hwhead"><span class="hwtag two">Record</span><h2 style="margin:0">Instrumentation, or: you can't study what you didn't write down</h2></div>
+    <p>Put the agent behind a proper front door that establishes who is asking, and make every request leave a durable record. A <b>trace</b> is one request. Inside it, <b>spans</b> are the steps: each model call, each tool call with its arguments and result.</p>
+    <div class="concepts">
+      <div class="concept"><b>Attributes</b><p>Labels attached to the record: who asked, in what role, which version of the instructions was in force. Without them you have transcripts you can't group.</p></div>
+      <div class="concept"><b>Content capture</b><p>Whether the actual messages are stored, not just timings and counts. Off by default for good privacy reasons; you need it on to review anything.</p></div>
+      <div class="concept"><b>Version stamping</b><p>Every record carries a fingerprint of the instructions used. Without it, comparing this week to last week is meaningless.</p></div>
+    </div>
+    <div class="why" style="margin-top:12px">
+      <p><b>The idea worth keeping:</b> recording is a design decision, not a switch. What you label determines which questions you can answer later, and you only find out you labelled the wrong thing when the question arrives.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="part-head"><span class="tag">Homework three</span><span class="rule"></span></div>
+    <div class="hwhead"><span class="hwtag three">Generate</span><h2 style="margin:0">Manufacturing evidence worth reading</h2></div>
+    <p>A new agent has no production traffic, so you make some. The naive version is asking a model for two hundred and fifty customer questions, and it fails in a specific way: the model writes the most typical request over and over. You get a hundred variations of "where is my order" and nothing at the edges, where the failures actually live.</p>
+
+    <h3>Dimensions and tuples</h3>
+    <p>Instead of asking for requests, you first name the <b>dimensions</b> &mdash; the ways one request can differ that change what the agent should do. Who is asking. What they want. What state the record is in. Which policy applies. How the person types. Then a <b>tuple</b> is one pick from each dimension: a single recipe for one conversation.</p>
+
+    <figure>
+      <svg viewBox="0 0 660 330" role="img" aria-label="Dimensions are lists of values: role, intent, record state, policy, difficulty, user style. Choosing one value from each produces a tuple, which is matched to a real record in the database. The database and the written policies produce the expected result, while a separate model writes the customer's message from only the facts that customer would know.">
+        <defs>
+          <marker id="d1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+          <marker id="d1t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--teal)"/>
+          </marker>
+        </defs>
+
+        <text x="12" y="20" font-size="11" fill="var(--muted)" font-family="monospace">DIMENSIONS</text>
+        <g font-size="11.5">
+          <rect x="10" y="30" width="176" height="24" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+          <text x="20" y="46" fill="var(--muted)">role</text>
+          <text x="100" y="46" fill="var(--ink)">shopper</text>
+
+          <rect x="10" y="60" width="176" height="24" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+          <text x="20" y="76" fill="var(--muted)">intent</text>
+          <text x="100" y="76" fill="var(--ink)">refund</text>
+
+          <rect x="10" y="90" width="176" height="24" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+          <text x="20" y="106" fill="var(--muted)">record</text>
+          <text x="100" y="106" fill="var(--ink)">past window</text>
+
+          <rect x="10" y="120" width="176" height="24" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+          <text x="20" y="136" fill="var(--muted)">policy</text>
+          <text x="100" y="136" fill="var(--ink)">store override</text>
+
+          <rect x="10" y="150" width="176" height="24" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+          <text x="20" y="166" fill="var(--muted)">difficulty</text>
+          <text x="100" y="166" fill="var(--ink)">boundary</text>
+
+          <rect x="10" y="180" width="176" height="24" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+          <text x="20" y="196" fill="var(--muted)">style</text>
+          <text x="100" y="196" fill="var(--ink)">rambling</text>
+        </g>
+        <text x="12" y="222" font-size="10.5" fill="var(--muted)">each row has several values;</text>
+        <text x="12" y="237" font-size="10.5" fill="var(--muted)">pick one from each</text>
+
+        <path d="M190,115 C 214,115 214,115 236,115" stroke="currentColor" stroke-width="1.5" fill="none" opacity=".5" marker-end="url(#d1)"/>
+
+        <rect x="240" y="88" width="150" height="54" rx="10" fill="var(--amber-soft)" stroke="var(--amber)" stroke-width="1.5"/>
+        <text x="315" y="110" text-anchor="middle" font-size="12.5" fill="var(--ink)">one tuple</text>
+        <text x="315" y="128" text-anchor="middle" font-size="11" fill="var(--muted)">= one planned conversation</text>
+
+        <rect x="240" y="176" width="150" height="50" rx="10" fill="var(--blue-soft)" stroke="var(--blue)" stroke-width="1.5"/>
+        <text x="315" y="197" text-anchor="middle" font-size="12" fill="var(--ink)">a real record</text>
+        <text x="315" y="214" text-anchor="middle" font-size="10" fill="var(--muted)">order #961 · delivered 34d ago</text>
+        <path d="M315,142 L315,172" stroke="currentColor" stroke-width="1.5" fill="none" opacity=".5" marker-end="url(#d1)"/>
+        <text x="322" y="162" font-size="10.5" fill="var(--muted)">matched to</text>
+
+        <rect x="440" y="20" width="208" height="70" rx="10" fill="var(--teal-soft)" stroke="var(--teal)" stroke-width="1.5"/>
+        <text x="544" y="42" text-anchor="middle" font-size="12.5" fill="var(--teal)">the expected result</text>
+        <text x="544" y="60" text-anchor="middle" font-size="10.5" fill="var(--muted)">computed from the database</text>
+        <text x="544" y="76" text-anchor="middle" font-size="10.5" fill="var(--muted)">and the written policies</text>
+
+        <rect x="440" y="176" width="208" height="70" rx="10" fill="var(--violet-soft)" stroke="var(--violet)" stroke-width="1.5"/>
+        <text x="544" y="198" text-anchor="middle" font-size="12.5" fill="var(--violet)">what the customer types</text>
+        <text x="544" y="216" text-anchor="middle" font-size="10.5" fill="var(--muted)">written by a separate model, from</text>
+        <text x="544" y="232" text-anchor="middle" font-size="10.5" fill="var(--muted)">only what that customer could know</text>
+
+        <path d="M392,186 C 418,168 418,120 418,96 C 418,64 424,55 436,55" stroke="var(--teal)" stroke-width="1.5" fill="none" marker-end="url(#d1t)"/>
+        <text x="426" y="164" font-size="10.5" fill="var(--teal)">decides</text>
+        <path d="M390,206 L436,206" stroke="currentColor" stroke-width="1.5" fill="none" opacity=".5" marker-end="url(#d1)"/>
+        <text x="396" y="200" font-size="10.5" fill="var(--muted)">describes</text>
+
+        <line x1="440" y1="133" x2="648" y2="133" stroke="currentColor" stroke-width="1" stroke-dasharray="3 6" opacity=".35"/>
+        <text x="544" y="152" text-anchor="middle" font-size="10.5" fill="var(--muted)">the answer never crosses this line</text>
+
+        <rect x="240" y="262" width="408" height="50" rx="10" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/>
+        <text x="444" y="284" text-anchor="middle" font-size="12" fill="var(--ink)">run it: the agent answers, the recording is kept</text>
+        <text x="444" y="301" text-anchor="middle" font-size="10.5" fill="var(--muted)">compare what happened against the expected result</text>
+        <path d="M544,246 L544,258" stroke="currentColor" stroke-width="1.5" fill="none" opacity=".5" marker-end="url(#d1)"/>
+      </svg>
+      <figcaption>The dotted line is the whole trick. The model writing the customer's message is never shown the expected result, so it can't accidentally hand the agent the answer &mdash; and a wrong answer can't look right.</figcaption>
+    </figure>
+
+    <div class="lesson l-violet">
+      <span class="kicker">Why the answer key can't come from a model</span>
+      <h3>Grounded expectations</h3>
+      <p>For each planned conversation you write down what should happen <em>before</em> running it, and where that comes from: the order record, the rule that computes a return deadline, the store's policy page. If a model wrote the answer key instead, a confident wrong answer would grade as correct, and the whole exercise would measure nothing.</p>
+      <p>Some answers aren't a single fact &mdash; how to decline a request politely, say. Those get a written criterion citing the specification instead, and a person judges them.</p>
+    </div>
+
+    <h3>Two sets, kept apart</h3>
+    <div class="concepts">
+      <div class="concept"><b>Coverage</b><p>Ordinary requests spread across every dimension value. This is what a normal day looks like.</p></div>
+      <div class="concept"><b>Challenge</b><p>Deliberately hard ones: rules that contradict the obvious, broken records, amounts a hair over a threshold, corrections mid-conversation.</p></div>
+    </div>
+    <p style="margin-top:10px">They're counted separately, always. Mixed together, a pile of easy successes hides the failures at the edges &mdash; and because the challenge set is stuffed with hard cases on purpose, its failure rate is not a fact about production.</p>
+
+    <h3>Pilot first, then the full set</h3>
+    <p class="stepline">plan &rarr; 30 scenarios &rarr; run &rarr; a human reviews &rarr; fix what's broken &rarr; 250 scenarios &rarr; run</p>
+    <p>The pilot is cheap insurance. Every scenario costs model calls to run, so it's worth discovering on thirty that your requests are repetitive, or that your answer key is wrong, rather than on two hundred and fifty. It also confirms the agent actually fails sometimes &mdash; a test set that everything passes teaches you nothing.</p>
+    <div class="why">
+      <p><b>What the pilot caught here:</b> three scenarios where the answer key said "cancel the order" but the generated customer had asked "can I cancel?". The agent answered the question it was asked. Marking that as a failure would have been a lie about the agent &mdash; the test was wrong, not the agent.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="part-head"><span class="tag">Homework four</span><span class="rule"></span></div>
+    <div class="hwhead"><span class="hwtag four">Analyse</span><h2 style="margin:0">Reading the evidence, and naming what's wrong</h2></div>
+    <p>Now you have hundreds of recorded conversations and an answer key. The temptation is to write a checklist of faults and start ticking boxes. Don't: you'll only find the faults you already imagined. The method goes the other way around.</p>
+
+    <figure>
+      <svg viewBox="0 0 660 210" role="img" aria-label="Open coding produces free-text notes, axial coding groups those notes into named failure modes, and structured labelling applies every mode to every reviewed trace as a yes or no. A search step proposes more candidates which the human accepts or rejects.">
+        <defs>
+          <marker id="ax" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+        <rect x="8" y="30" width="186" height="66" rx="11" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/>
+        <text x="101" y="53" text-anchor="middle" font-size="12.5" fill="var(--ink)">open coding</text>
+        <text x="101" y="71" text-anchor="middle" font-size="10.5" fill="var(--muted)">read one conversation, write</text>
+        <text x="101" y="86" text-anchor="middle" font-size="10.5" fill="var(--muted)">what bothers you, in your words</text>
+
+        <rect x="234" y="30" width="186" height="66" rx="11" fill="var(--amber-soft)" stroke="var(--amber)" stroke-width="1.5"/>
+        <text x="327" y="53" text-anchor="middle" font-size="12.5" fill="var(--ink)">axial coding</text>
+        <text x="327" y="71" text-anchor="middle" font-size="10.5" fill="var(--muted)">group your own notes into</text>
+        <text x="327" y="86" text-anchor="middle" font-size="10.5" fill="var(--muted)">named faults with yes/no tests</text>
+
+        <rect x="460" y="30" width="192" height="66" rx="11" fill="var(--violet-soft)" stroke="var(--violet)" stroke-width="1.5"/>
+        <text x="556" y="53" text-anchor="middle" font-size="12.5" fill="var(--violet)">structured labelling</text>
+        <text x="556" y="71" text-anchor="middle" font-size="10.5" fill="var(--muted)">every fault against every</text>
+        <text x="556" y="86" text-anchor="middle" font-size="10.5" fill="var(--muted)">trace you read: present or not</text>
+
+        <g stroke="currentColor" stroke-width="1.5" fill="none" opacity=".5" marker-end="url(#ax)">
+          <path d="M194,63 L230,63"/><path d="M420,63 L456,63"/>
+        </g>
+
+        <rect x="234" y="136" width="186" height="56" rx="11" fill="none" stroke="currentColor" stroke-width="1.3" opacity=".6"/>
+        <text x="327" y="158" text-anchor="middle" font-size="12" fill="var(--ink)">search for more</text>
+        <text x="327" y="176" text-anchor="middle" font-size="10.5" fill="var(--muted)">a signal, never a verdict</text>
+        <path d="M327,96 L327,132" stroke="currentColor" stroke-width="1.4" fill="none" opacity=".5" marker-end="url(#ax)"/>
+        <path d="M420,164 C 500,164 540,140 552,100" stroke="currentColor" stroke-width="1.4" fill="none" opacity=".5" marker-end="url(#ax)"/>
+        <text x="447" y="188" font-size="10.5" fill="var(--muted)">you accept or reject each one</text>
+
+        <text x="101" y="150" font-size="10.5" fill="var(--muted)">no categories yet &mdash;</text>
+        <text x="101" y="166" font-size="10.5" fill="var(--muted)">naming too early hides</text>
+        <text x="101" y="182" font-size="10.5" fill="var(--muted)">what you didn't expect</text>
+      </svg>
+      <figcaption>Every arrow into a named fault starts at something a person wrote. A search can propose candidates; it can't create a category.</figcaption>
+    </figure>
+
+    <div class="lesson l-blue">
+      <span class="kicker">Step one</span>
+      <h3>Open coding: describe, don't classify</h3>
+      <p>Read a conversation together with everything the agent looked up, and write a plain sentence about the first thing that's wrong. "The reply says the refund is processed, but the tool only queued it for approval." Not "tool problem" &mdash; a category name throws away the evidence that makes the fault definable later.</p>
+      <p>If nothing is wrong, write that down too. A reviewed trace with no failure is data; an unreviewed trace is a gap.</p>
+    </div>
+
+    <div class="lesson l-amber">
+      <span class="kicker">Why a purpose-built reading room</span>
+      <h3>The generic annotation view fights you</h3>
+      <p>Tracing tools are built for debugging one request, so they show a list of steps you click open one at a time. Reviewing a hundred conversations needs something else, and building it is part of the assignment:</p>
+      <div class="concepts">
+        <div class="concept"><b>Whole conversations</b><p>One trace per turn means a follow-up arrives with no visible history. Group them or you're reading fragments.</p></div>
+        <div class="concept"><b>Thinking aloud vs. the reply</b><p>What the agent narrates to itself and what the customer actually reads are different things, and several faults only exist in one of them.</p></div>
+        <div class="concept"><b>Notes pinned to evidence</b><p>Select the sentence, write the note, see it in the margin. The quote is what makes the note reusable later.</p></div>
+        <div class="concept"><b>Case labels</b><p>Knowing what kind of case this is, and jumping to others like it, turns scattered reading into comparison.</p></div>
+      </div>
+    </div>
+
+    <div class="lesson l-violet">
+      <span class="kicker">Step two</span>
+      <h3>Axial coding: group your notes, not your impressions</h3>
+      <p>Lay out the notes you wrote and look for ones that would be fixed by the same change. That's the test &mdash; not whether they sound similar. Seventeen complaints about the agent narrating every step are one fault. Two complaints about quoting the wrong shop's policy are another. If two notes need different fixes, they're different faults even when the words look alike.</p>
+      <p>Each surviving fault needs a name, a yes/no test a stranger could apply, the notes it grew from, and examples. Five to eight of them is the working range: fewer and they're too vague to act on, more and they overlap.</p>
+    </div>
+
+    <div class="lesson l-coral">
+      <span class="kicker">The rule that makes it trustworthy</span>
+      <h3>The person decides at every gate</h3>
+      <p>An assistant can do the fetching, the grouping proposals, the counting and the searching. It must not decide what counts as a failure, and it must not invent a category from its own reading. A fault with no human note behind it isn't a fault, it's a guess with a tidy name.</p>
+      <p>In practice that's three gates: approve the dimensions before any data is generated, review a sample of conversations before spending money running them, and own every label in the final pass.</p>
+    </div>
+
+    <div class="lesson l-blue">
+      <span class="kicker">Step three</span>
+      <h3>Hunting for more, and the near misses</h3>
+      <p>Once a fault is named, you go looking for more of it &mdash; by filtering on a dimension you suspect, or by having the assistant search for conversations that look similar. Whatever comes back is a <b>retrieval signal, not a label</b>: you read each one and accept or reject it. The rejections matter as much as the acceptances, and both get saved.</p>
+      <p>Then, for each fault, you pick <b>close negatives</b>: conversations that look like the fault but aren't. A fault isn't really defined until you can point at the near miss and say why it doesn't count. Those boundary cases are what stop the definition drifting, and in the next module they become the hardest test cases for an automated judge.</p>
+    </div>
+
+    <div class="lesson l-violet">
+      <span class="kicker">Step four</span>
+      <h3>Labelling: every fault, every trace, yes or no</h3>
+      <p>Last comes the mechanical pass. For each conversation you reviewed and each fault in your final list, record present or absent &mdash; stored as a <b>1 or 0</b> against the trace in the tracing tool, alongside a local copy.</p>
+      <p>Two reasons it's worth the tedium. A conversation can contain several faults, and open coding stopped at the first one, so this pass finds the rest. And absence is data: a judge trained or validated only on failures flags everything, so the "no" labels are what make the "yes" labels meaningful.</p>
+      <p>The resulting percentages are <b>fractions of what you read</b>, not rates in the wild. You chose those conversations deliberately, so the number tells you the fault exists and roughly how it clusters &mdash; not how often a real customer meets it.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="part-head"><span class="tag">In short</span><span class="rule"></span></div>
+    <h2>The concepts, in one place</h2>
+    <div class="concepts">
+      <div class="concept"><b>Trace &amp; span</b><p>One request, and the steps inside it. The unit of evidence.</p></div>
+      <div class="concept"><b>Dimension &amp; tuple</b><p>A way requests differ; one pick from each dimension makes one planned conversation.</p></div>
+      <div class="concept"><b>Expected result</b><p>What should happen, written down before the run and grounded in data, never in a model's opinion.</p></div>
+      <div class="concept"><b>Coverage vs. challenge</b><p>Ordinary cases and deliberately hard ones, counted separately so neither hides the other.</p></div>
+      <div class="concept"><b>Open coding</b><p>Free-text notes about what's wrong, written before any categories exist.</p></div>
+      <div class="concept"><b>Axial coding</b><p>Grouping those notes into named faults, using "would one fix solve both?" as the test.</p></div>
+      <div class="concept"><b>Close negative</b><p>A conversation that looks like a fault but isn't. It defines the boundary.</p></div>
+      <div class="concept"><b>Retrieval signal</b><p>A search result proposing where to look. Never a verdict on its own.</p></div>
+      <div class="concept"><b>Binary label</b><p>Present or absent, 1 or 0, per fault per trace. Compound quality scores can't be validated.</p></div>
+      <div class="concept"><b>Sample fraction</b><p>How often a fault appeared in what you read. Not a prevalence estimate.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <p><b>Where this is heading.</b> Hand-reading doesn't scale, so the next module builds an automated judge for each fault and proves it agrees with the human labels before trusting it. Only then do the percentages become estimates you can act on &mdash; and only then is it worth changing the agent and measuring whether the change helped.</p>
+    <p><b>The thread running through all four:</b> every number has to be traceable back to something a person read and decided.</p>
+  </footer>
+
+</div>

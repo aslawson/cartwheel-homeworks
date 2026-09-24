@@ -284,6 +284,49 @@
   .why { border-left:3px solid var(--violet); padding-left:13px; margin:2px 0; }
   .why b { color:var(--violet); }
   .stepline { font-family:var(--data); font-size:0.78rem; color:var(--muted); }
+
+  /* mock of the review interface */
+  .mock { border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--surface); margin-top:6px; }
+  .mock .bar { display:flex; gap:7px; align-items:center; padding:8px 12px; border-bottom:1px solid var(--line);
+               font-family:var(--data); font-size:0.68rem; color:var(--muted); flex-wrap:wrap; }
+  .mock .pill { border:1px solid var(--line); border-radius:99px; padding:1px 8px; }
+  .mock .pill.on { background:var(--ink); color:var(--ground); border-color:var(--ink); }
+  .mock .bar .right { margin-left:auto; }
+  .mock .chips { display:flex; gap:5px; flex-wrap:wrap; padding:10px 12px 0; }
+  .mock .chips span { font-family:var(--data); font-size:0.64rem; border:1px solid var(--line);
+                      border-radius:99px; padding:1px 7px; color:var(--muted); }
+  .mock .chips span.dq { color:var(--amber); border-color:var(--amber); background:var(--amber-soft); }
+  .mock .chips span.flag { color:var(--coral); border-color:var(--coral); background:var(--coral-soft); }
+  .mock .cols { display:flex; gap:12px; padding:10px 12px 14px; align-items:flex-start; }
+  .mock .stream { flex:1; min-width:0; display:flex; flex-direction:column; gap:7px; }
+  .mock .side { width:180px; flex:0 0 180px; display:flex; flex-direction:column; gap:7px; }
+  .mock .blk { border:1px solid var(--line); border-left:3px solid var(--line); border-radius:8px;
+               padding:7px 9px; font-size:0.82rem; }
+  .mock .blk .lbl { font-family:var(--data); font-size:0.58rem; letter-spacing:0.09em; text-transform:uppercase;
+                    color:var(--muted); margin-bottom:3px; }
+  .mock .blk.user { border-left-color:var(--blue); } .mock .blk.user .lbl { color:var(--blue); }
+  .mock .blk.narr { border-style:dashed; border-left-color:var(--violet); background:transparent; }
+  .mock .blk.narr .txt { font-style:italic; color:var(--muted); }
+  .mock .blk.reply { border-left-color:var(--violet); } .mock .blk.reply .lbl { color:var(--violet); }
+  .mock .tool { border:1px solid var(--line); border-left:3px solid var(--teal); border-radius:8px; font-size:0.8rem; }
+  .mock .tool .call { padding:7px 9px 3px; font-family:var(--data); color:var(--teal); }
+  .mock .tool .call em { color:var(--muted); font-style:normal; }
+  .mock .tool .res { margin:2px 9px 8px; border-top:1px dashed var(--line); padding-top:5px;
+                     font-family:var(--data); font-size:0.72rem; color:var(--muted); }
+  .mock mark { background:var(--amber-soft); border-bottom:2px solid var(--amber); color:inherit; padding:0 1px; }
+  .mock mark.ai { background:transparent; border-bottom:2px dashed var(--sugg, #7a5af5); }
+  .mock .note { border:1px solid var(--line); border-left:3px solid var(--amber); border-radius:8px;
+                padding:7px 9px; font-size:0.76rem; }
+  .mock .note.ai { border-left-color:#7a5af5; }
+  .mock .note .q { color:var(--muted); font-style:italic; font-size:0.7rem; margin-bottom:3px; }
+  .mock .note .tag { font-family:var(--data); font-size:0.58rem; letter-spacing:0.07em;
+                     text-transform:uppercase; color:#7a5af5; margin-bottom:3px; }
+  .mock .note .btns { display:flex; gap:5px; margin-top:5px; }
+  .mock .note .btns b { font-weight:500; font-size:0.68rem; border:1px solid var(--line); border-radius:5px;
+                        padding:1px 6px; color:var(--muted); }
+  .mock .note .btns b.ok { color:var(--teal); border-color:var(--teal); }
+  @media (max-width: 640px) { .mock .cols { flex-direction:column; } .mock .side { width:auto; flex:1 1 auto; } }
+
 </style>
 
 
@@ -301,6 +344,29 @@
       <div><b>4</b><span>read it and name the faults</span></div>
     </div>
   </header>
+
+
+  <section>
+    <div class="part-head"><span class="tag">For the team</span><span class="rule"></span></div>
+    <h2>What this is, and why the order matters</h2>
+    <p>These notes come from <b>Evaluating and Improving AI Agents</b>, a five-module course built around one worked example: a customer-support agent for a fictional marketplace, with a seeded database and a written specification. The example is fictional on purpose &mdash; every fact about every order is knowable, so you can check whether an answer was actually right instead of arguing about it.</p>
+
+    <div class="why">
+      <p><b>The problem it addresses:</b> agents fail quietly. A crash is obvious. An agent that confidently quotes the wrong returns policy, or tells a customer their refund is done when it is only queued, looks exactly like an agent that worked. Nobody files a bug, and the usual fix &mdash; reading a few conversations, adjusting the prompt, seeing if it feels better &mdash; has no way of telling whether the change helped or moved the failure somewhere else.</p>
+    </div>
+
+    <p>The course's answer is deliberately unglamorous, and the sequence is the argument:</p>
+    <div class="concepts">
+      <div class="concept"><b>Evidence before opinion</b><p>Record complete runs first. Every later claim has to point at a conversation someone can open.</p></div>
+      <div class="concept"><b>Manufacture the evidence if you must</b><p>A new agent has no traffic. Plan the situations deliberately rather than asking a model for "some examples".</p></div>
+      <div class="concept"><b>A person names the failures</b><p>Read real conversations and describe what's wrong in your own words, before inventing any categories.</p></div>
+      <div class="concept"><b>Automate only after agreeing</b><p>Build an automated judge once you have human labels to check it against, not before.</p></div>
+    </div>
+
+    <p style="margin-top:12px">Each step exists because the next is impossible without it: you can't analyse conversations you never recorded, can't name a pattern from one example, and can't trust an automated judge you never compared against a human. The payoff is that "the agent got worse this week" becomes a number with evidence behind it, and a prompt change can be shown to have helped rather than assumed to.</p>
+
+    <p><b>What it costs.</b> Modules one and two are roughly the work described below: building and instrumenting the agent, generating a few hundred planned conversations, and one person reading a hundred of them closely. The reading is the part teams skip, and it is the part that produces everything else &mdash; the categories, the judges, and the numbers.</p>
+  </section>
 
   <section>
     <div class="part-head"><span class="tag">The arc</span><span class="rule"></span></div>
@@ -534,6 +600,53 @@
         <div class="concept"><b>Notes pinned to evidence</b><p>Select the sentence, write the note, see it in the margin. The quote is what makes the note reusable later.</p></div>
         <div class="concept"><b>Case labels</b><p>Knowing what kind of case this is, and jumping to others like it, turns scattered reading into comparison.</p></div>
       </div>
+      <figure style="margin-top:14px">
+        <div class="mock" aria-label="Mock of the review interface: a top bar with view tabs and filters, a row of case labels, the conversation with the customer message, the agent's narration, a tool call with its result, the final reply, and two margin notes.">
+          <div class="bar">
+            <span class="pill on">Conversation</span><span class="pill">Map</span>
+            <span class="pill">Progress</span><span class="pill">Labelling</span>
+            <span class="right">31 reviewed · 53 notes · 7 faults</span>
+          </div>
+          <div class="bar">
+            role: shopper <span class="pill">intent: refund</span> <span class="pill">difficulty: boundary</span>
+            <span class="pill">flagged only</span> <span class="right">&larr; support-0086 &rarr; &nbsp; next in group</span>
+          </div>
+          <div class="chips">
+            <span>shopper</span><span>refund</span><span>boundary</span><span>store override</span>
+            <span>past window</span><span>rambling</span><span class="dq">damaged record</span><span class="flag">tool error</span>
+          </div>
+          <div class="cols">
+            <div class="stream">
+              <div class="blk user"><div class="lbl">customer</div>
+                <div class="txt">hi um so i bought a novel from northwind books like a month ago, can i still get a refund on it?</div></div>
+
+              <div class="blk narr"><div class="lbl">agent, before a tool call</div>
+                <div class="txt">Let me pull up that order and check the return window for you.</div></div>
+
+              <div class="tool">
+                <div class="call">find_order(<em>"novel northwind books"</em>)</div>
+                <div class="res">ok: true · order 5597 · delivered 2026-05-28 · $189.25 · refund_eligible: true</div>
+              </div>
+
+              <div class="blk reply"><div class="lbl">reply the customer reads</div>
+                <div class="txt">Good news — <mark>this order is eligible for a refund</mark> and I can get that started for you right away. <mark class="ai">You'll see the money back in 5–10 business days.</mark></div></div>
+            </div>
+
+            <div class="side">
+              <div class="note">
+                <div class="q">“this order is eligible for a refund”</div>
+                said it's eligible before running the check that computes the deadline
+              </div>
+              <div class="note ai">
+                <div class="tag">agent suggestion</div>
+                over $100, so a human has to approve — reply implies it's automatic
+                <div class="btns"><b class="ok">accept</b><b>reject</b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <figcaption>Roughly what the reading interface looks like. The whole conversation is visible without opening anything; the agent's aside to itself is dashed and italic while the customer-facing reply is solid; the case labels across the top are clickable filters; a note is pinned to the exact sentence that prompted it, and an automated suggestion is visually distinct with accept and reject controls.</figcaption>
+      </figure>
     </div>
 
     <div class="lesson l-violet">

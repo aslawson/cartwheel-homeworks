@@ -1,0 +1,12 @@
+{
+  "versions": [
+    {
+      "judge_id": "scope_handling_overreach-v0",
+      "prompt_hash": "0571e3a9ac4e"
+    },
+    {
+      "judge_id": "scope_handling_overreach-v1",
+      "prompt_hash": "e34cad687a40"
+    }
+  ]
+}

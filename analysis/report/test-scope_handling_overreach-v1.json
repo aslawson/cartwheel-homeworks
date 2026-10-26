@@ -1,0 +1,32 @@
+{
+  "judge_id": "scope_handling_overreach-v1",
+  "model": "claude-haiku-4-5-20251001",
+  "split": "test",
+  "tpr": 0.8235,
+  "tnr": 0.4545,
+  "tpr_interval": [
+    0.5897,
+    0.9381
+  ],
+  "tnr_interval": [
+    0.2127,
+    0.7199
+  ],
+  "agreement": 0.6786,
+  "tp": 14,
+  "fn": 3,
+  "tn": 5,
+  "fp": 6,
+  "n": 28,
+  "disagreements": [
+    "support-0013",
+    "support-0015",
+    "support-0028",
+    "support-0030",
+    "support-0065",
+    "support-0070",
+    "support-0147",
+    "support-0176",
+    "support-0190"
+  ]
+}

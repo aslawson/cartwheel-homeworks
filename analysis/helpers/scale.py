@@ -47,6 +47,8 @@ def _decode_judge_rows(rows: list[dict[str, Any]], trace_ids: list[str]) -> Judg
         if tid not in expected or tid in batch:
             raise ValueError("DocETL returned an unexpected or duplicate trace id")
         verdict = row.get("result")
+        if isinstance(verdict, str):
+            verdict = verdict.strip()
         critique = row.get("critique")
         if verdict not in ("Pass", "Fail"):
             raise ValueError(f"DocETL result for trace {tid} must be Pass or Fail")
@@ -109,7 +111,8 @@ def _backend() -> str:
     Return ``docetl`` when a model key is present and ``none`` in an offline
     environment.
     """
-    if os.environ.get("GEMINI_API_KEY") or os.environ.get("OPENAI_API_KEY"):
+    if (os.environ.get("GEMINI_API_KEY") or os.environ.get("OPENAI_API_KEY")
+            or os.environ.get("ANTHROPIC_API_KEY")):
         return "docetl"
     return "none"
 

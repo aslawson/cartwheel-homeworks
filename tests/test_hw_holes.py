@@ -562,6 +562,7 @@ def test_m2_run_judge_never_calls_a_model_offline(analysis_state) -> None:
     os.environ.pop("CARTWHEEL_SCALE_BACKEND", None)
     os.environ.pop("GEMINI_API_KEY", None)
     os.environ.pop("OPENAI_API_KEY", None)
+    os.environ.pop("ANTHROPIC_API_KEY", None)
     with pytest.raises(RuntimeError):
         scale.classify_store("prompt", "gemini-flash", ["store-0000"])
 

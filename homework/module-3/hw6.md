@@ -39,13 +39,13 @@ uv sync
 uv tool install 'harbor==0.23.0'
 ```
 
-Choose the model you want Cartwheel to use and set `CARTWHEEL_MODEL` in your shell. Keep the same model for the baseline, CI, and trial-count comparison so the results describe one system.
+Choose the model you want Cartwheel to use and set `CARTWHEEL_MODEL` in your shell. Use a small model, preferably the one from Homework 3, so that your cases observe the failures you found; frontier models rarely fail in this synthetic world. Keep the same model for the baseline, CI, and trial-count comparison so the results describe one system.
 
 ```bash
 export CARTWHEEL_MODEL="YOUR_MODEL"
 ```
 
-Set the provider key required by that model in `.env`. The model is your choice. For a provider not named in `.env.example`, use its LiteLLM `provider/model` name so the adapter can identify the key. The agent model is separate from the frozen model used by an accepted Homework 5 judge.
+Set the provider key required by that model in `.env`. The model is your choice, but prefer a small model such as `gpt-4o-mini` or `claude-haiku-4-5`. For a provider not named in `.env.example`, use its LiteLLM `provider/model` name so the adapter can identify the key. The agent model is separate from the frozen model used by an accepted Homework 5 judge.
 
 If you did not finish Homework 5 or did not accept a judge, download the Git LFS files and apply the reference bundle:
 

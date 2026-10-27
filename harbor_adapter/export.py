@@ -18,6 +18,7 @@ SOURCE_PACKAGES = ("agent", "observability", "seed", "replay", "harbor_adapter")
 STUB_PACKAGES = ("scenarios", "server", "analysis", "optimize")
 
 MODEL_IDS = {
+    "claude-haiku-4-5": "anthropic/claude-haiku-4-5",
     "claude-opus-4-6": "anthropic/claude-opus-4-6",
     "glm-5.2": "together_ai/zai-org/GLM-5.2",
     "gemini-flash": "gemini/gemini-flash-latest",

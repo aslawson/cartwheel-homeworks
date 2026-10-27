@@ -117,13 +117,16 @@ def prompt_version(template: str | None = None) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Models. Three course models; any other value is passed to LiteLLM as-is.
+# Models. Course models; any other value is passed to LiteLLM as-is.
+# The default is deliberately a small model. Frontier models rarely make
+# mistakes in this synthetic world, which leaves too few failures to study.
 # ---------------------------------------------------------------------------
 
-DEFAULT_MODEL = "gpt-5.5"
+DEFAULT_MODEL = "gpt-4o-mini"
 
 # Course model name -> LiteLLM model string (for the non-OpenAI models).
 LITELLM_COURSE_MODELS = {
+    "claude-haiku-4-5": "anthropic/claude-haiku-4-5",
     "claude-opus-4-6": "anthropic/claude-opus-4-6",
     "glm-5.2": "together_ai/zai-org/GLM-5.2",
 }
@@ -133,9 +136,9 @@ def resolve_model(name: str | None) -> Any:
     """Turn a course model name into what Agent(model=...) expects.
 
     OpenAI models pass through as plain strings. Everything else goes through
-    LiteLLM (claude-opus-4-6 via the Anthropic API with ANTHROPIC_API_KEY,
-    glm-5.2 via Together AI with TOGETHER_API_KEY). Same agent code, three
-    providers; only this function changes.
+    LiteLLM (claude-haiku-4-5 and claude-opus-4-6 via the Anthropic API with
+    ANTHROPIC_API_KEY, glm-5.2 via Together AI with TOGETHER_API_KEY). Same
+    agent code, three providers; only this function changes.
     """
     import os
 

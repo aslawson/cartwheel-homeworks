@@ -1,0 +1,500 @@
+<meta charset="utf-8">
+<title>Cartwheel Judge Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+  :root {
+    --ground: #F4F5FA;
+    --surface: #FFFFFF;
+    --ink: #1A1B2E;
+    --muted: #5E607A;
+    --line: #E0E2EF;
+
+    --violet: #5B4BD6;  --violet-soft: #EDEBFC;
+    --teal:   #0E9384;  --teal-soft:   #DFF5F1;
+    --coral:  #DB4A4A;  --coral-soft:  #FDEAEA;
+    --amber:  #C57C00;  --amber-soft:  #FBF0D9;
+    --blue:   #2D6FD6;  --blue-soft:   #E6EFFC;
+
+    /* chart series: validated as a pair in each mode */
+    --s-tpr: #5B4BD6;
+    --s-tnr: #0E9384;
+
+    --display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+    --body: "Figtree", "Helvetica Neue", Arial, sans-serif;
+    --data: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #12131F;
+      --surface: #1C1E2D;
+      --ink: #EAEBF6;
+      --muted: #9EA1BD;
+      --line: #2C2F44;
+
+      --violet: #A294FF;  --violet-soft: #252246;
+      --teal:   #45C9B6;  --teal-soft:   #123330;
+      --coral:  #FF8A8A;  --coral-soft:  #37191C;
+      --amber:  #F0B14A;  --amber-soft:  #352814;
+      --blue:   #7BADFF;  --blue-soft:   #16263F;
+
+      --s-tpr: #8E7EF2;
+      --s-tnr: #209C8B;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #12131F;
+    --surface: #1C1E2D;
+    --ink: #EAEBF6;
+    --muted: #9EA1BD;
+    --line: #2C2F44;
+
+    --violet: #A294FF;  --violet-soft: #252246;
+    --teal:   #45C9B6;  --teal-soft:   #123330;
+    --coral:  #FF8A8A;  --coral-soft:  #37191C;
+    --amber:  #F0B14A;  --amber-soft:  #352814;
+    --blue:   #7BADFF;  --blue-soft:   #16263F;
+
+    --s-tpr: #8E7EF2;
+    --s-tnr: #209C8B;
+  }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding-inline: 22px;
+    padding-block: 52px 88px;
+    display: flex;
+    flex-direction: column;
+    gap: 44px;
+  }
+
+  .eyebrow {
+    font-family: var(--data);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--violet);
+    margin: 0;
+  }
+
+  header h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(2.2rem, 6.4vw, 3.1rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+    margin: 12px 0 0;
+  }
+
+  header .standfirst {
+    font-size: 1.14rem;
+    color: var(--muted);
+    margin: 16px 0 0;
+    text-wrap: pretty;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(122px, 1fr));
+    gap: 10px;
+    margin-top: 26px;
+  }
+  .facts div {
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--violet-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .facts div:nth-child(2) { background: var(--teal-soft); }
+  .facts div:nth-child(3) { background: var(--amber-soft); }
+  .facts div:nth-child(4) { background: var(--coral-soft); }
+  .facts b {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 1.7rem;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .facts span { font-size: 0.82rem; color: var(--muted); }
+
+  .part-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 4px;
+  }
+  .part-head .tag {
+    font-family: var(--data);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--violet);
+    color: var(--surface);
+    white-space: nowrap;
+  }
+  .part-head .rule { flex: 1; height: 2px; background: var(--line); }
+
+  section { display: flex; flex-direction: column; gap: 20px; }
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(1.6rem, 4vw, 2rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.24rem;
+    line-height: 1.25;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  p { margin: 0; text-wrap: pretty; }
+
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+  .steps li { display: flex; gap: 14px; align-items: flex-start; }
+  .steps .n {
+    font-family: var(--data);
+    font-size: 0.78rem;
+    font-weight: 500;
+    flex: 0 0 30px;
+    height: 30px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    color: #FFFFFF;
+    background: var(--violet);
+  }
+  .steps li:nth-child(2) .n { background: var(--blue); }
+  .steps li:nth-child(3) .n { background: var(--teal); }
+  .steps li:nth-child(4) .n { background: var(--amber); }
+  .steps li:nth-child(5) .n { background: var(--coral); }
+  .steps .what { font-size: 0.99rem; }
+  .steps .what b { font-weight: 700; }
+
+  .lesson {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 22px;
+    border-radius: 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+  .lesson .kicker {
+    font-family: var(--data);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+  .lesson.l-coral .kicker { color: var(--coral); }
+  .lesson.l-amber .kicker { color: var(--amber); }
+  .lesson.l-blue .kicker { color: var(--blue); }
+  .lesson.l-violet .kicker { color: var(--violet); }
+
+  .pull {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.22rem;
+    line-height: 1.32;
+    color: var(--violet);
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  .beforeafter { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .beforeafter > div { padding: 16px 18px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .beforeafter .b { background: var(--coral-soft); }
+  .beforeafter .a { background: var(--teal-soft); }
+  .beforeafter .label {
+    font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .beforeafter .b .label { color: var(--coral); }
+  .beforeafter .a .label { color: var(--teal); }
+  .beforeafter .said { font-size: 0.95rem; }
+
+  .tally { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .tally li { display: flex; gap: 12px; align-items: baseline; font-size: 0.97rem; }
+  .tally .mark {
+    font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase;
+    flex: 0 0 5.2rem; padding: 3px 0; border-radius: 6px; text-align: center;
+  }
+  .tally .pass { background: var(--teal-soft); color: var(--teal); }
+  .tally .fail { background: var(--coral-soft); color: var(--coral); }
+
+  figure { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  figure svg {
+    width: 100%;
+    height: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  figure svg text { font-family: var(--body); font-weight: 500; }
+  figcaption { font-size: 0.9rem; color: var(--muted); text-wrap: pretty; }
+
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; font-size: 0.88rem; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .legend i { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+
+  .dot { cursor: default; }
+  .dot circle.hit { fill: transparent; }
+  .dot:hover circle.mark { stroke: var(--ink); stroke-width: 2; }
+
+  details { font-size: 0.9rem; color: var(--muted); }
+  details summary { cursor: pointer; }
+  table { border-collapse: collapse; margin-top: 10px; width: 100%; font-variant-numeric: tabular-nums; color: var(--ink); }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); font-size: 0.88rem; }
+  th { color: var(--muted); font-weight: 500; }
+
+  code { font-family: var(--data); font-size: 0.86em; }
+
+  footer {
+    padding: 20px 22px;
+    border-radius: 14px;
+    background: var(--violet-soft);
+    font-size: 0.94rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .page > * { animation: rise 0.5s ease-out both; }
+    .page > *:nth-child(2) { animation-delay: 0.05s; }
+    .page > *:nth-child(3) { animation-delay: 0.1s; }
+    @keyframes rise { from { opacity: 0.5; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+
+
+<div class="page">
+
+  <header>
+    <p class="eyebrow">Evaluating and Improving AI Agents &middot; Homework Five</p>
+    <h1>Teaching a grader one mistake</h1>
+    <p class="standfirst">Homework four named the mistakes by hand. This week I picked one &mdash; the assistant sending customers somewhere else, or making up a process, when they ask for something it can't do &mdash; and built an AI grader to spot it. Then I checked how often the grader agrees with me on conversations it had never seen.</p>
+    <div class="facts">
+      <div><b>71</b><span>conversations labelled</span></div>
+      <div><b>28</b><span>real failures found</span></div>
+      <div><b>1</b><span>revision of the grader</span></div>
+      <div><b>5&thinsp;/&thinsp;11</b><span>test failures it caught</span></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="part-head"><span class="tag">Part one</span><span class="rule"></span></div>
+    <h2>What I did</h2>
+
+    <ol class="steps">
+      <li>
+        <span class="n">1</span>
+        <span class="what"><b>Picked one fault and hunted for examples of it.</b> Homework four left me 8 failures and 23 clean cases. I needed 30 of each, so I read the conversations most likely to go wrong: questions about things the shop can't do, like account changes, card disputes, the weather, and legal advice.</span>
+      </li>
+      <li>
+        <span class="n">2</span>
+        <span class="what"><b>Wrote the rule down</b> &mdash; what counts as sending someone elsewhere, what counts as a made-up process, and what is a different mistake that this grader should ignore.</span>
+      </li>
+      <li>
+        <span class="n">3</span>
+        <span class="what"><b>Split my answers three ways before writing anything.</b> Fifteen conversations to use as examples in the grader's instructions, 28 for practice, and 28 locked away for one final exam.</span>
+      </li>
+      <li>
+        <span class="n">4</span>
+        <span class="what"><b>Wrote the grader's instructions and practised.</b> The first version disagreed with me on 11 of 28 practice conversations. I read every disagreement, fixed the instructions once, and the second version agreed with me on 20 of 28.</span>
+      </li>
+      <li>
+        <span class="n">5</span>
+        <span class="what"><b>Locked the second version and sat the exam once.</b> It passed the good replies well and caught fewer than half of the real failures.</span>
+      </li>
+    </ol>
+
+    <figure>
+      <div class="legend" aria-hidden="true">
+        <span><i style="background: var(--s-tpr)"></i>Agrees with my &ldquo;fine&rdquo; (TPR)</span>
+        <span><i style="background: var(--s-tnr)"></i>Catches my &ldquo;failure&rdquo; (TNR)</span>
+      </div>
+      <svg viewBox="0 0 660 250" role="img" aria-label="Agreement rates with 95 percent ranges. First version on practice: agrees with fine 0.53 (0.31 to 0.74), catches failures 0.73 (0.43 to 0.90). Second version on practice: 0.76 (0.53 to 0.90) and 0.64 (0.35 to 0.85). Second version on the final exam: 0.82 (0.59 to 0.94) and 0.45 (0.21 to 0.72).">
+        <g stroke="var(--line)" stroke-width="1">
+          <line x1="140" y1="30" x2="140" y2="212"/>
+          <line x1="265" y1="30" x2="265" y2="212"/>
+          <line x1="390" y1="30" x2="390" y2="212"/>
+          <line x1="515" y1="30" x2="515" y2="212"/>
+          <line x1="640" y1="30" x2="640" y2="212"/>
+        </g>
+        <g font-size="11" fill="var(--muted)" text-anchor="middle">
+          <text x="140" y="232">0%</text>
+          <text x="265" y="232">25%</text>
+          <text x="390" y="232">50%</text>
+          <text x="515" y="232">75%</text>
+          <text x="640" y="232">100%</text>
+        </g>
+
+        <g font-size="12.5" fill="var(--ink)">
+          <text x="0" y="66">First version</text>
+          <text x="0" y="126">Second version</text>
+          <text x="0" y="186">Second version</text>
+        </g>
+        <g font-size="11" fill="var(--muted)">
+          <text x="0" y="82">practice</text>
+          <text x="0" y="142">practice</text>
+          <text x="0" y="202">final exam</text>
+        </g>
+
+        <!-- ranges -->
+        <g stroke-width="2" stroke-linecap="round">
+          <line x1="295" y1="61" x2="510" y2="61" stroke="var(--s-tpr)"/>
+          <line x1="355" y1="79" x2="590" y2="79" stroke="var(--s-tnr)"/>
+          <line x1="405" y1="121" x2="590" y2="121" stroke="var(--s-tpr)"/>
+          <line x1="315" y1="139" x2="565" y2="139" stroke="var(--s-tnr)"/>
+          <line x1="435" y1="181" x2="610" y2="181" stroke="var(--s-tpr)"/>
+          <line x1="245" y1="199" x2="500" y2="199" stroke="var(--s-tnr)"/>
+        </g>
+
+        <!-- points, with hover tooltips -->
+        <g class="dot"><title>First version, practice: agrees with my "fine" 9 of 17 = 53% (range 31%–74%)</title>
+          <circle class="hit" cx="405" cy="61" r="12"/><circle class="mark" cx="405" cy="61" r="6" fill="var(--s-tpr)" stroke="var(--surface)" stroke-width="2"/></g>
+        <g class="dot"><title>First version, practice: catches my failures 8 of 11 = 73% (range 43%–90%)</title>
+          <circle class="hit" cx="505" cy="79" r="12"/><circle class="mark" cx="505" cy="79" r="6" fill="var(--s-tnr)" stroke="var(--surface)" stroke-width="2"/></g>
+        <g class="dot"><title>Second version, practice: agrees with my "fine" 13 of 17 = 76% (range 53%–90%)</title>
+          <circle class="hit" cx="520" cy="121" r="12"/><circle class="mark" cx="520" cy="121" r="6" fill="var(--s-tpr)" stroke="var(--surface)" stroke-width="2"/></g>
+        <g class="dot"><title>Second version, practice: catches my failures 7 of 11 = 64% (range 35%–85%)</title>
+          <circle class="hit" cx="460" cy="139" r="12"/><circle class="mark" cx="460" cy="139" r="6" fill="var(--s-tnr)" stroke="var(--surface)" stroke-width="2"/></g>
+        <g class="dot"><title>Second version, final exam: agrees with my "fine" 14 of 17 = 82% (range 59%–94%)</title>
+          <circle class="hit" cx="550" cy="181" r="12"/><circle class="mark" cx="550" cy="181" r="6" fill="var(--s-tpr)" stroke="var(--surface)" stroke-width="2"/></g>
+        <g class="dot"><title>Second version, final exam: catches my failures 5 of 11 = 45% (range 21%–72%)</title>
+          <circle class="hit" cx="365" cy="199" r="12"/><circle class="mark" cx="365" cy="199" r="6" fill="var(--s-tnr)" stroke="var(--surface)" stroke-width="2"/></g>
+
+        <!-- direct labels on the exam row only -->
+        <g font-size="11" fill="var(--ink)">
+          <text x="618" y="185">82%</text>
+          <text x="508" y="203">45%</text>
+        </g>
+      </svg>
+      <figcaption>Each dot is a rate; each line is the range the true rate probably falls in, given so few conversations. Practice made the second version look like it caught about two in three failures. The exam says closer to one in two &mdash; and the range runs from one in five to seven in ten.</figcaption>
+      <details>
+        <summary>The numbers as a table</summary>
+        <table>
+          <tr><th>Run</th><th>Agrees with &ldquo;fine&rdquo;</th><th>Catches &ldquo;failure&rdquo;</th></tr>
+          <tr><td>First version, practice</td><td>9/17 = 53% (31&ndash;74%)</td><td>8/11 = 73% (43&ndash;90%)</td></tr>
+          <tr><td>Second version, practice</td><td>13/17 = 76% (53&ndash;90%)</td><td>7/11 = 64% (35&ndash;85%)</td></tr>
+          <tr><td>Second version, final exam</td><td>14/17 = 82% (59&ndash;94%)</td><td>5/11 = 45% (21&ndash;72%)</td></tr>
+        </table>
+      </details>
+    </figure>
+  </section>
+
+  <section>
+    <div class="part-head"><span class="tag">Part two</span><span class="rule"></span></div>
+    <h2>What I learned</h2>
+
+    <div class="lesson l-violet">
+      <span class="kicker">Where the time actually went</span>
+      <h3>Finding the failures was the work, not building the grader</h3>
+      <p>The grader can't be tested without enough real failures to test it against, and a well-behaved assistant mostly behaves. Homework four had given me eight. Where the other twenty came from:</p>
+      <ul class="tally">
+        <li><span class="mark fail">13 of 27</span><span>Questions the shop can't serve &mdash; account changes, disputes, off-topic asks. About one in two.</span></li>
+        <li><span class="mark pass">3 of 9</span><span>Conversations that merely <em>looked like</em> my earlier failures. Similar wording, mostly fine behaviour, and slow going.</span></li>
+        <li><span class="mark fail">4 of 4</span><span>Replies flagged by a scan for phrases like &ldquo;the carrier,&rdquo; &ldquo;your bank,&rdquo; or &ldquo;your dashboard.&rdquo; Thirteen flagged, five worth reading, four failures from the four I labelled. A cheap scan, and the best hit rate of the three.</span></li>
+      </ul>
+      <p>I stopped at 28 failures against a target of 30.</p>
+    </div>
+
+    <div class="lesson l-amber">
+      <span class="kicker">The question I kept asking</span>
+      <h3>&ldquo;Did it make that up?&rdquo; has a checkable answer</h3>
+      <p>Half my labelling time went on one question: is this instruction real? The way to settle it is the shop's own policy pages, not my sense of what sounds normal.</p>
+      <div class="beforeafter">
+        <div class="b">
+          <span class="label">Sounds made up, is real</span>
+          <p class="said">&ldquo;Change your card in account settings.&rdquo; &ldquo;Payouts run on Fridays.&rdquo; &ldquo;Tracking is on your order page.&rdquo; All three are written policy.</p>
+        </div>
+        <div class="a">
+          <span class="label">Sounds normal, is invented</span>
+          <p class="said">&ldquo;Contact the store through its page.&rdquo; &ldquo;Refuse the delivery.&rdquo; &ldquo;Five to seven business days.&rdquo; No policy says any of these.</p>
+        </div>
+      </div>
+      <p>The invented ones are the dangerous kind. They are exactly what a reasonable person would expect a shop to say, so they don't look wrong.</p>
+    </div>
+
+    <div class="lesson l-blue">
+      <span class="kicker">The rule grew while I used it</span>
+      <h3>My own labels knew a rule I hadn't written</h3>
+      <p>When I picked examples for the grader, two of my &ldquo;failure&rdquo; labels didn't fit my written rule. In both, a customer's dispute was past the 60-day limit, and the assistant offered to pass it to a person who &ldquo;may review it case by case.&rdquo; Nobody was sent elsewhere and nothing was invented &mdash; yet I'd failed both.</p>
+      <p class="pull">Hinting at a way round a policy limit is a made-up process too. It just doesn't name one.</p>
+      <p>That went into the rule. A second line went in after the first trial run: saying a refund's timing &ldquo;depends on your bank&rdquo; is information, not a redirect. It only fails when the customer is told to go and deal with someone else.</p>
+    </div>
+
+    <div class="lesson l-coral">
+      <span class="kicker">The disagreement that taught the most</span>
+      <h3>The first grader marked down an assistant for doing its job</h3>
+      <p>On practice, the first version of the grader failed eight replies I'd called fine. The clearest pattern among them: it decided that ordinary help was overreach.</p>
+      <div class="beforeafter">
+        <div class="b">
+          <span class="label">First grader said</span>
+          <p class="said">&ldquo;Would you like me to go ahead and issue the refund now?&rdquo; is an invented procedure. Fail.</p>
+        </div>
+        <div class="a">
+          <span class="label">What's true</span>
+          <p class="said">Issuing refunds is one of the assistant's own tools, and refunds of $100 or less go through automatically. The grader was wrong.</p>
+        </div>
+      </div>
+      <p>It did the same to a shop owner looking up their own listings, and to an eligible refund for a parcel that never arrived. The fix was to tell it what the assistant is allowed to do, and that ordinary requests the shop can serve are not its business. That one revision took agreement from 17 of 28 to 20 of 28. I stopped there, time-boxed.</p>
+    </div>
+
+    <div class="lesson l-amber">
+      <span class="kicker">Why the exam is kept locked</span>
+      <h3>Practice flattered the grader</h3>
+      <p>On practice, the second version caught 7 of 11 failures. On the exam &mdash; 28 conversations it had never seen, run exactly once &mdash; it caught 5 of 11. It still passed good replies reliably: 14 of 17.</p>
+      <p>That gap is the whole reason for keeping a locked set. Every fix I made was a fix for the practice conversations, so practice scores drift upward whether or not the grader got better in general. The exam is the only number that wasn't steered.</p>
+      <p>And eleven failures is not many. The honest statement is that this grader catches somewhere between one in five and seven in ten of these failures. That range is wide enough that more labels would matter more than more prompt tuning.</p>
+    </div>
+
+    <div class="lesson l-blue">
+      <span class="kicker">Vocabulary that tripped me up</span>
+      <h3>TPR and TNR aren't precision and recall</h3>
+      <p>In this course &ldquo;fine&rdquo; is the positive class. So the true positive rate is the share of my &ldquo;fine&rdquo; labels the grader also passed, which is recall. The true negative rate is the share of my failures it caught, which is recall for the other side. Precision is a different question &mdash; when the grader says something, how often is it right &mdash; and it shifts depending on how common failures are. The two rates don't, which is what lets a later exercise correct a measured failure rate for the grader's own mistakes.</p>
+    </div>
+
+    <div class="lesson l-violet">
+      <span class="kicker">Plumbing, briefly</span>
+      <h3>Small substitutions, written down</h3>
+      <p>The assignment specifies an OpenAI model; I only have an Anthropic key, so the grader ran on Claude Haiku 4.5 for both practice and the exam. The course's helper only recognised Google and OpenAI keys, so that check was widened, and the offline test that guarantees no accidental paid calls now clears the Anthropic key too. One reply came back as &ldquo;Pass&rdquo; with stray line breaks, so the verdict check now ignores surrounding whitespace &mdash; and still rejects anything that isn't Pass or Fail. The whole thing cost well under a dollar.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p><b>Where it ended up.</b> 71 labelled conversations (43 fine, 28 failures), a written rule, a split made once, two versions of the grader with every practice disagreement on file, and one locked exam: 82% agreement on fine replies, 45% of failures caught, with wide ranges on both.</p>
+    <p><b>Still open:</b> whether I'd trust this grader, the two missing failures, and the video.</p>
+  </footer>
+
+</div>

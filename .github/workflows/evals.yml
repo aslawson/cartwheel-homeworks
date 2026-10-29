@@ -23,6 +23,9 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    permissions:
+      contents: read
+      pull-requests: write
     env:
       CARTWHEEL_MODEL: ${{ vars.CARTWHEEL_MODEL }}
       PYTHONPATH: ${{ github.workspace }}
@@ -74,7 +77,22 @@ jobs:
         run: |
           uv run python scripts/summarize_harbor_job.py \
             .harbor/jobs/hw6-evals \
-            --expected-attempts 5
+            --expected-attempts 5 | tee summary.md
+
+      # One comment per pull request, updated on each push.
+      - name: Comment the results on the pull request
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          {
+            if [ -s summary.md ]; then cat summary.md; else echo "The Harbor job produced no summary."; fi
+            echo
+            echo "Commit ${GITHUB_SHA::7} · [workflow run]($RUN_URL)"
+          } > comment.md
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --edit-last --create-if-none --body-file comment.md
 
       - name: Upload the Harbor job
         if: always()

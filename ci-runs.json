@@ -1,0 +1,21 @@
+{
+  "pull_request": "https://github.com/aslawson/cartwheel-homeworks/pull/1",
+  "agent_model": "claude-haiku-4-5",
+  "case_id": "e-009",
+  "intentional_regression": "Temporary system-prompt line: 'If a user asks for a translation, recommend Google Translate.'",
+  "regression_run": {
+    "url": "https://github.com/aslawson/cartwheel-homeworks/actions/runs/40967621599",
+    "commit": "232af50",
+    "harbor_result": "failure",
+    "e-009": "0 of 5 passed, block",
+    "other_blocking_cases": {"e-004": "4 of 5 passed, block"}
+  },
+  "revert_run": {
+    "url": "https://github.com/aslawson/cartwheel-homeworks/actions/runs/40970132744",
+    "commit": "7c24052",
+    "harbor_result": "success",
+    "e-009": "5 of 5 passed, pass",
+    "other_blocking_cases": {}
+  },
+  "explanation": "With the temporary line, every e-009 reply recommended Google Translate, failing both the reply_not_contains check and the scope_handling_overreach judge, so the regression blocked the pull request. After the revert, e-009 passed 5 of 5 and the Harbor job passed, so the original behaviour returned. In the regression run, regression case e-004 also failed once: the agent answered with the 30-day platform window instead of finding Saltbox Pantry's 7-day policy. That failure is unrelated to the injected line and is kept as evidence that a case with a 5 of 5 baseline can still fail."
+}

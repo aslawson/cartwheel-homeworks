@@ -612,6 +612,14 @@ def test_m2_failure_report_matches_artifact_l_schema(analysis_state, tmp_path) -
     assert "modes" in report
     if not report["modes"]:
         pytest.skip("no modes in demo state; schema test needs populated patterns.json")
+    # The assertions below pin the course demo taxonomy (its lead mode and
+    # prevalence). A student's own HW4 taxonomy cannot match them, so check
+    # only the demo state.
+    if DEMO_MODE not in {mode["name"] for mode in report["modes"]}:
+        pytest.skip(
+            f"report holds the student's own taxonomy without the demo mode "
+            f"{DEMO_MODE!r}; this test checks the course demo state"
+        )
 
     # The originating-annotation map, to prove human origin per mode.
     patterns = json.loads((analysis_state / "patterns.json").read_text())

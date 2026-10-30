@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Evals Course Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --ground: #F4F5FA;
+    --surface: #FFFFFF;
+    --ink: #1A1B2E;
+    --muted: #5E607A;
+    --line: #E0E2EF;
+
+    --violet: #5B4BD6;  --violet-soft: #EDEBFC;
+    --teal:   #0E9384;  --teal-soft:   #DFF5F1;
+    --coral:  #DB4A4A;  --coral-soft:  #FDEAEA;
+    --amber:  #C57C00;  --amber-soft:  #FBF0D9;
+    --blue:   #2D6FD6;  --blue-soft:   #E6EFFC;
+
+    /* chart series: validated as a pair in each mode */
+    --s-n5:  #C57C00;
+    --s-n10: #5B4BD6;
+    --s-n15: #0E9384;
+
+    --display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+    --body: "Figtree", "Helvetica Neue", Arial, sans-serif;
+    --data: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #12131F;
+      --surface: #1C1E2D;
+      --ink: #EAEBF6;
+      --muted: #9EA1BD;
+      --line: #2C2F44;
+
+      --violet: #A294FF;  --violet-soft: #252246;
+      --teal:   #45C9B6;  --teal-soft:   #123330;
+      --coral:  #FF8A8A;  --coral-soft:  #37191C;
+      --amber:  #F0B14A;  --amber-soft:  #352814;
+      --blue:   #7BADFF;  --blue-soft:   #16263F;
+
+      --s-n5:  #BF841C;
+      --s-n10: #8E7EF2;
+      --s-n15: #209C8B;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #12131F;
+    --surface: #1C1E2D;
+    --ink: #EAEBF6;
+    --muted: #9EA1BD;
+    --line: #2C2F44;
+
+    --violet: #A294FF;  --violet-soft: #252246;
+    --teal:   #45C9B6;  --teal-soft:   #123330;
+    --coral:  #FF8A8A;  --coral-soft:  #37191C;
+    --amber:  #F0B14A;  --amber-soft:  #352814;
+    --blue:   #7BADFF;  --blue-soft:   #16263F;
+
+    --s-n5:  #BF841C;
+    --s-n10: #8E7EF2;
+    --s-n15: #209C8B;
+  }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding-inline: 22px;
+    padding-block: 52px 88px;
+    display: flex;
+    flex-direction: column;
+    gap: 44px;
+  }
+
+  .eyebrow {
+    font-family: var(--data);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--violet);
+    margin: 0;
+  }
+
+  header h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(2.2rem, 6.4vw, 3.1rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+    margin: 12px 0 0;
+  }
+
+  header .standfirst {
+    font-size: 1.14rem;
+    color: var(--muted);
+    margin: 16px 0 0;
+    text-wrap: pretty;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(122px, 1fr));
+    gap: 10px;
+    margin-top: 26px;
+  }
+  .facts div {
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--violet-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .facts div:nth-child(2) { background: var(--teal-soft); }
+  .facts div:nth-child(3) { background: var(--amber-soft); }
+  .facts div:nth-child(4) { background: var(--coral-soft); }
+  .facts b {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 1.7rem;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .facts span { font-size: 0.82rem; color: var(--muted); }
+
+  .part-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 4px;
+  }
+  .part-head .tag {
+    font-family: var(--data);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--violet);
+    color: var(--surface);
+    white-space: nowrap;
+  }
+  .part-head .rule { flex: 1; height: 2px; background: var(--line); }
+
+  section { display: flex; flex-direction: column; gap: 20px; }
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(1.6rem, 4vw, 2rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.24rem;
+    line-height: 1.25;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  p { margin: 0; text-wrap: pretty; }
+
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+  .steps li { display: flex; gap: 14px; align-items: flex-start; }
+  .steps .n {
+    font-family: var(--data);
+    font-size: 0.78rem;
+    font-weight: 500;
+    flex: 0 0 30px;
+    height: 30px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    color: #FFFFFF;
+    background: var(--violet);
+  }
+  .steps li:nth-child(2) .n { background: var(--blue); }
+  .steps li:nth-child(3) .n { background: var(--teal); }
+  .steps li:nth-child(4) .n { background: var(--amber); }
+  .steps li:nth-child(5) .n { background: var(--coral); }
+  .steps .what { font-size: 0.99rem; }
+  .steps .what b { font-weight: 700; }
+
+  .lesson {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 22px;
+    border-radius: 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+  .lesson .kicker {
+    font-family: var(--data);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+  .lesson.l-coral .kicker { color: var(--coral); }
+  .lesson.l-amber .kicker { color: var(--amber); }
+  .lesson.l-blue .kicker { color: var(--blue); }
+  .lesson.l-violet .kicker { color: var(--violet); }
+
+  .pull {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.22rem;
+    line-height: 1.32;
+    color: var(--violet);
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  .beforeafter { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .beforeafter > div { padding: 16px 18px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .beforeafter .b { background: var(--coral-soft); }
+  .beforeafter .a { background: var(--teal-soft); }
+  .beforeafter .label {
+    font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .beforeafter .b .label { color: var(--coral); }
+  .beforeafter .a .label { color: var(--teal); }
+  .beforeafter .said { font-size: 0.95rem; }
+
+  .tally { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .tally li { display: flex; gap: 12px; align-items: baseline; font-size: 0.97rem; }
+  .tally .mark {
+    font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase;
+    flex: 0 0 5.2rem; padding: 3px 0; border-radius: 6px; text-align: center;
+  }
+  .tally .pass { background: var(--teal-soft); color: var(--teal); }
+  .tally .fail { background: var(--coral-soft); color: var(--coral); }
+
+  figure { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  figure svg {
+    width: 100%;
+    height: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  figure svg text { font-family: var(--body); font-weight: 500; }
+  figcaption { font-size: 0.9rem; color: var(--muted); text-wrap: pretty; }
+
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; font-size: 0.88rem; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .legend i { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+
+  .dot { cursor: default; }
+  .dot circle.hit { fill: transparent; }
+  .dot:hover circle.mark { stroke: var(--ink); stroke-width: 2; }
+
+  details { font-size: 0.9rem; color: var(--muted); }
+  details summary { cursor: pointer; }
+  table { border-collapse: collapse; margin-top: 10px; width: 100%; font-variant-numeric: tabular-nums; color: var(--ink); }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); font-size: 0.88rem; }
+  th { color: var(--muted); font-weight: 500; }
+
+  code { font-family: var(--data); font-size: 0.86em; }
+
+  footer {
+    padding: 20px 22px;
+    border-radius: 14px;
+    background: var(--violet-soft);
+    font-size: 0.94rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .page > * { animation: rise 0.5s ease-out both; }
+    .page > *:nth-child(2) { animation-delay: 0.05s; }
+    .page > *:nth-child(3) { animation-delay: 0.1s; }
+    @keyframes rise { from { opacity: 0.5; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  }
+
+  .grid { width: 100%; border-collapse: separate; border-spacing: 4px; margin: 0; }
+  .grid th { font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; border: 0; padding: 4px 6px; }
+  .grid td { border: 0; padding: 0; font-size: 0.9rem; }
+  .grid td.case { padding: 6px 4px; }
+  .grid td.case small { display: block; color: var(--muted); font-size: 0.78rem; }
+  .grid .cell {
+    border-radius: 8px; padding: 8px 6px; text-align: center; font-family: var(--data); font-size: 0.85rem;
+    background: color-mix(in oklab, var(--teal) calc(var(--p) * 42%), var(--surface));
+    border: 1px solid var(--line);
+  }
+  .grid .cell.block { border: 2px solid var(--coral); }
+  .grid .cell.block::after { content: " blocked"; font-size: 0.7rem; color: var(--coral); }
+  .kind { font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 7px; border-radius: 6px; }
+  .kind.reg { background: var(--violet-soft); color: var(--violet); }
+  .kind.cap { background: var(--amber-soft); color: var(--amber); }
+  .page > *, section > *, figure, .lesson { min-width: 0; }
+  .gridwrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 10px; }
+
+  .page > *, section > *, .step, .mock { min-width: 0; }
+  .glossary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+  .glossary div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 0.9rem; }
+  .glossary b { display: block; font-family: var(--display); font-weight: 600; font-size: 0.98rem; }
+
+  .step { display: flex; flex-direction: column; gap: 14px; }
+  .stepnum { display: flex; align-items: center; gap: 12px; }
+  .stepnum .n { font-family: var(--data); font-size: 0.8rem; flex: 0 0 34px; height: 34px; border-radius: 999px; display: grid; place-items: center; color: #fff; background: var(--violet); }
+  .stepnum .hw { font-family: var(--data); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .doget { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+  .doget div { border-radius: 10px; padding: 12px 14px; font-size: 0.93rem; }
+  .doget .do { background: var(--violet-soft); }
+  .doget .get { background: var(--teal-soft); }
+  .doget .lab { font-family: var(--data); font-size: 0.64rem; letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 4px; }
+  .doget .do .lab { color: var(--violet); } .doget .get .lab { color: var(--teal); }
+
+  .mock { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 0 var(--line); }
+  .mock .bar { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-bottom: 1px solid var(--line); background: var(--ground); font-family: var(--data); font-size: 0.7rem; color: var(--muted); }
+  .mock .bar i { width: 9px; height: 9px; border-radius: 999px; background: var(--line); display: inline-block; }
+  .mock .bar span { margin-left: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mock .body { padding: 14px; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; }
+  .mockcap { font-size: 0.82rem; color: var(--muted); margin-top: -4px; }
+
+  .msg { border-radius: 10px; padding: 9px 12px; max-width: 92%; line-height: 1.45; }
+  .msg.user { background: var(--blue-soft); align-self: flex-start; }
+  .msg.bot { background: var(--ground); border: 1px solid var(--line); align-self: flex-end; }
+  .msg .who { font-family: var(--data); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 2px; }
+  mark { background: var(--amber-soft); color: inherit; border-bottom: 2px solid var(--amber); padding: 0 2px; }
+  .sticky { background: var(--amber-soft); border-left: 3px solid var(--amber); border-radius: 6px; padding: 8px 10px; font-size: 0.88rem; }
+  .sticky .who { font-family: var(--data); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); display: block; }
+
+  .mono { font-family: var(--data); font-size: 0.8rem; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+  .term { background: #15161F; color: #D7DAEA; border-radius: 10px; padding: 12px 14px; font-family: var(--data); font-size: 0.78rem; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
+  .term .ok { color: #5FD3B3; } .term .bad { color: #FF8A8A; } .term .dim { color: #8E92B0; }
+
+  .tree { font-family: var(--data); font-size: 0.8rem; line-height: 1.7; }
+  .tree .row { display: flex; gap: 8px; align-items: baseline; }
+  .tree .k { color: var(--muted); min-width: 0; }
+  .pill { font-family: var(--data); font-size: 0.66rem; padding: 1px 7px; border-radius: 6px; white-space: nowrap; }
+  .pill.llm { background: var(--violet-soft); color: var(--violet); }
+  .pill.tool { background: var(--teal-soft); color: var(--teal); }
+  .pill.fail { background: var(--coral-soft); color: var(--coral); }
+  .pill.pass { background: var(--teal-soft); color: var(--teal); }
+  .pill.block { background: var(--coral); color: #fff; }
+
+  .flowrow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
+  .flowrow > .card { flex: 1 1 180px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 0.86rem; display: flex; flex-direction: column; gap: 4px; }
+  .flowrow > .arrow { align-self: center; color: var(--muted); font-size: 1.2rem; }
+  .card .lab { font-family: var(--data); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .kv { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; font-family: var(--data); font-size: 0.76rem; }
+  .kv span:nth-child(odd) { color: var(--muted); }
+
+  .gridtbl { width: 100%; border-collapse: separate; border-spacing: 3px; font-size: 0.8rem; }
+  .gridtbl th { font-family: var(--data); font-size: 0.62rem; letter-spacing: 0.04em; color: var(--muted); font-weight: 500; text-align: center; border: 0; padding: 2px 4px; }
+  .gridtbl th:first-child { text-align: left; }
+  .gridtbl td { border: 0; text-align: center; padding: 6px 4px; border-radius: 6px; font-family: var(--data); font-size: 0.72rem; }
+  .gridtbl td:first-child { text-align: left; background: none; color: var(--ink); }
+  .gridtbl td.y { background: var(--coral-soft); color: var(--coral); }
+  .gridtbl td.n { background: var(--ground); color: var(--muted); }
+  .scroll { overflow-x: auto; }
+
+  .score { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .score div { border-radius: 10px; padding: 12px; text-align: center; }
+  .score b { display: block; font-family: var(--display); font-size: 1.6rem; font-weight: 800; }
+  .score .good { background: var(--teal-soft); } .score .weak { background: var(--coral-soft); }
+  .score span { font-size: 0.82rem; color: var(--muted); }
+
+  .runs { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; font-size: 0.85rem; }
+  .runs i { width: 16px; height: 16px; border-radius: 4px; display: inline-block; }
+  .runs i.p { background: var(--teal); } .runs i.f { background: var(--coral); }
+  .runs .lbl { min-width: 9.5rem; color: var(--muted); font-size: 0.82rem; }
+
+  .dots { display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; max-width: 360px; }
+  .dots i { aspect-ratio: 1; border-radius: 999px; background: var(--line); display: block; }
+  .dots i.r { background: var(--violet); } .dots i.k { background: var(--amber); } .dots i.b { background: var(--violet); box-shadow: 0 0 0 3px var(--amber); }
+  .legend2 { display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.82rem; color: var(--muted); }
+  .legend2 span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend2 i { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+
+  .formula { background: var(--ground); border: 1px dashed var(--line); border-radius: 10px; padding: 12px; font-family: var(--data); font-size: 0.82rem; text-align: center; }
+  .pending { display: inline-block; font-family: var(--data); font-size: 0.64rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 6px; background: var(--amber-soft); color: var(--amber); }
+</style></head><body>
+
+<div class="page">
+  <header>
+    <p class="eyebrow">Evaluating and Improving AI Agents · Homework 1–7 · first pass</p>
+    <h1>How to find, test and monitor what an AI agent gets wrong</h1>
+    <p class="standfirst">A walkthrough of seven course assignments, built on one practice agent: a customer-support assistant for a fictional online marketplace. Each step below shows what I did, what it produced, and a mock-up of what it looked like — following one real conversation the whole way through.</p>
+    <div class="facts">
+      <div><b>250</b><span>planned test conversations</span></div>
+      <div><b>7</b><span>failure types named by hand</span></div>
+      <div><b>10</b><span>automated tests on every change</span></div>
+      <div><b>50</b><span>conversations monitored before vs after</span></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="part-head"><span class="tag">Words used below</span><span class="rule"></span></div>
+    <div class="glossary">
+      <div><b>Trace</b>The recording of one conversation: every message, tool the agent used, and what the tool returned.</div>
+      <div><b>Scenario</b>A planned test conversation: who the customer is, what they ask, and what should happen.</div>
+      <div><b>Failure mode</b>A named, yes/no type of mistake, e.g. “sends the customer elsewhere”.</div>
+      <div><b>Grader (LLM judge)</b>An AI given written instructions to mark a conversation Pass or Fail for one failure mode.</div>
+      <div><b>Code check</b>A simple program check for an exact fact, e.g. “no refund was created”.</div>
+      <div><b>Regression / capability</b>A test that must keep passing vs one the agent can't do reliably yet.</div>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="stepnum"><span class="n" style="background:var(--violet)">1</span><div><span class="hw">Homework 1–2</span><h2 style="font-size:clamp(1.35rem,3.4vw,1.7rem)">Build the agent, and record everything it does</h2></div></div>
+    <div class="doget"><div class="do"><span class="lab">What I did</span>Filled in the support agent's tools (look up orders, check return eligibility, refund, cancel, escalate) and put it behind a server that logs every request to Langfuse.</div><div class="get"><span class="lab">What came out</span>A working agent where the <b>tools</b> enforce the rules (a refund over $100 waits for a person), and a <b>trace</b> for every conversation.</div></div>
+    <div class="mock"><div class="bar"><i></i><i></i><i></i><span>Langfuse · one trace</span></div><div class="body"><div class="tree">
+<div class="row"><span class="k">trace</span><b>support-0007</b><span class="k">· shopper 206 · prompt version stamped</span></div>
+<div class="row">&nbsp;├ <span class="pill llm">model</span> reads the message, decides to look up the order</div>
+<div class="row">&nbsp;├ <span class="pill tool">tool</span> check_return_eligibility(order 9839) → eligible, 16 days left</div>
+<div class="row">&nbsp;└ <span class="pill llm">model</span> writes the reply to the customer</div>
+</div></div></div><p class="mockcap">A trace is one conversation turn; each step inside it (model call, tool call) is recorded with its inputs and outputs. Without this, there is nothing to evaluate later.</p>
+  </section>
+  <section class="step">
+    <div class="stepnum"><span class="n" style="background:var(--violet)">2</span><div><span class="hw">Homework 3</span><h2 style="font-size:clamp(1.35rem,3.4vw,1.7rem)">Plan 250 test conversations on purpose</h2></div></div>
+    <div class="doget"><div class="do"><span class="lab">What I did</span>Listed the ways a request can differ (who asks, what they want, the order's state, which policy applies, how they write). Each planned conversation is one pick from each list. A model then wrote the customer's message — without seeing the expected answer.</div><div class="get"><span class="lab">What came out</span>250 planned conversations with a written expected result each, after a 30-conversation pilot. <b>50 were set aside</b> as the monitoring set for Homework 7.</div></div>
+    <div class="flowrow">
+      <div class="card"><span class="lab">1 · the plan</span><div class="kv"><span>role</span><span>shopper</span><span>intent</span><span>out of scope</span><span>style</span><span>repetitive, pressuring</span><span>turns</span><span>1</span></div></div>
+      <div class="arrow">→</div>
+      <div class="card"><span class="lab">2 · the customer's message</span>“i need this letter i got translated into spanish, can you just do that for me, i need the whole thing translated, this…”</div>
+      <div class="arrow">→</div>
+      <div class="card"><span class="lab">3 · the expected result</span>Declines in one or two sentences and points to what Cartwheel support can help with.</div>
+    </div>
+    <p class="mockcap">Scenario support-0003, followed through the rest of this page. Planning by dimensions stops a model from writing “where is my order?” two hundred times.</p>
+  </section>
+  <section class="step">
+    <div class="stepnum"><span class="n" style="background:var(--violet)">3</span><div><span class="hw">Homework 3</span><h2 style="font-size:clamp(1.35rem,3.4vw,1.7rem)">Run all 250 and store the results</h2></div></div>
+    <div class="doget"><div class="do"><span class="lab">What I did</span>Ran every planned conversation through the real agent (Claude Opus 4.6), in one sitting on 18 September.</div><div class="get"><span class="lab">What came out</span>Two records per conversation: the full <b>trace</b> in Langfuse (what everything later reads) and a one-line <b>result</b> saying it completed.</div></div>
+    <div class="mock"><div class="bar"><i></i><i></i><i></i><span>the scenario runner</span></div><div class="body"><div class="term"><span class="dim">$ python -m scenarios.runner support_scenarios.jsonl --model claude-opus-4-6</span>
+support-0001  completed  2 turns
+support-0002  completed  1 turn
+support-0003  completed  1 turn
+<span class="dim">…</span>
+<span class="ok">250 / 250 completed</span>  → traces in Langfuse, summary in final-results.jsonl</div></div></div>
+    <div class="mock"><div class="bar"><i></i><i></i><i></i><span>what the agent actually said · support-0003</span></div><div class="body"><div class="msg user"><span class="who">customer</span>i need this letter i got translated into spanish, can you just do that for me, i need the whole thing translated, this is important and i need it done, can someone actually translate it or not</div>
+<div class="msg bot"><span class="who">agent</span>I appreciate you reaching out, but translating documents isn't something I'm able to help with — I'm Cartwheel's shopping support assistant, so my scope is limited to things like: order status, returns, and refunds; product and policy questions; escalating issues to our human support team. <mark>For translation, you might try a dedicated service like Google Translate, DeepL, or a professional translator.</mark> I hope you get it sorted!</div></div></div>
+  </section>
+  <section class="step">
+    <div class="stepnum"><span class="n" style="background:var(--violet)">4</span><div><span class="hw">Homework 4</span><h2 style="font-size:clamp(1.35rem,3.4vw,1.7rem)">Read conversations and write down what's wrong</h2></div></div>
+    <div class="doget"><div class="do"><span class="lab">What I did</span>Built my own annotation UI that shows each conversation's full trajectory as one linear timeline: customer message, tool call, tool result, agent reply, in order. Then <b>open coding</b>: read conversations one by one, highlighted the exact words that bothered me, and wrote a note in my own words. No categories yet.</div><div class="get"><span class="lab">What came out</span>95 notes across the conversations I read. Conversations with nothing wrong got a note too.</div></div>
+    <div class="mock"><div class="bar"><i></i><i></i><i></i><span>my annotation UI · support-0001 · the trajectory, top to bottom</span></div><div class="body">
+<div class="msg user"><span class="who">1 · customer</span>i need help with taxes on stuff i resold through cartwheel. i have no idea what forms i need or what info to pull…</div>
+<div class="tree"><div class="row"><span class="pill tool">2 · tool call</span> search_help_center(“taxes reselling seller tax forms”)</div>
+<div class="row"><span class="pill tool">3 · tool result</span> cw-account-security: “…Requests for legal advice are outside support's scope…”</div></div>
+<div class="msg bot"><span class="who">4 · agent reply</span>I hear you… but tax advice falls outside what I'm able to help with as Cartwheel support. <mark>Here's what I <b>can</b> do and what I'd recommend: 1. Order &amp; earnings history…</mark></div>
+<div class="sticky"><span class="who">my note, pinned to the highlighted words</span>Should not give alternative guidance to their solution on something that is out of scope. We def should not give any tax/legal advice nor mention stuff we don't have documentation to back.</div>
+<div class="msg user"><span class="who">5 · customer (follow-up)</span>i still havent gotten a real answer here…</div>
+</div></div><p class="mockcap">Seeing the tool calls and results in line is what makes a judgement possible: here the policy lookup said legal advice is out of scope, and the reply still offered alternatives. Categories come later, from the notes.</p>
+  </section>
+  <section class="step">
+    <div class="stepnum"><span class="n" style="background:var(--violet)">5</span><div><span class="hw">Homework 4</span><h2 style="font-size:clamp(1.35rem,3.4vw,1.7rem)">Group the notes into named failure modes</h2></div></div>
+    <div class="doget"><div class="do"><span class="lab">What I did</span><b>Axial coding:</b> grouped notes that one fix would solve. Gave each group a name, a yes/no test someone else could apply, and “close negatives” — examples that look like the failure but aren't.</div><div class="get"><span class="lab">What came out</span>7 failure modes. The two most common in the first 31 conversations: unrequested narration and padding (13), and sending customers elsewhere or inventing a procedure (8).</div></div>
+    <div class="flowrow">
+      <div class="card"><span class="lab">my notes (four of them)</span>“Don't suggest an alternative place to look for answers. Just say you cannot answer.”<br>“Shouldn't assume route to fix in UI that it doesn't know about.”<br>“Made up — no policy supports refuse delivery.”<br>“Made up, nowhere do we say that reaching out to stores through store page is possible.”</div>
+      <div class="arrow">→</div>
+      <div class="card" style="flex:2 1 260px"><span class="lab">failure mode</span><b>scope_handling_overreach</b>
+        <span><b>Yes/no test:</b> on a request Cartwheel can't serve, does the reply point outside Cartwheel or invent a procedure no policy describes?</span>
+        <span><b>Close negative (not a failure):</b> declining a card change and pointing to Cartwheel's own account settings — that one is real policy.</span></div>
+    </div>
+  </section>
+  <section class="step">
+    <div class="stepnum"><span class="n" style="background:var(--violet)">6</span><div><span class="hw">Homework 4–5</span><h2 style="font-size:clamp(1.35rem,3.4vw,1.7rem)">Label conversations yes/no for each failure mode</h2></div></div>
+    <div class="doget"><div class="do"><span class="lab">What I did</span>Went back through the conversations and marked every failure mode present or absent — including the absent ones, which are what make the present ones meaningful.</div><div class="get"><span class="lab">What came out</span>A labelled grid. For the mode I built a grader for: 71 conversations, 28 failures. These labels are the ground truth everything else is checked against.</div></div>
+    <div class="mock"><div class="bar"><i></i><i></i><i></i><span>the label grid (real labels)</span></div><div class="body"><div class="scroll"><table class="gridtbl">
+<tr><th>conversation</th><th>sends elsewhere</th><th>wrong policy</th><th>guesses</th><th>repeats work</th></tr>
+<tr><td>support-0001 · taxes</td><td class="y">yes</td><td class="n">no</td><td class="n">no</td><td class="y">yes</td></tr>
+<tr><td>support-0003 · translate</td><td class="y">yes</td><td class="n">no</td><td class="n">no</td><td class="n">no</td></tr>
+<tr><td>support-0007 · return a novel</td><td class="n">no</td><td class="y">yes</td><td class="n">no</td><td class="n">no</td></tr>
+<tr><td>support-0009 · cancel dry bag</td><td class="n">no</td><td class="n">no</td><td class="y">yes</td><td class="n">no</td></tr>
+<tr><td>support-0018 · socket set</td><td class="n">no</td><td class="n">no</td><td class="y">yes</td><td class="n">no</td></tr>
+</table></div></div></div><p class="mockcap">Stored in the repo and copied into Langfuse as scores on each trace.</p>
+  </section>
+  <section class="step">
+    <div class="stepnum"><span class="n" style="background:var(--violet)">7</span><div><span class="hw">Homework 5</span><h2 style="font-size:clamp(1.35rem,3.4vw,1.7rem)">Build an automated grader, and measure how often it's wrong</h2></div></div>
+    <div class="doget"><div class="do"><span class="lab">What I did</span>Wrote instructions for an AI grader (an “LLM judge”) that reads a whole conversation and answers Pass or Fail with a reason. <b>Split my 71 labels three ways</b> before writing anything, then <b>hill-climbed</b> the prompt: run it on the practice set, read every disagreement with my labels, revise, run again. Froze the best version and sat the locked exam once.</div><div class="get"><span class="lab">What came out</span>A frozen grader plus its two error rates — how often it passes good replies, and how often it catches real failures. Exact facts get simple <b>code checks</b> instead.</div></div>
+    <div class="mock"><div class="bar"><i></i><i></i><i></i><span>the grader reading support-0003</span></div><div class="body"><div class="mono">You are an evaluator for Cartwheel… FAIL if any assistant message directs the user to an outside party as the solution…
+--- Trace to evaluate ---
+user: i need this letter i got translated into spanish…
+assistant: …For translation, you might try Google Translate, DeepL…</div>
+<div class="sticky" style="background:var(--coral-soft);border-color:var(--coral)"><span class="who" style="color:var(--coral)">grader · critique</span>The assistant correctly declines… However, it then redirects the user to outside parties: “For translation, you might try a dedicated service like Google Translate…” This is a clear redirect. <b>Result: Fail</b></div></div></div><p class="mockcap">The grader agreed with my label here.</p>
+    <div class="mock"><div class="bar"><i></i><i></i><i></i><span>the split · made once, before writing the prompt</span></div><div class="body">
+      <div style="display:flex;height:34px;border-radius:8px;overflow:hidden;font-family:var(--data);font-size:0.72rem;color:#fff">
+        <div style="flex:15;background:var(--violet);display:grid;place-items:center">train 15</div>
+        <div style="flex:28;background:var(--blue);display:grid;place-items:center">dev 28</div>
+        <div style="flex:28;background:var(--coral);display:grid;place-items:center">test 28</div>
+      </div>
+      <div class="kv" style="grid-template-columns:auto 1fr;font-family:var(--body);font-size:0.86rem;gap:4px 12px">
+        <b>Train</b><span>9 pass · 6 fail. The only place the prompt's worked examples may come from.</span>
+        <b>Dev</b><span>17 pass · 11 fail. The practice set: run the grader, read disagreements, revise.</span>
+        <b>Test</b><span>17 pass · 11 fail. Locked. Run exactly once, on the frozen version.</span>
+      </div>
+    </div></div>
+    <p class="mockcap">Each set keeps the same mix of passes and failures. If the prompt were tuned on the test set, its score would only measure how well it memorised those 28 conversations.</p>
+    <div class="mock"><div class="bar"><i></i><i></i><i></i><span>hill-climbing the prompt on the dev set</span></div><div class="body">
+      <div class="scroll"><table>
+        <tr><th>Version</th><th>Agrees with me</th><th>Passes good replies</th><th>Catches failures</th><th>What I changed</th></tr>
+        <tr><td>v0</td><td>17 / 28</td><td>9 / 17</td><td>8 / 11</td><td>first draft: definition, examples, Pass/Fail rules</td></tr>
+        <tr><td>v1</td><td>20 / 28</td><td>13 / 17</td><td>7 / 11</td><td>after reading the 11 disagreements: listed the agent's own tools as allowed, “answering a request we can serve is out of scope for this grader”, named UI a policy doesn't mention counts as invented</td></tr>
+      </table></div>
+      <div class="sticky"><span class="who">a disagreement that drove v1</span>v0 failed “Would you like me to go ahead and issue the refund now?” as an invented procedure. But issuing refunds is one of the agent's own tools — the grader was wrong, not the agent.</div>
+    </div></div>
+    <p class="mockcap">One revision, then frozen (time-boxed). Freezing pins the prompt and the model so the exam measures exactly what will be used later.</p>
+    <div class="score"><div class="good"><b>14 / 17</b><span>good replies it passed (82%)</span></div><div class="weak"><b>5 / 11</b><span>real failures it caught (45%)</span></div></div>
+    <p class="mockcap">The locked exam, run once on v1. Practice said it caught 7 of 11 failures; the exam says 5 of 11 — practice flatters, which is why the exam stays locked. A weak grader — it misses more than half the failures. The course's reference grader for a different failure (unsupported policy claims) scores 95% and 83%. Both numbers matter again in step 9.</p>
+  </section>
+  <section class="step">
+    <div class="stepnum"><span class="n" style="background:var(--violet)">8</span><div><span class="hw">Homework 6</span><h2 style="font-size:clamp(1.35rem,3.4vw,1.7rem)">Turn failures into tests that run on every code change</h2></div></div>
+    <div class="doget"><div class="do"><span class="lab">What I did</span>Wrote 10 test cases from three failure modes. Ran each 5 times with <b>Harbor</b>, an open-source runner for agent evaluations: it starts a fresh <b>Docker</b> container for every run, so no run can affect another. Then set up <b>GitHub Actions</b> so every pull request reruns all 10 on a clean GitHub machine — and broke the agent on purpose to prove it gets caught.</div><div class="get"><span class="lab">What came out</span>3 <b>regression</b> cases (passed 5/5; must keep passing — any failure blocks the change) and 7 <b>capability</b> cases (not reliable yet; reported, never blocking).</div></div>
+    <div class="mock"><div class="bar"><i></i><i></i><i></i><span>eval_cases/cases.jsonl · test e-009, based on support-0003</span></div><div class="body"><div class="mono">{
+  "id": "e-009",
+  "mode": "scope_handling_overreach",
+  "input": { "role": "shopper", "message": "i need this letter i got translated into spanish…" },
+  "expected": {
+    "checks": [{ "check": "reply_not_contains", "text": "google translate" }],
+    "judges": { "scope_handling_overreach": "pass" }
+  }
+}</div></div></div><p class="mockcap">Each case has a code check and, where wording matters, the grader from step 7.</p>
+    <div class="mock"><div class="bar"><i></i><i></i><i></i><span>what Harbor does for each of the 5 runs</span></div><div class="body">
+<div class="flowrow">
+  <div class="card"><span class="lab">1 · fresh container</span>Starts a new Docker container with the agent's code inside.</div><div class="arrow">→</div>
+  <div class="card"><span class="lab">2 · fresh world</span>Builds the same demo shop database every time: same users, orders, policies.</div><div class="arrow">→</div>
+  <div class="card"><span class="lab">3 · run the agent</span>Sends the case's message; the agent uses its real tools against that database.</div><div class="arrow">→</div>
+  <div class="card"><span class="lab">4 · grade</span>Runs the code checks and the grader on the trajectory: reward 1 (pass) or 0 (fail). Then deletes the container.</div>
+</div>
+<div class="term"><span class="dim">$ harbor run -p .harbor/tasks -a harbor_adapter.agent:CartwheelAgent -m claude-haiku-4-5 -e docker --n-attempts 5</span>
+  5/5 Mean: 0.600
+<span class="dim">┃ Trials ┃ Exceptions ┃  Mean ┃ Pass@2 ┃ Pass@4 ┃ Pass@5 ┃</span>
+│      5 │          0 │ 0.600 │  0.900 │  1.000 │  1.000 │
+<span class="dim">Reward 1.0 → 3 runs · Reward 0.0 → 2 runs</span>      <span class="ok">→ e-001 is a capability case (3 of 5)</span></div>
+</div></div>
+    <p class="mockcap">The course supplied the glue: one script turns each line of the test-case file into a Harbor task folder, and an adapter tells Harbor how to start Cartwheel inside the container. In GitHub Actions the same command runs on a clean virtual machine that already has Docker installed.</p>
+<div class="mock"><div class="bar"><i></i><i></i><i></i><span>5 runs of e-009, three times</span></div><div class="body"><div class="runs"><span class="lbl">baseline</span><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><span>5 / 5 → regression case</span></div>
+<div class="runs"><span class="lbl">bad line added</span><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><span>0 / 5</span> <span class="pill block">blocks the PR</span></div>
+<div class="runs"><span class="lbl">bad line reverted</span><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><span>5 / 5 → passes</span></div></div></div><p class="mockcap">The “bad line” was a temporary prompt instruction: “If a user asks for a translation, recommend Google Translate.” Every run then did, and CI blocked the pull request.</p>
+    <div class="mock"><div class="bar"><i></i><i></i><i></i><span>GitHub Actions · results table from the run with the bad line (excerpt)</span></div><div class="body"><div class="scroll"><table>
+<tr><th>Case</th><th>Kind</th><th>Passed</th><th>pass@3</th><th>pass^5</th><th>CI decision</th></tr>
+<tr><td>e-002</td><td>regression</td><td>5/5</td><td>1.00</td><td>1.00</td><td><span class="pill pass">pass</span></td></tr>
+<tr><td>e-007</td><td>capability</td><td>0/5</td><td>0.00</td><td>0.00</td><td><span class="pill pass">pass</span> (never blocks)</td></tr>
+<tr><td>e-009</td><td>regression</td><td>0/5</td><td>0.00</td><td>0.00</td><td><span class="pill block">block</span></td></tr>
+</table></div></div></div><p class="mockcap">pass@k: chance at least one of k tries works (“can it ever?”). pass^k: chance all k work (“can I count on it?”). Worst finding, e-007: asked to refund “the vase” when two match, the agent filed a $240 refund on a guess in 15 of 15 runs.</p>
+  </section>
+  <section class="step">
+    <div class="stepnum"><span class="n" style="background:var(--violet)">9</span><div><span class="hw">Homework 7 <span class="pending">in progress</span></span><h2 style="font-size:clamp(1.35rem,3.4vw,1.7rem)">Monitor the failure rate after shipping</h2></div></div>
+    <div class="doget"><div class="do"><span class="lab">What I did</span>Rerun the 50 monitoring conversations (“after”) and compare with the original run (“before”). In each period: grade a random 10, plus every conversation that looked up a policy (for inspection only). Correct the flagged rate for the grader's known error rates.</div><div class="get"><span class="lab">What came out</span>A before/after failure rate with a range, scores in Langfuse, and a daily scheduled job. The agent barely changed, so differences should be mostly chance.</div></div>
+    <div class="mock"><div class="bar"><i></i><i></i><i></i><span>which conversations get graded · “before” period</span></div><div class="body">
+      <div class="dots"><i class="k"></i><i></i><i class="b"></i><i></i><i class="k"></i><i class="r"></i><i></i><i class="k"></i><i></i><i class="b"></i><i></i><i class="k"></i><i></i><i class="r"></i><i></i><i class="k"></i><i></i><i class="b"></i><i></i><i class="k"></i><i></i><i></i><i class="r"></i><i></i><i class="k"></i><i></i><i></i><i class="k"></i><i></i><i></i><i class="b"></i><i></i><i></i><i class="k"></i><i></i><i></i><i class="r"></i><i></i><i></i><i class="k"></i><i></i><i class="b"></i><i></i><i></i><i></i><i class="k"></i><i></i><i></i><i class="r"></i><i></i></div>
+      <div class="legend2"><span><i style="background:var(--violet)"></i>random 10 → the rate</span><span><i style="background:var(--amber)"></i>policy lookups (16) → inspect only</span><span><i style="background:var(--line)"></i>not graded</span></div>
+      <p class="mockcap" style="margin:0">5 conversations are in both groups and are graded once: 21 grader calls. Positions are illustrative.</p>
+    </div></div>
+    <div class="formula">corrected rate = (flagged rate − false-alarm rate) ÷ (catch rate − false-alarm rate)</div>
+    <div class="scroll"><table>
+      <tr><th>“Before” period</th><th>Flagged</th><th>Raw</th><th>Corrected</th><th>95% range</th></tr>
+      <tr><td>Reference grader (catches 83%, false alarms 5%)</td><td>2 of 10</td><td>20%</td><td>19%</td><td>0–58%</td></tr>
+      <tr><td>My grader (catches 45%, false alarms 18%)</td><td>2 of 10</td><td>20%</td><td>8%</td><td>0–100%</td></tr>
+      <tr><td>“After” period</td><td colspan="4"><span class="pending">pending</span></td></tr>
+    </table></div>
+    <p class="mockcap">Same raw count, very different answers. A weak grader's flags are partly false alarms, so the correction discounts them — and its range is too wide to say anything. A noisy grader also shrinks real changes: mine would show a true 10-point drop as about 3.</p>
+  </section>
+
+  <footer>
+    <p><b>The thread:</b> record everything → a person names the failures → build graders and measure how wrong they are → use them to block bad changes before shipping and to watch failure rates after.</p>
+    <p><b>Still to do:</b> the Homework 7 “after” run, the daily scheduled monitor and its dashboard, the write-ups, and videos.</p>
+  </footer>
+</div>
+</body></html>

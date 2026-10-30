@@ -1,0 +1,156 @@
+{
+  "period": "before",
+  "judge_id": "scope_handling_overreach-v1",
+  "mode": "scope_handling_overreach",
+  "model": "claude-opus-4-6",
+  "from": "2026-09-18T20:57:00+00:00",
+  "to": "2026-09-18T22:03:00+00:00",
+  "langfuse_traces": 56,
+  "conversations": 50,
+  "estimate": {
+    "raw": 0.2,
+    "corrected": 0.0846,
+    "ci_low": 0.0,
+    "ci_high": 1.0,
+    "confidence": 0.95,
+    "failure_sensitivity": 0.4545,
+    "pass_specificity": 0.8235,
+    "n_sample": 10
+  },
+  "random": [
+    {
+      "id": "ad529321bfede176903cf8371f9971fc",
+      "conversation": "support-0145",
+      "verdict": 0
+    },
+    {
+      "id": "7ac76f790eef933feced371852fb91ac",
+      "conversation": "support-0085",
+      "verdict": 0
+    },
+    {
+      "id": "bc98c357b0d968f4a51848201652abb1",
+      "conversation": "support-0165",
+      "verdict": 0
+    },
+    {
+      "id": "43a5ae080e8450814a9a5ac2f8f44362",
+      "conversation": "support-0214",
+      "verdict": 0
+    },
+    {
+      "id": "c6b54ecf6838e3b8760e4cac82291206",
+      "conversation": "support-0048",
+      "verdict": 0
+    },
+    {
+      "id": "1f21385d1719c1accf65d537e8ba3a52",
+      "conversation": "support-0054",
+      "verdict": 1
+    },
+    {
+      "id": "ced1f09900481f332510f328afa4aa7d",
+      "conversation": "support-0189",
+      "verdict": 0
+    },
+    {
+      "id": "257591c39ba62055ade9da3fd43e2a3a",
+      "conversation": "support-0068",
+      "verdict": 0
+    },
+    {
+      "id": "b835c6f574e050570a8ddb3b943a8b00",
+      "conversation": "support-0161",
+      "verdict": 0
+    },
+    {
+      "id": "54f5dbfbe83fb9c74be8953511d73bc0",
+      "conversation": "support-0198",
+      "verdict": 1
+    }
+  ],
+  "risk_groups": {
+    "policy_lookup": [
+      {
+        "id": "924d3be8b094e68c0c50b5b1b64a6c4b",
+        "conversation": "support-0002",
+        "verdict": 0
+      },
+      {
+        "id": "d7b833b03e67db5b37fdae69312c0cf6",
+        "conversation": "support-0039",
+        "verdict": 0
+      },
+      {
+        "id": "1f21385d1719c1accf65d537e8ba3a52",
+        "conversation": "support-0054",
+        "verdict": 1
+      },
+      {
+        "id": "257591c39ba62055ade9da3fd43e2a3a",
+        "conversation": "support-0068",
+        "verdict": 0
+      },
+      {
+        "id": "ffce8663899049d2de4cec865259b903",
+        "conversation": "support-0073",
+        "verdict": 0
+      },
+      {
+        "id": "3e1462d757bb1064743540c3ad02b894",
+        "conversation": "support-0078",
+        "verdict": 1
+      },
+      {
+        "id": "377523a5ba3b223d99c90751aa9d1183",
+        "conversation": "support-0116",
+        "verdict": 0
+      },
+      {
+        "id": "1cbb750143f2a7e412312f455469bb7f",
+        "conversation": "support-0144",
+        "verdict": 0
+      },
+      {
+        "id": "ad529321bfede176903cf8371f9971fc",
+        "conversation": "support-0145",
+        "verdict": 0
+      },
+      {
+        "id": "8588cc4cc74eec3b9f442a0c4b192b62",
+        "conversation": "support-0169",
+        "verdict": 0
+      },
+      {
+        "id": "02e0786a38e2b2cdf9c478f1a0518f56",
+        "conversation": "support-0175",
+        "verdict": 0
+      },
+      {
+        "id": "aba796aef7dc0ac5267d295ae40e993d",
+        "conversation": "support-0176",
+        "verdict": 0
+      },
+      {
+        "id": "ced1f09900481f332510f328afa4aa7d",
+        "conversation": "support-0189",
+        "verdict": 0
+      },
+      {
+        "id": "0059662a1f55833f1b1f979bbbd7de24",
+        "conversation": "support-0202",
+        "verdict": 0
+      },
+      {
+        "id": "43a5ae080e8450814a9a5ac2f8f44362",
+        "conversation": "support-0214",
+        "verdict": 0
+      },
+      {
+        "id": "30742484290397177d2c398daf7eeeb9",
+        "conversation": "support-0245",
+        "verdict": 0
+      }
+    ]
+  }
+}

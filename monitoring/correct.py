@@ -4,6 +4,25 @@ from __future__ import annotations
 
 from typing import Any, Sequence
 
+import numpy as np
+
+
+def _rogan_gladen(raw: float, sensitivity: float, specificity: float) -> float | None:
+    """Correct a raw flag rate for judge error; None when it cannot be done."""
+    denominator = sensitivity + specificity - 1
+    # A judge no better than chance (or worse) carries no usable correction.
+    if denominator <= 0:
+        return None
+    return (raw + specificity - 1) / denominator
+
+
+def _rates(labels: np.ndarray, preds: np.ndarray) -> tuple[float, float] | None:
+    """Failure sensitivity and pass specificity; None if a class is absent."""
+    failures, passes = labels == 1, labels == 0
+    if not failures.any() or not passes.any():
+        return None
+    return float(preds[failures].mean()), float((preds[passes] == 0).mean())
+
 
 def corrected_mode_prevalence(
     sample_preds: Sequence[int],
@@ -55,5 +74,50 @@ def corrected_mode_prevalence(
             lengths, a value is not 0 or 1, a class is absent, the judge is
             missing a usable correction, or no bootstrap replicate is valid.
     """
-    ### YOUR CODE HERE (hw7)
-    raise NotImplementedError("hw7: implement corrected_mode_prevalence")
+    sample = np.asarray(sample_preds, dtype=int)
+    labels = np.asarray(test_labels, dtype=int)
+    preds = np.asarray(test_preds, dtype=int)
+    if sample.size == 0 or labels.size == 0:
+        raise ValueError("sample and held-out inputs must be nonempty")
+    if labels.size != preds.size:
+        raise ValueError("held-out labels and predictions differ in length")
+    for values in (sample, labels, preds):
+        if not np.isin(values, (0, 1)).all():
+            raise ValueError("verdicts and labels must be 0 or 1")
+
+    rates = _rates(labels, preds)
+    if rates is None:
+        raise ValueError("held-out labels need both failures and passes")
+    sensitivity, specificity = rates
+    raw = float(sample.mean())
+    point = _rogan_gladen(raw, sensitivity, specificity)
+    if point is None:
+        raise ValueError("judge is no better than chance; no usable correction")
+
+    # Resample the monitoring verdicts and the held-out pairs independently.
+    rng = np.random.default_rng(seed)
+    estimates: list[float] = []
+    for _ in range(bootstrap_iterations):
+        raw_b = float(sample[rng.integers(0, sample.size, sample.size)].mean())
+        idx = rng.integers(0, labels.size, labels.size)
+        rates_b = _rates(labels[idx], preds[idx])
+        if rates_b is None:
+            continue
+        estimate = _rogan_gladen(raw_b, *rates_b)
+        if estimate is not None:
+            estimates.append(min(1.0, max(0.0, estimate)))
+    if not estimates:
+        raise ValueError("no bootstrap replicate produced a usable correction")
+
+    tail = (1 - confidence) / 2 * 100
+    ci_low, ci_high = np.percentile(estimates, [tail, 100 - tail])
+    return {
+        "raw": round(raw, 4),
+        "corrected": round(min(1.0, max(0.0, point)), 4),
+        "ci_low": round(float(ci_low), 4),
+        "ci_high": round(float(ci_high), 4),
+        "confidence": confidence,
+        "failure_sensitivity": round(sensitivity, 4),
+        "pass_specificity": round(specificity, 4),
+        "n_sample": int(sample.size),
+    }

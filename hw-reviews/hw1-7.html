@@ -431,9 +431,9 @@
       <tr><td><b>Grader</b><br><span class="mockcap">LLM judge · HW5</span></td><td>One prompt that checks <b>one</b> failure mode</td><td>any conversation</td><td>Pass/Fail for that one error</td></tr>
       <tr><td><b>Code check</b></td><td>A simple program test for one exact fact</td><td>any conversation</td><td>Pass/Fail</td></tr>
       <tr><td><b>Test case</b><br><span class="mockcap">HW6</span></td><td>A fixed input <b>plus several checks</b> (code checks and graders)</td><td>a planned conversation, rerun on every change</td><td>Pass only if every check passes</td></tr>
-      <tr><td><b>Monitor</b><br><span class="mockcap">HW7</span></td><td>A grader run over a <b>sample of real traffic</b></td><td>conversations that already happened</td><td>A rate for each failure mode</td></tr>
+      <tr><td><b>Monitor</b><br><span class="mockcap">HW7</span></td><td>Graders run over a <b>sample of real traffic</b>, or general code checks run over <b>all of it</b></td><td>conversations that already happened</td><td>A rate for each failure mode (grader rates corrected for the grader's errors)</td></tr>
     </table></div>
-    <p class="mockcap">Each grader checks one failure mode on purpose: its catch rate and false-alarm rate can then be measured, and a monitor needs those to correct the rate it reports. Test cases bundle checks to ask &ldquo;does this still work?&rdquo;; a monitor counts one error at a time to ask &ldquo;how often does this happen?&rdquo;</p>
+    <p class="mockcap">Each grader checks one failure mode on purpose: its catch rate and false-alarm rate can then be measured, and a monitor needs those to correct the rate it reports. Code checks are free, so a monitor can run them on every conversation with no correction — but only general rules (&ldquo;no refund before the order was looked up&rdquo;), not case-specific ones (&ldquo;the reply contains 14&rdquo;). Test cases bundle checks to ask &ldquo;does this still work?&rdquo;; a monitor counts one error at a time to ask &ldquo;how often does this happen?&rdquo;</p>
   </section>
 
   <section class="step">

@@ -508,12 +508,12 @@ assistant: …For translation, you might try Google Translate, DeepL…</div>
         <div style="flex:28;background:var(--coral);display:grid;place-items:center">test 28</div>
       </div>
       <div class="kv" style="grid-template-columns:auto 1fr;font-family:var(--body);font-size:0.86rem;gap:4px 12px">
-        <b>Train</b><span>9 pass · 6 fail. The only place the prompt's worked examples may come from.</span>
-        <b>Dev</b><span>17 pass · 11 fail. The practice set: run the grader, read disagreements, revise.</span>
-        <b>Test</b><span>17 pass · 11 fail. Locked. Run exactly once, on the frozen version.</span>
+        <b>Train</b><span>Never graded. The pool the prompt's examples come from: 4 of these 15 became worked examples in the prompt (a clear pass, a clear fail, and one borderline of each).</span>
+        <b>Dev</b><span>17 labelled pass · 11 fail. The practice set: run the grader, compare with my labels, read disagreements, revise.</span>
+        <b>Test</b><span>17 labelled pass · 11 fail. Locked. Graded exactly once, on the frozen version.</span>
       </div>
     </div></div>
-    <p class="mockcap">Each set keeps the same mix of passes and failures. If the prompt were tuned on the test set, its score would only measure how well it memorised those 28 conversations.</p>
+    <p class="mockcap">Each set keeps a similar mix of my pass and fail labels. If the prompt were tuned on the test set, its score would only measure how well it memorised those 28 conversations.</p>
     <div class="mock"><div class="bar"><i></i><i></i><i></i><span>hill-climbing the prompt on the dev set</span></div><div class="body">
       <div class="scroll"><table>
         <tr><th>Version</th><th>Agrees with me</th><th>Passes good replies</th><th>Catches failures</th><th>What I changed</th></tr>

@@ -537,6 +537,22 @@ assistant: …For translation, you might try Google Translate, DeepL…</div>
     <p class="mockcap">One revision, then frozen (time-boxed). Freezing pins the prompt and the model so the exam measures exactly what will be used later.</p>
     <div class="score"><div class="good"><b>14 / 17</b><span>good replies it passed (82%)</span></div><div class="weak"><b>5 / 11</b><span>real failures it caught (45%)</span></div></div>
     <p class="mockcap">The locked exam, run once on v1. Practice said it caught 7 of 11 failures; the exam says 5 of 11 — practice flatters, which is why the exam stays locked. A weak grader — it misses more than half the failures. The course's grader for a different failure mode, unsupported policy claims, scores 95% and 83%. Both numbers matter again in step 9.</p>
+    <div class="mock"><div class="bar"><i></i><i></i><i></i><span>the intended loop vs what I did</span></div><div class="body">
+      <div class="flowrow">
+        <div class="card"><span class="lab">the method (validate-evaluator skill)</span>
+          <span>1. Run on dev, read every disagreement, revise the prompt.</span>
+          <span>2. Repeat until both rates reach the <b>target of 90%</b> &mdash; at least the <b>minimum of 80%</b>.</span>
+          <span>3. Only then run the locked test set, exactly once.</span>
+          <span>4. If test disappoints, don't tune on it: label new conversations for a fresh dev and test set.</span></div>
+        <div class="card"><span class="lab">what I did (time-boxed)</span>
+          <span>One revision: dev went from 9/17 &amp; 8/11 to 13/17 &amp; 7/11 &mdash; <b>76% and 64%</b>, below the 80% minimum.</span>
+          <span>Froze it anyway and ran the exam: <b>82% and 45%</b>.</span>
+          <span>Moved on to keep the homework on schedule. In Homework 7 it became a useful example of what a weak grader does to monitoring.</span></div>
+      </div>
+      <div class="sticky"><span class="who">if I kept going · the skill's fixes for my case</span>
+        <b>Catching failures is the weak rate</b> &rarr; study the failures it missed. &nbsp;<b>Both stuck below target</b> &rarr; split the criterion: &ldquo;sends the customer elsewhere&rdquo; and &ldquo;invents a procedure&rdquo; are really two checks in one prompt. &nbsp;<b>Still low</b> &rarr; try a stronger model than Haiku (the course's grader runs on Opus). &nbsp;<b>Labels look inconsistent</b> &rarr; revisit the definition, then relabel.</div>
+    </div></div>
+    <p class="mockcap">The homework sets no required score, but the course's method is clear: a grader below 80% on either rate isn't ready to be trusted.</p>
   </section>
   <section class="step">
     <div class="stepnum"><span class="n" style="background:var(--violet)">8</span><div><span class="hw">Homework 6</span><h2 style="font-size:clamp(1.35rem,3.4vw,1.7rem)">Turn failures into tests that run on every code change</h2></div></div>

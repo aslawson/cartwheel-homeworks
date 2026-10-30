@@ -612,6 +612,16 @@ assistant: …For translation, you might try Google Translate, DeepL…</div>
   <g font-size="11" fill="var(--ink)"><text x="82" y="149.7">19%</text><text x="82" y="190.4">8%</text><text x="590" y="105.2" text-anchor="end">44% · 44%</text></g>
 </svg>
     </div></div>
+    <div class="mock"><div class="bar"><i></i><i></i><i></i><span>correcting the rate for the grader's mistakes</span></div><div class="body">
+      <p style="margin:0">A grader's raw flag rate isn't the true failure rate: it misses some real failures and false-alarms on some good replies. Its exam results from Homework 5 say by how much, so the flag rate can be corrected (the Rogan&ndash;Gladen method):</p>
+      <div class="formula">true rate = (flagged rate − false-alarm rate) ÷ (catch rate − false-alarm rate)</div>
+      <div class="scroll"><table>
+        <tr><th>“Before” period</th><th>Flagged</th><th>Catch rate</th><th>False alarms</th><th>Corrected</th><th>95% range</th></tr>
+        <tr><td>Unsupported policy claim</td><td>2 of 10 (20%)</td><td>83%</td><td>5%</td><td>(0.200 − 0.053) ÷ 0.781 = <b>19%</b></td><td>0–58%</td></tr>
+        <tr><td>Scope overreach</td><td>2 of 10 (20%)</td><td>45%</td><td>18%</td><td>(0.200 − 0.176) ÷ 0.278 = <b>8%</b></td><td>0–100%</td></tr>
+      </table></div>
+      <p class="mockcap" style="margin:0">Same raw count, different answers: the scope grader false-alarms on 18% of good replies, so most of its flags are discounted. The range comes from resampling both the 10 verdicts and the grader's exam results thousands of times (a bootstrap), so a grader measured on few labels gets a wide range. Only the random 10 feed the rate &mdash; the risk group is chosen for being risky, so it would inflate it.</p>
+    </div></div>
     <p class="keep"><b>Worth keeping:</b> a weak grader shrinks real changes — the scope-overreach grader would show a true 10-point drop as about 3. Grader quality decides whether monitoring can tell you anything.</p>
   </section>
 

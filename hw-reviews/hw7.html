@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cartwheel Monitor Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --ground: #F4F5FA;
+    --surface: #FFFFFF;
+    --ink: #1A1B2E;
+    --muted: #5E607A;
+    --line: #E0E2EF;
+
+    --violet: #5B4BD6;  --violet-soft: #EDEBFC;
+    --teal:   #0E9384;  --teal-soft:   #DFF5F1;
+    --coral:  #DB4A4A;  --coral-soft:  #FDEAEA;
+    --amber:  #C57C00;  --amber-soft:  #FBF0D9;
+    --blue:   #2D6FD6;  --blue-soft:   #E6EFFC;
+
+    /* chart series: validated as a pair in each mode */
+    --s-n5:  #C57C00;
+    --s-n10: #5B4BD6;
+    --s-n15: #0E9384;
+
+    --display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+    --body: "Figtree", "Helvetica Neue", Arial, sans-serif;
+    --data: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #12131F;
+      --surface: #1C1E2D;
+      --ink: #EAEBF6;
+      --muted: #9EA1BD;
+      --line: #2C2F44;
+
+      --violet: #A294FF;  --violet-soft: #252246;
+      --teal:   #45C9B6;  --teal-soft:   #123330;
+      --coral:  #FF8A8A;  --coral-soft:  #37191C;
+      --amber:  #F0B14A;  --amber-soft:  #352814;
+      --blue:   #7BADFF;  --blue-soft:   #16263F;
+
+      --s-n5:  #BF841C;
+      --s-n10: #8E7EF2;
+      --s-n15: #209C8B;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #12131F;
+    --surface: #1C1E2D;
+    --ink: #EAEBF6;
+    --muted: #9EA1BD;
+    --line: #2C2F44;
+
+    --violet: #A294FF;  --violet-soft: #252246;
+    --teal:   #45C9B6;  --teal-soft:   #123330;
+    --coral:  #FF8A8A;  --coral-soft:  #37191C;
+    --amber:  #F0B14A;  --amber-soft:  #352814;
+    --blue:   #7BADFF;  --blue-soft:   #16263F;
+
+    --s-n5:  #BF841C;
+    --s-n10: #8E7EF2;
+    --s-n15: #209C8B;
+  }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding-inline: 22px;
+    padding-block: 52px 88px;
+    display: flex;
+    flex-direction: column;
+    gap: 44px;
+  }
+
+  .eyebrow {
+    font-family: var(--data);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--violet);
+    margin: 0;
+  }
+
+  header h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(2.2rem, 6.4vw, 3.1rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+    margin: 12px 0 0;
+  }
+
+  header .standfirst {
+    font-size: 1.14rem;
+    color: var(--muted);
+    margin: 16px 0 0;
+    text-wrap: pretty;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(122px, 1fr));
+    gap: 10px;
+    margin-top: 26px;
+  }
+  .facts div {
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--violet-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .facts div:nth-child(2) { background: var(--teal-soft); }
+  .facts div:nth-child(3) { background: var(--amber-soft); }
+  .facts div:nth-child(4) { background: var(--coral-soft); }
+  .facts b {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 1.7rem;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .facts span { font-size: 0.82rem; color: var(--muted); }
+
+  .part-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 4px;
+  }
+  .part-head .tag {
+    font-family: var(--data);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--violet);
+    color: var(--surface);
+    white-space: nowrap;
+  }
+  .part-head .rule { flex: 1; height: 2px; background: var(--line); }
+
+  section { display: flex; flex-direction: column; gap: 20px; }
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(1.6rem, 4vw, 2rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.24rem;
+    line-height: 1.25;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  p { margin: 0; text-wrap: pretty; }
+
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+  .steps li { display: flex; gap: 14px; align-items: flex-start; }
+  .steps .n {
+    font-family: var(--data);
+    font-size: 0.78rem;
+    font-weight: 500;
+    flex: 0 0 30px;
+    height: 30px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    color: #FFFFFF;
+    background: var(--violet);
+  }
+  .steps li:nth-child(2) .n { background: var(--blue); }
+  .steps li:nth-child(3) .n { background: var(--teal); }
+  .steps li:nth-child(4) .n { background: var(--amber); }
+  .steps li:nth-child(5) .n { background: var(--coral); }
+  .steps .what { font-size: 0.99rem; }
+  .steps .what b { font-weight: 700; }
+
+  .lesson {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 22px;
+    border-radius: 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+  .lesson .kicker {
+    font-family: var(--data);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+  .lesson.l-coral .kicker { color: var(--coral); }
+  .lesson.l-amber .kicker { color: var(--amber); }
+  .lesson.l-blue .kicker { color: var(--blue); }
+  .lesson.l-violet .kicker { color: var(--violet); }
+
+  .pull {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.22rem;
+    line-height: 1.32;
+    color: var(--violet);
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  .beforeafter { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .beforeafter > div { padding: 16px 18px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .beforeafter .b { background: var(--coral-soft); }
+  .beforeafter .a { background: var(--teal-soft); }
+  .beforeafter .label {
+    font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .beforeafter .b .label { color: var(--coral); }
+  .beforeafter .a .label { color: var(--teal); }
+  .beforeafter .said { font-size: 0.95rem; }
+
+  .tally { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .tally li { display: flex; gap: 12px; align-items: baseline; font-size: 0.97rem; }
+  .tally .mark {
+    font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase;
+    flex: 0 0 5.2rem; padding: 3px 0; border-radius: 6px; text-align: center;
+  }
+  .tally .pass { background: var(--teal-soft); color: var(--teal); }
+  .tally .fail { background: var(--coral-soft); color: var(--coral); }
+
+  figure { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  figure svg {
+    width: 100%;
+    height: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  figure svg text { font-family: var(--body); font-weight: 500; }
+  figcaption { font-size: 0.9rem; color: var(--muted); text-wrap: pretty; }
+
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; font-size: 0.88rem; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .legend i { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+
+  .dot { cursor: default; }
+  .dot circle.hit { fill: transparent; }
+  .dot:hover circle.mark { stroke: var(--ink); stroke-width: 2; }
+
+  details { font-size: 0.9rem; color: var(--muted); }
+  details summary { cursor: pointer; }
+  table { border-collapse: collapse; margin-top: 10px; width: 100%; font-variant-numeric: tabular-nums; color: var(--ink); }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); font-size: 0.88rem; }
+  th { color: var(--muted); font-weight: 500; }
+
+  code { font-family: var(--data); font-size: 0.86em; }
+
+  footer {
+    padding: 20px 22px;
+    border-radius: 14px;
+    background: var(--violet-soft);
+    font-size: 0.94rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .page > * { animation: rise 0.5s ease-out both; }
+    .page > *:nth-child(2) { animation-delay: 0.05s; }
+    .page > *:nth-child(3) { animation-delay: 0.1s; }
+    @keyframes rise { from { opacity: 0.5; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  }
+
+  .grid { width: 100%; border-collapse: separate; border-spacing: 4px; margin: 0; }
+  .grid th { font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; border: 0; padding: 4px 6px; }
+  .grid td { border: 0; padding: 0; font-size: 0.9rem; }
+  .grid td.case { padding: 6px 4px; }
+  .grid td.case small { display: block; color: var(--muted); font-size: 0.78rem; }
+  .grid .cell {
+    border-radius: 8px; padding: 8px 6px; text-align: center; font-family: var(--data); font-size: 0.85rem;
+    background: color-mix(in oklab, var(--teal) calc(var(--p) * 42%), var(--surface));
+    border: 1px solid var(--line);
+  }
+  .grid .cell.block { border: 2px solid var(--coral); }
+  .grid .cell.block::after { content: " blocked"; font-size: 0.7rem; color: var(--coral); }
+  .kind { font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 7px; border-radius: 6px; }
+  .kind.reg { background: var(--violet-soft); color: var(--violet); }
+  .kind.cap { background: var(--amber-soft); color: var(--amber); }
+  .page > *, section > *, figure, .lesson { min-width: 0; }
+  .gridwrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 10px; }
+
+  .page > *, section > *, .step, .mock { min-width: 0; }
+  .glossary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+  .glossary div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 0.9rem; }
+  .glossary b { display: block; font-family: var(--display); font-weight: 600; font-size: 0.98rem; }
+
+  .step { display: flex; flex-direction: column; gap: 14px; }
+  .stepnum { display: flex; align-items: center; gap: 12px; }
+  .stepnum .n { font-family: var(--data); font-size: 0.8rem; flex: 0 0 34px; height: 34px; border-radius: 999px; display: grid; place-items: center; color: #fff; background: var(--violet); }
+  .stepnum .hw { font-family: var(--data); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .doget { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+  .doget div { border-radius: 10px; padding: 12px 14px; font-size: 0.93rem; }
+  .doget .do { background: var(--violet-soft); }
+  .doget .get { background: var(--teal-soft); }
+  .doget .lab { font-family: var(--data); font-size: 0.64rem; letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 4px; }
+  .doget .do .lab { color: var(--violet); } .doget .get .lab { color: var(--teal); }
+
+  .mock { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 0 var(--line); }
+  .mock .bar { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-bottom: 1px solid var(--line); background: var(--ground); font-family: var(--data); font-size: 0.7rem; color: var(--muted); }
+  .mock .bar i { width: 9px; height: 9px; border-radius: 999px; background: var(--line); display: inline-block; }
+  .mock .bar span { margin-left: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mock .body { padding: 14px; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; }
+  .mockcap { font-size: 0.82rem; color: var(--muted); margin-top: -4px; }
+
+  .msg { border-radius: 10px; padding: 9px 12px; max-width: 92%; line-height: 1.45; }
+  .msg.user { background: var(--blue-soft); align-self: flex-start; }
+  .msg.bot { background: var(--ground); border: 1px solid var(--line); align-self: flex-end; }
+  .msg .who { font-family: var(--data); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 2px; }
+  mark { background: var(--amber-soft); color: inherit; border-bottom: 2px solid var(--amber); padding: 0 2px; }
+  .sticky { background: var(--amber-soft); border-left: 3px solid var(--amber); border-radius: 6px; padding: 8px 10px; font-size: 0.88rem; }
+  .sticky .who { font-family: var(--data); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); display: block; }
+
+  .mono { font-family: var(--data); font-size: 0.8rem; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+  .term { background: #15161F; color: #D7DAEA; border-radius: 10px; padding: 12px 14px; font-family: var(--data); font-size: 0.78rem; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
+  .term .ok { color: #5FD3B3; } .term .bad { color: #FF8A8A; } .term .dim { color: #8E92B0; }
+
+  .tree { font-family: var(--data); font-size: 0.8rem; line-height: 1.7; }
+  .tree .row { display: flex; gap: 8px; align-items: baseline; }
+  .tree .k { color: var(--muted); min-width: 0; }
+  .pill { font-family: var(--data); font-size: 0.66rem; padding: 1px 7px; border-radius: 6px; white-space: nowrap; }
+  .pill.llm { background: var(--violet-soft); color: var(--violet); }
+  .pill.tool { background: var(--teal-soft); color: var(--teal); }
+  .pill.fail { background: var(--coral-soft); color: var(--coral); }
+  .pill.pass { background: var(--teal-soft); color: var(--teal); }
+  .pill.block { background: var(--coral); color: #fff; }
+
+  .flowrow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
+  .flowrow > .card { flex: 1 1 180px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 0.86rem; display: flex; flex-direction: column; gap: 4px; }
+  .flowrow > .arrow { align-self: center; color: var(--muted); font-size: 1.2rem; }
+  .card .lab { font-family: var(--data); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .kv { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; font-family: var(--data); font-size: 0.76rem; }
+  .kv span:nth-child(odd) { color: var(--muted); }
+
+  .gridtbl { width: 100%; border-collapse: separate; border-spacing: 3px; font-size: 0.8rem; }
+  .gridtbl th { font-family: var(--data); font-size: 0.62rem; letter-spacing: 0.04em; color: var(--muted); font-weight: 500; text-align: center; border: 0; padding: 2px 4px; }
+  .gridtbl th:first-child { text-align: left; }
+  .gridtbl td { border: 0; text-align: center; padding: 6px 4px; border-radius: 6px; font-family: var(--data); font-size: 0.72rem; }
+  .gridtbl td:first-child { text-align: left; background: none; color: var(--ink); }
+  .gridtbl td.y { background: var(--coral-soft); color: var(--coral); }
+  .gridtbl td.n { background: var(--ground); color: var(--muted); }
+  .scroll { overflow-x: auto; }
+
+  .score { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .score div { border-radius: 10px; padding: 12px; text-align: center; }
+  .score b { display: block; font-family: var(--display); font-size: 1.6rem; font-weight: 800; }
+  .score .good { background: var(--teal-soft); } .score .weak { background: var(--coral-soft); }
+  .score span { font-size: 0.82rem; color: var(--muted); }
+
+  .runs { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; font-size: 0.85rem; }
+  .runs i { width: 16px; height: 16px; border-radius: 4px; display: inline-block; }
+  .runs i.p { background: var(--teal); } .runs i.f { background: var(--coral); }
+  .runs .lbl { min-width: 9.5rem; color: var(--muted); font-size: 0.82rem; }
+
+  .dots { display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; max-width: 360px; }
+  .dots i { aspect-ratio: 1; border-radius: 999px; background: var(--line); display: block; }
+  .dots i.r { background: var(--violet); } .dots i.k { background: var(--amber); } .dots i.b { background: var(--violet); box-shadow: 0 0 0 3px var(--amber); }
+  .legend2 { display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.82rem; color: var(--muted); }
+  .legend2 span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend2 i { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+
+  .formula { background: var(--ground); border: 1px dashed var(--line); border-radius: 10px; padding: 12px; font-family: var(--data); font-size: 0.82rem; text-align: center; }
+  .pending { display: inline-block; font-family: var(--data); font-size: 0.64rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 6px; background: var(--amber-soft); color: var(--amber); }
+</style></head><body>
+<div class="page">
+  <header>
+    <p class="eyebrow">Evaluating and Improving AI Agents &middot; Homework Seven</p>
+    <h1>Watching the failure rate after shipping</h1>
+    <p class="standfirst">Homework six blocks known failures before a change merges. This week: measure how often one failure happens after release, with a frozen grader, corrected for that grader's own mistakes &mdash; and schedule it to run every day.</p>
+    <div class="facts">
+      <div><b>2</b><span>periods of the same 50 conversations</span></div>
+      <div><b>10</b><span>random conversations graded per period</span></div>
+      <div><b>2</b><span>graders: one good, one weak</span></div>
+      <div><b>0.15</b><span>threshold, set before seeing results</span></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="part-head"><span class="tag">Part one</span><span class="rule"></span></div>
+    <h2>What I did</h2>
+    <ol class="steps">
+      <li><span class="n">1</span><span class="what"><b>Two periods, same setup.</b> &ldquo;Before&rdquo; is the Homework 3 run of the 50 monitoring conversations (18 September). &ldquo;After&rdquo; reruns the same 50 on the same model (30 October). The prompt, tools and policies hadn't changed &mdash; so any difference is noise, which makes this a test of the monitor itself.</span></li>
+      <li><span class="n">2</span><span class="what"><b>Sampled each period.</b> A random 20% (10 conversations) to estimate the rate, plus every conversation that looked up a policy (the &ldquo;risk group&rdquo;) for inspection only. Each conversation's full trajectory goes to the grader, formatted exactly as the grader was tested on.</span></li>
+      <li><span class="n">3</span><span class="what"><b>Graded with two frozen graders.</b> The course's reference grader for unsupported policy claims (catches 83% of failures, 5% false alarms) and my own from Homework 5 (catches 45%, 18% false alarms) &mdash; to see how grader quality changes what monitoring can say.</span></li>
+      <li><span class="n">4</span><span class="what"><b>Corrected the rate and wrote it to Langfuse.</b> Every verdict became a score on its trace, dated to the conversation, plus one corrected rate per period. Then built a dashboard over those scores.</span></li>
+      <li><span class="n">5</span><span class="what"><b>Scheduled it.</b> A GitHub Actions workflow runs the same monitor daily over the last 24 hours of traffic.</span></li>
+    </ol>
+<div class="mock"><div class="bar"><i></i><i></i><i></i><span>which conversations get graded · “before” period</span></div><div class="body">
+      <div class="dots"><i class="k"></i><i></i><i class="b"></i><i></i><i class="k"></i><i class="r"></i><i></i><i class="k"></i><i></i><i class="b"></i><i></i><i class="k"></i><i></i><i class="r"></i><i></i><i class="k"></i><i></i><i class="b"></i><i></i><i class="k"></i><i></i><i></i><i class="r"></i><i></i><i class="k"></i><i></i><i></i><i class="k"></i><i></i><i></i><i class="b"></i><i></i><i></i><i class="k"></i><i></i><i></i><i class="r"></i><i></i><i></i><i class="k"></i><i></i><i class="b"></i><i></i><i></i><i></i><i class="k"></i><i></i><i></i><i class="r"></i><i></i></div>
+      <div class="legend2"><span><i style="background:var(--violet)"></i>random 10 → the rate</span><span><i style="background:var(--amber)"></i>policy lookups (16) → inspect only</span><span><i style="background:var(--line)"></i>not graded</span></div>
+      <p class="mockcap" style="margin:0">5 conversations are in both groups and are graded once: 21 grader calls. Positions are illustrative.</p>
+    </div></div>
+  </section>
+
+  <section>
+    <div class="part-head"><span class="tag">Part two</span><span class="rule"></span></div>
+    <h2>What the monitor found</h2>
+    <div class="formula">corrected rate = (flagged rate − false-alarm rate) ÷ (catch rate − false-alarm rate)</div>
+    <div class="scroll"><table>
+      <tr><th>Grader</th><th>Period</th><th>Flagged</th><th>Raw</th><th>Corrected</th><th>95% range</th></tr>
+      <tr><td rowspan="2">Reference (catches 83%, false alarms 5%)</td><td>before</td><td>2 of 10</td><td>20%</td><td>19%</td><td>0–58%</td></tr>
+      <tr><td>after</td><td>4 of 10</td><td>40%</td><td>44%</td><td>6–93%</td></tr>
+      <tr><td rowspan="2">Mine (catches 45%, false alarms 18%)</td><td>before</td><td>2 of 10</td><td>20%</td><td>8%</td><td>0–100%</td></tr>
+      <tr><td>after</td><td>3 of 10</td><td>30%</td><td>44%</td><td>0–100%</td></tr>
+    </table></div>
+    <div class="mock"><div class="bar"><i></i><i></i><i></i><span>Langfuse dashboard · corrected failure rate by period</span></div><div class="body">
+      <div class="legend2"><span><i style="background:var(--s-n10)"></i>reference grader</span><span><i style="background:var(--s-n5)"></i>my grader</span></div>
+      <svg viewBox="0 0 660 230" role="img" aria-label="Corrected failure rate on 18 September and 30 October. Reference grader 0.19 then 0.44. My grader 0.08 then 0.44. Threshold 0.15." style="width:100%;height:auto">
+  <g stroke="var(--line)"><line x1="70" y1="20" x2="610" y2="20"/><line x1="70" y1="105" x2="610" y2="105"/><line x1="70" y1="190" x2="610" y2="190"/></g>
+  <g font-size="11" fill="var(--muted)" text-anchor="end" font-family="var(--data)"><text x="62" y="24">100%</text><text x="62" y="109">50%</text><text x="62" y="194">0%</text></g>
+  <g font-size="11" fill="var(--muted)" text-anchor="middle" font-family="var(--data)"><text x="70" y="210">Sep 18 · before</text><text x="610" y="210">Oct 30 · after</text></g>
+  <line x1="70" y1="164.5" x2="610" y2="164.5" stroke="var(--coral)" stroke-dasharray="5,4"/>
+  <text x="608" y="159.5" font-size="11" fill="var(--coral)" text-anchor="end">threshold 0.15</text>
+  <polyline points="70,157.7 610,115.2" fill="none" stroke="var(--s-n10)" stroke-width="2"/>
+  <polyline points="70,176.4 610,115.2" fill="none" stroke="var(--s-n5)" stroke-width="2" stroke-dasharray="2,3"/>
+  <g stroke="var(--surface)" stroke-width="2">
+    <circle cx="70" cy="157.7" r="6" fill="var(--s-n10)"><title>Reference grader, before: 19% (range 0–58%)</title></circle>
+    <circle cx="610" cy="115.2" r="6" fill="var(--s-n10)"><title>Reference grader, after: 44% (range 6–93%)</title></circle>
+    <circle cx="70" cy="176.4" r="6" fill="var(--s-n5)"><title>My grader, before: 8% (range 0–100%)</title></circle>
+    <circle cx="600" cy="115.2" r="6" fill="var(--s-n5)"><title>My grader, after: 44% (range 0–100%)</title></circle>
+  </g>
+  <g font-size="11" fill="var(--ink)"><text x="82" y="149.7">19%</text><text x="82" y="190.4">8%</text><text x="590" y="105.2" text-anchor="end">44% · 44%</text></g>
+</svg>
+    </div></div>
+    <p class="mockcap">On the dashboard, each score is dated to the conversation it judged, so the two periods plot on their own dates. The dashboard also charts the 0/1 verdicts (averaged into a flag rate) for the random sample and the risk group, and lists flagged traces to click into.</p>
+    <div class="mock"><div class="bar"><i></i><i></i><i></i><span>what moved: the same 10 conversations, before vs after</span></div><div class="body">
+      <div class="flowrow">
+        <div class="card"><span class="lab">support-0085 · real agent change</span>After, the agent added “a cancelled order that never shipped would normally warrant a refund” — a policy claim no document supports. Before, it didn't.</div>
+        <div class="card"><span class="lab">support-0161 · the grader changed its mind</span>Near-identical replies both times (21-day Meridian window, 3 days left, policy cited). The frozen grader passed it before and failed it after.</div>
+      </div>
+    </div></div>
+    <p class="mockcap">Both periods graded the same 10 conversations. The jump from 19% to 44% is two of them changing: one real change in the agent, one inconsistency in the grader.</p>
+  </section>
+
+  <section>
+    <div class="part-head"><span class="tag">Part three</span><span class="rule"></span></div>
+    <h2>What I learned</h2>
+
+    <div class="lesson l-amber">
+      <span class="kicker">The honest answer</span>
+      <h3>The estimate moved, but nothing changed</h3>
+      <p>The ranges overlap almost entirely: 0&ndash;58% before, 6&ndash;93% after. With ten conversations per period, one extra flag moves the corrected rate about 13 points. The right reading is &ldquo;no detectable change&rdquo;. It still crosses my threshold, and by my own rule that means: read the flagged conversations, confirm them by hand, and turn real failures &mdash; like support-0085 &mdash; into Homework 6 test cases. One crossing is weak evidence; act on a repeated one.</p>
+    </div>
+
+    <div class="lesson l-coral">
+      <span class="kicker">Why grader quality matters</span>
+      <h3>A weak grader can't tell you anything &mdash; and hides real changes</h3>
+      <p>Both graders flagged 2 of 10 before. The correction turned that into 19% for the good grader and 8% for mine, because mine false-alarms more, so its flags are discounted. Its range was 0&ndash;100% in both periods.</p>
+      <p class="pull">A raw before/after difference is the true difference × (catch rate − false-alarm rate).</p>
+      <p>For the reference grader that factor is 0.78; for mine, 0.27. A real 10-point drop would show up as about 3 points on mine &mdash; easy to miss.</p>
+    </div>
+
+    <div class="lesson l-blue">
+      <span class="kicker">A surprise in the risk group</span>
+      <h3>Looking up a policy made failures rarer, not commoner</h3>
+      <p>Conversations that looked up a policy were flagged 1 of 16 and 1 of 17 &mdash; less than the random sample. Partly the agent is better grounded with the policy in hand. Partly it's the grader: it counts only retrieved documents as support, so any policy claim made <em>without</em> a lookup is unsupported by design. For this failure, the risky conversations are the ones that state policy without checking. Pick risk groups by what causes the failure, not by topic.</p>
+    </div>
+
+    <div class="lesson l-violet">
+      <span class="kicker">Automating it</span>
+      <h3>The daily monitor reads traffic; it never runs the agent</h3>
+    <div class="mock"><div class="bar"><i></i><i></i><i></i><span>.github/workflows/monitor.yml · the daily monitor</span></div><div class="body">
+<div class="mono">on:
+  schedule: [{ cron: "0 6 * * *" }]   # every day, 06:00 UTC
+  workflow_dispatch:                 # plus a manual button
+steps:
+  - uv sync
+  - uv run python -m monitoring.run --last-hours 24
+  - upload monitoring/output         # kept even if the job fails</div>
+    </div></div>
+      <p>Each day it reads the last 24 hours of traces from Langfuse, groups them by session into conversations, and runs the same sampling, grading, correction and score writing. It needs only the Langfuse keys and the grader's key, stored as GitHub secrets. A quiet day records zero and calls no grader. My Langfuse runs on my laptop, so the job is configured for a self-hosted runner on that machine &mdash; a GitHub-hosted machine couldn't reach <code>localhost</code>.</p>
+    </div>
+
+    <div class="lesson l-violet">
+      <span class="kicker">Plumbing, briefly</span>
+      <h3>Small fixes, written down</h3>
+      <p>Langfuse rejects a score attached to nothing, so each period's rate is pinned to the period's last trace. Scores were first dated when written, which put both periods on one day; they're now dated to their conversations &mdash; and since Langfuse keeps a score's original date on update, the old ones had to be deleted and recreated. Its local worker deletes one score every two minutes by default, so I raised that limit. Re-sending a period's scores updates them in place rather than duplicating, as the assignment requires.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p><b>Where it ended up.</b> The same 50 conversations graded in two periods by two frozen graders: reference 19% &rarr; 44%, mine 8% &rarr; 44%, with overlapping ranges. Scores and a dashboard in Langfuse, a daily monitor workflow, and a short write-up in <code>monitoring/README.md</code>.</p>
+  </footer>
+</div>
+</body></html>

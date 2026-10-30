@@ -564,27 +564,7 @@ assistant: …For translation, you might try Google Translate, DeepL…</div>
   </section>
   <section class="step">
     <div class="stepnum"><span class="n" style="background:var(--violet)">9</span><div><span class="hw">Homework 7</span><h2 style="font-size:clamp(1.35rem,3.4vw,1.7rem)">Monitor the failure rate after shipping</h2></div></div>
-    <div class="doget"><div class="do"><span class="lab">What I did</span>Reran the 50 monitoring conversations as an “after” period and compared them with the original HW3 run (“before”), same model. In each period: graded a random 10 for the rate, plus every conversation that looked up a policy, kept separate for inspection. Corrected the flagged rate for the grader's known error rates. Then wrote the scores to Langfuse, built a dashboard, and set up a daily GitHub Actions workflow to do the same over the last 24 hours of traffic.</div><div class="get"><span class="lab">What came out</span>A before/after failure rate with a range for two graders, scores on every graded trace in Langfuse, a dashboard, and a scheduled monitor. The agent itself didn't change between periods, so this is mostly a measure of how much the numbers move on their own.</div></div>
-<div class="mock"><div class="bar"><i></i><i></i><i></i><span>which conversations get graded · “before” period</span></div><div class="body">
-      <div class="dots"><i class="k"></i><i></i><i class="b"></i><i></i><i class="k"></i><i class="r"></i><i></i><i class="k"></i><i></i><i class="b"></i><i></i><i class="k"></i><i></i><i class="r"></i><i></i><i class="k"></i><i></i><i class="b"></i><i></i><i class="k"></i><i></i><i></i><i class="r"></i><i></i><i class="k"></i><i></i><i></i><i class="k"></i><i></i><i></i><i class="b"></i><i></i><i></i><i class="k"></i><i></i><i></i><i class="r"></i><i></i><i></i><i class="k"></i><i></i><i class="b"></i><i></i><i></i><i></i><i class="k"></i><i></i><i></i><i class="r"></i><i></i></div>
-      <div class="legend2"><span><i style="background:var(--violet)"></i>random 10 → the rate</span><span><i style="background:var(--amber)"></i>policy lookups (16) → inspect only</span><span><i style="background:var(--line)"></i>not graded</span></div>
-      <p class="mockcap" style="margin:0">5 conversations are in both groups and are graded once: 21 grader calls. Positions are illustrative.</p>
-    </div></div>
-    <div class="formula">corrected rate = (flagged rate − false-alarm rate) ÷ (catch rate − false-alarm rate)</div>
-    <div class="scroll"><table>
-      <tr><th>Grader</th><th>Period</th><th>Flagged</th><th>Raw</th><th>Corrected</th><th>95% range</th></tr>
-      <tr><td rowspan="2">Reference (catches 83%, false alarms 5%)</td><td>before</td><td>2 of 10</td><td>20%</td><td>19%</td><td>0–58%</td></tr>
-      <tr><td>after</td><td>4 of 10</td><td>40%</td><td>44%</td><td>6–93%</td></tr>
-      <tr><td rowspan="2">Mine (catches 45%, false alarms 18%)</td><td>before</td><td>2 of 10</td><td>20%</td><td>8%</td><td>0–100%</td></tr>
-      <tr><td>after</td><td>3 of 10</td><td>30%</td><td>44%</td><td>0–100%</td></tr>
-    </table></div>
-    <div class="mock"><div class="bar"><i></i><i></i><i></i><span>what moved: the same 10 conversations, before vs after</span></div><div class="body">
-      <div class="flowrow">
-        <div class="card"><span class="lab">support-0085 · real agent change</span>After, the agent added “a cancelled order that never shipped would normally warrant a refund” — a policy claim no document supports. Before, it didn't.</div>
-        <div class="card"><span class="lab">support-0161 · the grader changed its mind</span>Near-identical replies both times (21-day Meridian window, 3 days left, policy cited). The frozen grader passed it before and failed it after.</div>
-      </div>
-    </div></div>
-    <p class="mockcap">So the jump from 19% to 44% is two conversations: one real change in the agent and one inconsistency in the grader. The ranges overlap almost entirely — the honest reading is “no detectable change”. It still crosses the 0.15 threshold, which by my own rule means: read the flagged conversations and turn confirmed failures into HW6 test cases.</p>
+    <div class="doget"><div class="do"><span class="lab">What I did</span>Reran the 50 monitoring conversations and compared them with the original run. In each period: graded a random 10, corrected the flagged rate for the grader's known error rates, and wrote the scores to Langfuse. Then set up a daily GitHub Actions workflow that does the same over the last 24 hours of traffic.</div><div class="get"><span class="lab">What came out</span>A before/after failure rate with a range, a Langfuse dashboard, and a scheduled monitor. The agent hadn't changed, and the ranges overlap: no detectable change.</div></div>
     <div class="mock"><div class="bar"><i></i><i></i><i></i><span>Langfuse dashboard · corrected failure rate by period</span></div><div class="body">
       <div class="legend2"><span><i style="background:var(--s-n10)"></i>reference grader</span><span><i style="background:var(--s-n5)"></i>my grader</span></div>
       <svg viewBox="0 0 660 230" role="img" aria-label="Corrected failure rate on 18 September and 30 October. Reference grader 0.19 then 0.44. My grader 0.08 then 0.44. Threshold 0.15." style="width:100%;height:auto">
@@ -604,18 +584,7 @@ assistant: …For translation, you might try Google Translate, DeepL…</div>
   <g font-size="11" fill="var(--ink)"><text x="82" y="149.7">19%</text><text x="82" y="190.4">8%</text><text x="590" y="105.2" text-anchor="end">44% · 44%</text></g>
 </svg>
     </div></div>
-    <p class="mockcap">The dashboard also charts the 0/1 verdicts (averaged into a flag rate) for the random sample and the risk group, and lists the flagged traces to click into. Scores are dated to the conversations they judged, so each period plots at its own date.</p>
-    <div class="mock"><div class="bar"><i></i><i></i><i></i><span>.github/workflows/monitor.yml · the daily monitor</span></div><div class="body">
-<div class="mono">on:
-  schedule: [{ cron: "0 6 * * *" }]   # every day, 06:00 UTC
-  workflow_dispatch:                 # plus a manual button
-steps:
-  - uv sync
-  - uv run python -m monitoring.run --last-hours 24
-  - upload monitoring/output         # kept even if the job fails</div>
-    </div></div>
-    <p class="mockcap">Each day it reads the last 24 hours of traces from Langfuse, groups them into conversations, samples, grades, corrects and writes the scores — the same code as above. It never runs the agent, so it needs only the Langfuse keys and the grader's key, stored as GitHub secrets. A day with no traffic records zero and calls no grader. Because my Langfuse runs on my laptop, the job is set to run on a self-hosted runner on that machine.</p>
-    <p class="keep"><b>Worth keeping:</b> a weak grader doesn't just blur a rate, it shrinks real changes — a raw before/after difference is the true difference × (catch rate − false-alarm rate). Mine would show a true 10-point drop as about 3. And pick risk groups by what causes the failure: conversations that looked up a policy were flagged <em>less</em> — a hint (from few cases) that unsupported claims come from answering without one, and partly because this grader treats any policy claim with no retrieved document as unsupported.</p>
+    <p class="keep"><b>Worth keeping:</b> a weak grader shrinks real changes — mine would show a true 10-point drop as about 3. Grader quality decides whether monitoring can tell you anything.</p>
   </section>
 
   <footer>

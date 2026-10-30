@@ -42,6 +42,9 @@ services:
       # Dev-only. Generate your own for anything shared: openssl rand -hex 32
       ENCRYPTION_KEY: "0000000000000000000000000000000000000000000000000000000000000000"
       TELEMETRY_ENABLED: "false"
+      # Score deletions are rate-limited to this many jobs per 2 minutes
+      # (default 1). Raised so local cleanup of many scores finishes quickly.
+      LANGFUSE_SCORE_DELETE_CONCURRENCY: "50"
       CLICKHOUSE_MIGRATION_URL: clickhouse://clickhouse:9000
       CLICKHOUSE_URL: http://clickhouse:8123
       CLICKHOUSE_USER: clickhouse

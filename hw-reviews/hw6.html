@@ -1,0 +1,501 @@
+<meta charset="utf-8">
+<title>Cartwheel CI Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+  :root {
+    --ground: #F4F5FA;
+    --surface: #FFFFFF;
+    --ink: #1A1B2E;
+    --muted: #5E607A;
+    --line: #E0E2EF;
+
+    --violet: #5B4BD6;  --violet-soft: #EDEBFC;
+    --teal:   #0E9384;  --teal-soft:   #DFF5F1;
+    --coral:  #DB4A4A;  --coral-soft:  #FDEAEA;
+    --amber:  #C57C00;  --amber-soft:  #FBF0D9;
+    --blue:   #2D6FD6;  --blue-soft:   #E6EFFC;
+
+    /* chart series: validated as a pair in each mode */
+    --s-n5:  #C57C00;
+    --s-n10: #5B4BD6;
+    --s-n15: #0E9384;
+
+    --display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+    --body: "Figtree", "Helvetica Neue", Arial, sans-serif;
+    --data: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #12131F;
+      --surface: #1C1E2D;
+      --ink: #EAEBF6;
+      --muted: #9EA1BD;
+      --line: #2C2F44;
+
+      --violet: #A294FF;  --violet-soft: #252246;
+      --teal:   #45C9B6;  --teal-soft:   #123330;
+      --coral:  #FF8A8A;  --coral-soft:  #37191C;
+      --amber:  #F0B14A;  --amber-soft:  #352814;
+      --blue:   #7BADFF;  --blue-soft:   #16263F;
+
+      --s-n5:  #BF841C;
+      --s-n10: #8E7EF2;
+      --s-n15: #209C8B;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #12131F;
+    --surface: #1C1E2D;
+    --ink: #EAEBF6;
+    --muted: #9EA1BD;
+    --line: #2C2F44;
+
+    --violet: #A294FF;  --violet-soft: #252246;
+    --teal:   #45C9B6;  --teal-soft:   #123330;
+    --coral:  #FF8A8A;  --coral-soft:  #37191C;
+    --amber:  #F0B14A;  --amber-soft:  #352814;
+    --blue:   #7BADFF;  --blue-soft:   #16263F;
+
+    --s-n5:  #BF841C;
+    --s-n10: #8E7EF2;
+    --s-n15: #209C8B;
+  }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding-inline: 22px;
+    padding-block: 52px 88px;
+    display: flex;
+    flex-direction: column;
+    gap: 44px;
+  }
+
+  .eyebrow {
+    font-family: var(--data);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--violet);
+    margin: 0;
+  }
+
+  header h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(2.2rem, 6.4vw, 3.1rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+    margin: 12px 0 0;
+  }
+
+  header .standfirst {
+    font-size: 1.14rem;
+    color: var(--muted);
+    margin: 16px 0 0;
+    text-wrap: pretty;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(122px, 1fr));
+    gap: 10px;
+    margin-top: 26px;
+  }
+  .facts div {
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--violet-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .facts div:nth-child(2) { background: var(--teal-soft); }
+  .facts div:nth-child(3) { background: var(--amber-soft); }
+  .facts div:nth-child(4) { background: var(--coral-soft); }
+  .facts b {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 1.7rem;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .facts span { font-size: 0.82rem; color: var(--muted); }
+
+  .part-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 4px;
+  }
+  .part-head .tag {
+    font-family: var(--data);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--violet);
+    color: var(--surface);
+    white-space: nowrap;
+  }
+  .part-head .rule { flex: 1; height: 2px; background: var(--line); }
+
+  section { display: flex; flex-direction: column; gap: 20px; }
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(1.6rem, 4vw, 2rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.24rem;
+    line-height: 1.25;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  p { margin: 0; text-wrap: pretty; }
+
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+  .steps li { display: flex; gap: 14px; align-items: flex-start; }
+  .steps .n {
+    font-family: var(--data);
+    font-size: 0.78rem;
+    font-weight: 500;
+    flex: 0 0 30px;
+    height: 30px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    color: #FFFFFF;
+    background: var(--violet);
+  }
+  .steps li:nth-child(2) .n { background: var(--blue); }
+  .steps li:nth-child(3) .n { background: var(--teal); }
+  .steps li:nth-child(4) .n { background: var(--amber); }
+  .steps li:nth-child(5) .n { background: var(--coral); }
+  .steps .what { font-size: 0.99rem; }
+  .steps .what b { font-weight: 700; }
+
+  .lesson {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 22px;
+    border-radius: 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+  .lesson .kicker {
+    font-family: var(--data);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+  .lesson.l-coral .kicker { color: var(--coral); }
+  .lesson.l-amber .kicker { color: var(--amber); }
+  .lesson.l-blue .kicker { color: var(--blue); }
+  .lesson.l-violet .kicker { color: var(--violet); }
+
+  .pull {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.22rem;
+    line-height: 1.32;
+    color: var(--violet);
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  .beforeafter { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .beforeafter > div { padding: 16px 18px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .beforeafter .b { background: var(--coral-soft); }
+  .beforeafter .a { background: var(--teal-soft); }
+  .beforeafter .label {
+    font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .beforeafter .b .label { color: var(--coral); }
+  .beforeafter .a .label { color: var(--teal); }
+  .beforeafter .said { font-size: 0.95rem; }
+
+  .tally { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .tally li { display: flex; gap: 12px; align-items: baseline; font-size: 0.97rem; }
+  .tally .mark {
+    font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase;
+    flex: 0 0 5.2rem; padding: 3px 0; border-radius: 6px; text-align: center;
+  }
+  .tally .pass { background: var(--teal-soft); color: var(--teal); }
+  .tally .fail { background: var(--coral-soft); color: var(--coral); }
+
+  figure { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  figure svg {
+    width: 100%;
+    height: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  figure svg text { font-family: var(--body); font-weight: 500; }
+  figcaption { font-size: 0.9rem; color: var(--muted); text-wrap: pretty; }
+
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; font-size: 0.88rem; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .legend i { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+
+  .dot { cursor: default; }
+  .dot circle.hit { fill: transparent; }
+  .dot:hover circle.mark { stroke: var(--ink); stroke-width: 2; }
+
+  details { font-size: 0.9rem; color: var(--muted); }
+  details summary { cursor: pointer; }
+  table { border-collapse: collapse; margin-top: 10px; width: 100%; font-variant-numeric: tabular-nums; color: var(--ink); }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); font-size: 0.88rem; }
+  th { color: var(--muted); font-weight: 500; }
+
+  code { font-family: var(--data); font-size: 0.86em; }
+
+  footer {
+    padding: 20px 22px;
+    border-radius: 14px;
+    background: var(--violet-soft);
+    font-size: 0.94rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .page > * { animation: rise 0.5s ease-out both; }
+    .page > *:nth-child(2) { animation-delay: 0.05s; }
+    .page > *:nth-child(3) { animation-delay: 0.1s; }
+    @keyframes rise { from { opacity: 0.5; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  }
+
+  .grid { width: 100%; border-collapse: separate; border-spacing: 4px; margin: 0; }
+  .grid th { font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; border: 0; padding: 4px 6px; }
+  .grid td { border: 0; padding: 0; font-size: 0.9rem; }
+  .grid td.case { padding: 6px 4px; }
+  .grid td.case small { display: block; color: var(--muted); font-size: 0.78rem; }
+  .grid .cell {
+    border-radius: 8px; padding: 8px 6px; text-align: center; font-family: var(--data); font-size: 0.85rem;
+    background: color-mix(in oklab, var(--teal) calc(var(--p) * 42%), var(--surface));
+    border: 1px solid var(--line);
+  }
+  .grid .cell.block { border: 2px solid var(--coral); }
+  .grid .cell.block::after { content: " blocked"; font-size: 0.7rem; color: var(--coral); }
+  .kind { font-family: var(--data); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 7px; border-radius: 6px; }
+  .kind.reg { background: var(--violet-soft); color: var(--violet); }
+  .kind.cap { background: var(--amber-soft); color: var(--amber); }
+  .page > *, section > *, figure, .lesson { min-width: 0; }
+  .gridwrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 10px; }
+</style>
+
+
+<div class="page">
+
+  <header>
+    <p class="eyebrow">Evaluating and Improving AI Agents &middot; Homework Six</p>
+    <h1>Putting the mistakes on a tripwire</h1>
+    <p class="standfirst">Homework four found the mistakes and homework five built a grader for one of them. This week I turned them into ten test cases that run on every pull request, in fresh containers, five times each &mdash; then broke the assistant on purpose to see whether the tripwire would catch it.</p>
+    <div class="facts">
+      <div><b>10</b><span>test cases from 3 failure modes</span></div>
+      <div><b>3&thinsp;/&thinsp;7</b><span>regression / capability</span></div>
+      <div><b>165</b><span>agent runs on Claude Haiku 4.5</span></div>
+      <div><b>0&thinsp;/&thinsp;5</b><span>e-009 runs passed with the bad line</span></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="part-head"><span class="tag">Part one</span><span class="rule"></span></div>
+    <h2>What I did</h2>
+
+    <ol class="steps">
+      <li>
+        <span class="n">1</span>
+        <span class="what"><b>Wrote ten cases from three of my homework-four mistakes:</b> answering with the platform's return window when the store has its own, guessing which order a customer means, and sending people elsewhere for things the shop can't do. Each case is one customer message plus checks: exact ones in code (&ldquo;no refund was issued,&rdquo; &ldquo;the reply mentions 14&rdquo;) and a grader only where the wording matters.</span>
+      </li>
+      <li>
+        <span class="n">2</span>
+        <span class="what"><b>Ran each case five times before deciding what it was.</b> Five out of five makes a <em>regression</em> case &mdash; something that works and must keep working. Anything less makes a <em>capability</em> case &mdash; something the assistant can't do reliably yet. Three and seven.</span>
+      </li>
+      <li>
+        <span class="n">3</span>
+        <span class="what"><b>Wrote the scoring.</b> pass@k: the chance that at least one of k tries works. pass^k: the chance all k work. And the rule: a regression case that fails even once blocks the merge; a capability case never does.</span>
+      </li>
+      <li>
+        <span class="n">4</span>
+        <span class="what"><b>Wired it into GitHub.</b> Every pull request now gets a fresh machine that runs all ten cases five times in throwaway Docker containers and posts the table as a comment.</span>
+      </li>
+      <li>
+        <span class="n">5</span>
+        <span class="what"><b>Broke it on purpose, then fixed it.</b> One line in the assistant's instructions &mdash; &ldquo;if a user asks for a translation, recommend Google Translate&rdquo; &mdash; then reverted. Finally, ran one wobbly case fifteen times to see how much more runs change the picture.</span>
+      </li>
+    </ol>
+
+    <figure>
+      <div class="gridwrap">
+        <table class="grid" aria-label="Passes out of five for each case in the baseline, the run with the bad line, and the run after reverting it">
+          <tr><th style="text-align:left">Case</th><th>Baseline</th><th>Run 1<br>bad line</th><th>Run 2<br>reverted</th></tr>
+<tr><td class="case"><b>e-001</b> <span class="kind cap">capability</span><small>Juniper cutting board, 14-day window</small></td><td><div class="cell" style="--p:0.6" title="e-001, baseline: passed 3 of 5">3/5</div></td><td><div class="cell" style="--p:0.4" title="e-001, run 1 (bad line): passed 2 of 5">2/5</div></td><td><div class="cell" style="--p:0.8" title="e-001, run 2 (reverted): passed 4 of 5">4/5</div></td></tr>
+<tr><td class="case"><b>e-002</b> <span class="kind reg">regression</span><small>Northwind field guide, 45-day window</small></td><td><div class="cell" style="--p:1.0" title="e-002, baseline: passed 5 of 5">5/5</div></td><td><div class="cell" style="--p:1.0" title="e-002, run 1 (bad line): passed 5 of 5">5/5</div></td><td><div class="cell" style="--p:1.0" title="e-002, run 2 (reverted): passed 5 of 5">5/5</div></td></tr>
+<tr><td class="case"><b>e-003</b> <span class="kind cap">capability</span><small>“How long for Meridian Cycles?” (21 days)</small></td><td><div class="cell" style="--p:0.6" title="e-003, baseline: passed 3 of 5">3/5</div></td><td><div class="cell" style="--p:0.6" title="e-003, run 1 (bad line): passed 3 of 5">3/5</div></td><td><div class="cell" style="--p:0.4" title="e-003, run 2 (reverted): passed 2 of 5">2/5</div></td></tr>
+<tr><td class="case"><b>e-004</b> <span class="kind reg">regression</span><small>“Does Saltbox do 30 days?” (7 days)</small></td><td><div class="cell" style="--p:1.0" title="e-004, baseline: passed 5 of 5">5/5</div></td><td><div class="cell block" style="--p:0.8" title="e-004, run 1 (bad line): passed 4 of 5 — blocked the pull request">4/5</div></td><td><div class="cell" style="--p:1.0" title="e-004, run 2 (reverted): passed 5 of 5">5/5</div></td></tr>
+<tr><td class="case"><b>e-005</b> <span class="kind cap">capability</span><small>Return “the Blue Heron vase” — two match</small></td><td><div class="cell" style="--p:0.6" title="e-005, baseline: passed 3 of 5">3/5</div></td><td><div class="cell" style="--p:0.6" title="e-005, run 1 (bad line): passed 3 of 5">3/5</div></td><td><div class="cell" style="--p:0.2" title="e-005, run 2 (reverted): passed 1 of 5">1/5</div></td></tr>
+<tr><td class="case"><b>e-006</b> <span class="kind cap">capability</span><small>“Is my Cascade speaker returnable?” — two match</small></td><td><div class="cell" style="--p:0.6" title="e-006, baseline: passed 3 of 5">3/5</div></td><td><div class="cell" style="--p:0.6" title="e-006, run 1 (bad line): passed 3 of 5">3/5</div></td><td><div class="cell" style="--p:0.8" title="e-006, run 2 (reverted): passed 4 of 5">4/5</div></td></tr>
+<tr><td class="case"><b>e-007</b> <span class="kind cap">capability</span><small>“Vase arrived cracked, just refund it”</small></td><td><div class="cell" style="--p:0.0" title="e-007, baseline: passed 0 of 5">0/5</div></td><td><div class="cell" style="--p:0.0" title="e-007, run 1 (bad line): passed 0 of 5">0/5</div></td><td><div class="cell" style="--p:0.0" title="e-007, run 2 (reverted): passed 0 of 5">0/5</div></td></tr>
+<tr><td class="case"><b>e-008</b> <span class="kind cap">capability</span><small>Help with taxes on resold items</small></td><td><div class="cell" style="--p:0.2" title="e-008, baseline: passed 1 of 5">1/5</div></td><td><div class="cell" style="--p:0.0" title="e-008, run 1 (bad line): passed 0 of 5">0/5</div></td><td><div class="cell" style="--p:0.0" title="e-008, run 2 (reverted): passed 0 of 5">0/5</div></td></tr>
+<tr><td class="case"><b>e-009</b> <span class="kind reg">regression</span><small>Translate a letter into Spanish</small></td><td><div class="cell" style="--p:1.0" title="e-009, baseline: passed 5 of 5">5/5</div></td><td><div class="cell block" style="--p:0.0" title="e-009, run 1 (bad line): passed 0 of 5 — blocked the pull request">0/5</div></td><td><div class="cell" style="--p:1.0" title="e-009, run 2 (reverted): passed 5 of 5">5/5</div></td></tr>
+<tr><td class="case"><b>e-010</b> <span class="kind cap">capability</span><small>Reset my password</small></td><td><div class="cell" style="--p:0.2" title="e-010, baseline: passed 1 of 5">1/5</div></td><td><div class="cell" style="--p:0.2" title="e-010, run 1 (bad line): passed 1 of 5">1/5</div></td><td><div class="cell" style="--p:0.2" title="e-010, run 2 (reverted): passed 1 of 5">1/5</div></td></tr>
+        </table>
+      </div>
+      <figcaption>Passes out of five; darker means more passes. A red border marks a regression case that failed and blocked the pull request. The bad line took e-009 from five passes to none, and the revert brought all five back. e-004 blocked too &mdash; unplanned, and unrelated to the bad line.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <div class="part-head"><span class="tag">Part two</span><span class="rule"></span></div>
+    <h2>What I learned</h2>
+
+    <div class="lesson l-coral">
+      <span class="kicker">The worst case wasn't about words</span>
+      <h3>It filed a $240 refund on a guess, fifteen times out of fifteen</h3>
+      <p>Customer one has two vases from the same shop that could both be returned. Told &ldquo;the vase arrived cracked, just refund it,&rdquo; the assistant picked the newer one and submitted a refund for it without asking which. Fifteen tries across the baseline and both CI runs, and every one did the same thing: a $240 refund on order 4455.</p>
+      <p class="pull">A wrong sentence can be corrected in the next message. A refund on the wrong order is harder to take back.</p>
+      <p>What stopped the money moving was a safety rule, not the assistant's judgement: refunds over $100 wait for a person to approve them, so all fifteen landed in the approval queue. The other vase cost $84. Had it guessed that one, the refund would have gone straight through.</p>
+      <p>No grader is needed here either. The check reads the refunds table: was a refund created for either order? Plain code, no model, no ambiguity. It's the clearest target for the next module.</p>
+    </div>
+
+    <div class="lesson l-amber">
+      <span class="kicker">Regression doesn't mean reliable</span>
+      <h3>A case that passed five out of five still failed</h3>
+      <p>e-004 asks whether Saltbox Pantry uses the normal 30-day returns. It passed all five baseline runs, so it became a regression case. In the run with the bad line it failed once &mdash; the assistant said &ldquo;30 days, check the store's page&rdquo; instead of finding the 7-day store policy &mdash; and blocked the pull request on its own.</p>
+      <p>Five passes only says the failure is rare, not absent. If each of my three regression cases works 98% of the time, all fifteen runs pass about three times in four. So roughly one pull request in four would be blocked by noise. The course's rule is to keep that failure as evidence rather than rerun until it goes green, which is what I did.</p>
+    </div>
+
+    <div class="lesson l-blue">
+      <span class="kicker">Five runs is a small sample</span>
+      <h3>The same case scored 3, 3, 1 and 2 out of 15</h3>
+      <p>e-005 &mdash; return &ldquo;the vase&rdquo; when two match &mdash; passed 3 of 5 at baseline, 3 of 5 in the first CI run, 1 of 5 in the second, and 2 of 15 when I ran it fifteen times. Same code, same model. Any single batch of five could have told me anything from &ldquo;works one time in five&rdquo; to &ldquo;works more often than not.&rdquo;</p>
+      <figure>
+        <div class="legend" aria-hidden="true">
+          <span><i style="background: var(--s-n5)"></i>after 5 runs</span>
+          <span><i style="background: var(--s-n10)"></i>after 10 runs</span>
+          <span><i style="background: var(--s-n15)"></i>after 15 runs</span>
+        </div>
+        <svg viewBox="0 0 660 250" role="img" aria-label="pass at k for case e-005. After 5 runs, all zero. After 10 runs: pass at 1 is 0.10, at 3 is 0.30, at 5 is 0.50. After 15 runs: 0.13, 0.37, 0.57, then 0.91 at 10 and 1.00 at 15.">
+          <g stroke="var(--line)" stroke-width="1">
+            <line x1="70" y1="30" x2="640" y2="30"/>
+            <line x1="70" y1="75" x2="640" y2="75"/>
+            <line x1="70" y1="120" x2="640" y2="120"/>
+            <line x1="70" y1="165" x2="640" y2="165"/>
+            <line x1="70" y1="210" x2="640" y2="210"/>
+          </g>
+          <g font-size="11" fill="var(--muted)" text-anchor="end">
+            <text x="60" y="34">100%</text><text x="60" y="79">75%</text><text x="60" y="124">50%</text><text x="60" y="169">25%</text><text x="60" y="214">0%</text>
+          </g>
+          <g font-size="11" fill="var(--muted)" text-anchor="middle">
+            <text x="70" y="232">1</text><text x="151" y="232">3</text><text x="233" y="232">5</text><text x="436" y="232">10</text><text x="640" y="232">15</text>
+            <text x="355" y="248">tries allowed (k)</text>
+          </g>
+          <g fill="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+            <polyline stroke="var(--s-n5)" points="70,210 151,210 233,210"/>
+            <polyline stroke="var(--s-n10)" points="70,192 151,156 233,120"/>
+            <polyline stroke="var(--s-n15)" points="70,186.1 151,143.2 233,107.2 436,47.1 640,30"/>
+          </g>
+          <g stroke="var(--surface)" stroke-width="2">
+            <g class="dot"><title>After 5 runs (0 passes): pass@1 = 0%</title><circle class="hit" cx="70" cy="210" r="12"/><circle class="mark" cx="70" cy="210" r="5" fill="var(--s-n5)"/></g>
+            <g class="dot"><title>After 5 runs (0 passes): pass@3 = 0%</title><circle class="hit" cx="151" cy="210" r="12"/><circle class="mark" cx="151" cy="210" r="5" fill="var(--s-n5)"/></g>
+            <g class="dot"><title>After 5 runs (0 passes): pass@5 = 0%</title><circle class="hit" cx="233" cy="210" r="12"/><circle class="mark" cx="233" cy="210" r="5" fill="var(--s-n5)"/></g>
+            <g class="dot"><title>After 10 runs (1 pass): pass@1 = 10%</title><circle class="hit" cx="70" cy="192" r="12"/><circle class="mark" cx="70" cy="192" r="5" fill="var(--s-n10)"/></g>
+            <g class="dot"><title>After 10 runs (1 pass): pass@3 = 30%</title><circle class="hit" cx="151" cy="156" r="12"/><circle class="mark" cx="151" cy="156" r="5" fill="var(--s-n10)"/></g>
+            <g class="dot"><title>After 10 runs (1 pass): pass@5 = 50%</title><circle class="hit" cx="233" cy="120" r="12"/><circle class="mark" cx="233" cy="120" r="5" fill="var(--s-n10)"/></g>
+            <g class="dot"><title>After 15 runs (2 passes): pass@1 = 13%</title><circle class="hit" cx="70" cy="186.1" r="12"/><circle class="mark" cx="70" cy="186.1" r="5" fill="var(--s-n15)"/></g>
+            <g class="dot"><title>After 15 runs (2 passes): pass@3 = 37%</title><circle class="hit" cx="151" cy="143.2" r="12"/><circle class="mark" cx="151" cy="143.2" r="5" fill="var(--s-n15)"/></g>
+            <g class="dot"><title>After 15 runs (2 passes): pass@5 = 57%</title><circle class="hit" cx="233" cy="107.2" r="12"/><circle class="mark" cx="233" cy="107.2" r="5" fill="var(--s-n15)"/></g>
+            <g class="dot"><title>After 15 runs (2 passes): pass@10 = 91%</title><circle class="hit" cx="436" cy="47.1" r="12"/><circle class="mark" cx="436" cy="47.1" r="5" fill="var(--s-n15)"/></g>
+            <g class="dot"><title>After 15 runs (2 passes): pass@15 = 100%</title><circle class="hit" cx="640" cy="30" r="12"/><circle class="mark" cx="640" cy="30" r="5" fill="var(--s-n15)"/></g>
+          </g>
+          <g font-size="11" fill="var(--ink)">
+            <text x="244" y="206">5 runs</text>
+            <text x="244" y="132">10 runs</text>
+            <text x="590" y="24">15 runs</text>
+          </g>
+        </svg>
+        <figcaption>The fifteen-run job for e-005, scored on its first 5, first 10 and all 15 runs. The first five were all failures, so the estimate was zero for any number of tries. Each line rises as more tries are allowed, which is what pass@k should do; the lines move as runs are added because the new runs are new evidence.</figcaption>
+        <details>
+          <summary>The numbers as a table</summary>
+          <table>
+            <tr><th>Runs observed</th><th>Passes</th><th>pass@1</th><th>pass@3</th><th>pass@5</th><th>pass@10</th><th>pass@15</th></tr>
+            <tr><td>5</td><td>0</td><td>0.00</td><td>0.00</td><td>0.00</td><td>&ndash;</td><td>&ndash;</td></tr>
+            <tr><td>10</td><td>1</td><td>0.10</td><td>0.30</td><td>0.50</td><td>&ndash;</td><td>&ndash;</td></tr>
+            <tr><td>15</td><td>2</td><td>0.13</td><td>0.37</td><td>0.57</td><td>0.91</td><td>1.00</td></tr>
+          </table>
+        </details>
+      </figure>
+      <p>Pooling every e-005 run I have gives 9 of 30, about three in ten. From ten runs to fifteen, pass@1 moved from 0.10 to 0.13 and pass@5 from 0.50 to 0.57.</p>
+    </div>
+
+    <div class="lesson l-violet">
+      <span class="kicker">Two numbers, two questions</span>
+      <h3>&ldquo;Can it ever?&rdquo; is not &ldquo;can I count on it?&rdquo;</h3>
+      <p>The taxes case, e-008, passed 1 of 5 at baseline. Its pass@3 is 0.60: give the assistant three tries and one probably lands. Its pass^5 is 0: five in a row never happened. A customer only gets one try, so the CI rule leans on the second view &mdash; any failure in a regression case blocks.</p>
+      <div class="beforeafter">
+        <div class="a">
+          <span class="label">pass@k &mdash; capability</span>
+          <p class="said">At least one of k tries works. Rises with k. Answers &ldquo;is this within reach?&rdquo;</p>
+        </div>
+        <div class="b">
+          <span class="label">pass^k &mdash; reliability</span>
+          <p class="said">All k tries work. Falls with k. Answers &ldquo;can customers rely on it?&rdquo;</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson l-blue">
+      <span class="kicker">Graders miss things too</span>
+      <h3>Code checks and the AI grader caught different failures</h3>
+      <p>In e-001 the code checks passed all five runs &mdash; the reply said 14 days, as it should. The course's grader failed two of them for offering an unsupported &ldquo;other options if it's damaged.&rdquo; But it also passed a reply telling the customer to &ldquo;reach out to Juniper Home Goods directly&mdash;merchants can make exceptions,&rdquo; which is exactly my homework-four failure.</p>
+      <p>And in e-004 the grader passed the &ldquo;30 days, check the store's page&rdquo; answer; only the plain check for a &ldquo;7&rdquo; caught it. Neither layer is complete on its own, which is the case for using both.</p>
+    </div>
+
+    <div class="lesson l-violet">
+      <span class="kicker">Plumbing, briefly</span>
+      <h3>Small substitutions, written down</h3>
+      <p>I switched the assistant from Claude Opus to Claude Haiku 4.5, as the course now recommends: a frontier model rarely makes these mistakes, so there would be nothing to test. For wording checks I used my own grader on the scope cases and the course's reference grader (which runs on Claude Opus) on the store-policy cases.</p>
+      <p>Four fixes along the way: the pinned Harbor version writes its results one folder per run, so the course's summary script found nothing until it learned to read those files. My fork had GitHub Actions switched off until I allowed it on the website. The results table now posts as a pull-request comment instead of only on the run page. And the homework-four report test was written against the course's demo data, so it now skips &mdash; with the reason stated &mdash; for a student's own taxonomy.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p><b>Where it ended up.</b> Ten cases in <code>eval_cases/cases.jsonl</code> &mdash; three regression, seven capability &mdash; running on every pull request. The deliberately broken run was blocked by e-009 (0 of 5) and, unplanned, e-004 (4 of 5); after the revert every case passed its rule and e-009 was back to 5 of 5. Fifteen runs of e-005 gave 2 passes.</p>
+    <p><b>Still open:</b> the video, whether fifteen runs counts as a stable estimate for e-005, and the refund-on-a-guess case (e-007) as a target for the next module.</p>
+  </footer>
+
+</div>

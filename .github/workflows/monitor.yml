@@ -1,0 +1,44 @@
+name: monitor
+
+# Homework 7: score the last 24 hours of Cartwheel traces with the frozen
+# judge, write the scores to Langfuse, and keep the monitoring output.
+on:
+  schedule:
+    - cron: "0 6 * * *"   # daily, 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    name: daily failure-rate monitor
+    # Skipped until LANGFUSE_HOST is set as a repository variable.
+    if: vars.LANGFUSE_HOST != ''
+    # A local Langfuse is only reachable from a self-hosted runner on the same
+    # machine. Set the MONITOR_RUNNER variable to ubuntu-latest for a hosted one.
+    runs-on: ${{ vars.MONITOR_RUNNER || 'self-hosted' }}
+    timeout-minutes: 60
+    env:
+      LANGFUSE_HOST: ${{ vars.LANGFUSE_HOST }}
+      LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+      LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+      # The frozen judge's provider key. The agent's key is not needed:
+      # the monitor only reads traces that already exist.
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Install dependencies
+        run: uv sync
+
+      # Groups the window's traces by session into conversations, samples,
+      # judges the union once, corrects the random-sample rate and writes the
+      # scores. An empty window records a zero count without calling the judge.
+      - name: Monitor the last 24 hours
+        run: uv run python -m monitoring.run --last-hours 24
+
+      - name: Upload the monitoring output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monitoring-output
+          path: monitoring/output
+          if-no-files-found: warn

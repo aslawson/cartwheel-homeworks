@@ -149,6 +149,24 @@ def validate_period(
     return eligible
 
 
+def stamp_records(records: list[dict[str, Any]], traces: list[dict[str, Any]]) -> None:
+    """Attach the period score to a trace and date every score to its trace.
+
+    Langfuse rejects a score attached to nothing, so the period's prevalence
+    hangs on the period's last trace (its name and stable score_id are
+    unchanged). Each score is dated to its trace's time rather than to when
+    the monitor ran, so a dashboard plots each period at its own time.
+    """
+    times = {t["trace_id"]: t.get("timestamp") for t in traces}
+    anchor = max(traces, key=lambda t: t.get("timestamp") or "")["trace_id"]
+    for record in records:
+        if record["trace_id"] is None:
+            record["trace_id"] = anchor
+        stamp = times.get(record["trace_id"])
+        if stamp:
+            record["timestamp"] = _parse_time(stamp)
+
+
 def _write_history(record: dict[str, Any]) -> None:
     """Add the record, replacing an earlier run of the same period and judge."""
     rows = []
@@ -279,10 +297,7 @@ def main() -> None:
         # Langfuse rejects a score attached to nothing, so the period's
         # prevalence hangs on the period's last trace. Its name and stable
         # score_id are unchanged.
-        anchor = max(eligible, key=lambda t: t.get("timestamp") or "")["trace_id"]
-        for record in records:
-            if record["trace_id"] is None:
-                record["trace_id"] = anchor
+        stamp_records(records, eligible)
         written = post_scores(records)
         print(f"  wrote {written} Langfuse scores")
 

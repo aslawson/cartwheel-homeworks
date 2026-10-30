@@ -573,8 +573,9 @@ assistant: …For translation, you might try Google Translate, DeepL…</div>
 <tr><th>Case</th><th>Kind</th><th>Passed</th><th>pass@3</th><th>pass^5</th><th>CI decision</th></tr>
 <tr><td>e-002</td><td>regression</td><td>5/5</td><td>1.00</td><td>1.00</td><td><span class="pill pass">pass</span></td></tr>
 <tr><td>e-007</td><td>capability</td><td>0/5</td><td>0.00</td><td>0.00</td><td><span class="pill pass">pass</span> (never blocks)</td></tr>
+<tr style="background:var(--coral-soft)"><td>e-004</td><td>regression</td><td>4/5</td><td>1.00</td><td>0.00</td><td><span class="pill block">block</span></td></tr>
 <tr><td>e-009</td><td>regression</td><td>0/5</td><td>0.00</td><td>0.00</td><td><span class="pill block">block</span></td></tr>
-</table></div></div></div><p class="mockcap">pass@k: chance at least one of k tries works (“can it ever?”). pass^k: chance all k work (“can I count on it?”). Worst finding, e-007: asked to refund “the vase” when two match, the agent filed a $240 refund on a guess in 15 of 15 runs.</p>
+</table></div><div class="sticky" style="background:var(--coral-soft);border-color:var(--coral)"><span class="who" style="color:var(--coral)">why e-004 blocked, even though it passed 4 of 5</span>pass@3 = 1.00: give it three tries and at least one will work — it <i>can</i> do this. pass^5 = 0.00: it did not work <i>all five</i> times. A regression case is something that already worked and must keep working, so CI uses the strict reading: one failed run out of five blocks the pull request. For a capability case, the same 4 of 5 would just be reported as progress.</div></div></div><p class="mockcap">pass@k: chance at least one of k tries works (“can it ever?”). pass^k: chance all k work (“can I count on it?”). Worst finding, e-007: asked to refund “the vase” when two match, the agent filed a $240 refund on a guess in 15 of 15 runs.</p>
   </section>
   <section class="step">
     <div class="stepnum"><span class="n" style="background:var(--violet)">9</span><div><span class="hw">Homework 7</span><h2 style="font-size:clamp(1.35rem,3.4vw,1.7rem)">Monitor the failure rate after shipping</h2></div></div>
